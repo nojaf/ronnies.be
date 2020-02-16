@@ -9,33 +9,22 @@ group client
     framework: netstandard2.0
 
     nuget FSharp.Core
-    nuget Fable.Browser.Navigator
     nuget Fable.React
-    nuget Thoth.Json
-    nuget Fable.Reactstrap
+    nuget Fable.Elmish
     nuget Fable.Promise
+    nuget Fable.Fetch
+    nuget Thoth.Json
 
 group server
     source https://api.nuget.org/v3/index.json
     storage:none
     framework: netcoreapp3.1
 
+    nuget CosmoStore.TableStorage
     nuget FSharp.Core
-    nuget FSharp.Data.GraphQL.Server
-    nuget GeoCoordinate.NetCore
-    nuget Hellang.Middleware.SpaFallback
-    nuget Microsoft.AspNetCore.Authentication.JwtBearer
-    nuget Microsoft.AspNetCore.Server.Kestrel
-    nuget Microsoft.AspNetCore.Owin
-    nuget Microsoft.AspNetCore.StaticFiles
-    nuget Microsoft.Extensions.Configuration.Json
-    nuget Microsoft.Extensions.Logging.Console
-    nuget Microsoft.Extensions.Logging.Debug
-    nuget WebPush
+    nuget Microsoft.NET.Sdk.Functions
     nuget Thoth.Json.Net
-    nuget CosmoStore
-    nuget CosmoStore.InMemory
-    nuget System.Memory
+    nuget Microsoft.IdentityModel.Protocols.OpenIdConnect
 
 group test
     source https://api.nuget.org/v3/index.json
@@ -61,6 +50,7 @@ group build
     nuget Fake.IO.FileSystem
     nuget Fake.Tools.Git
     nuget Fake.JavaScript.Yarn
+    nuget Fantomas
 
 group infrastructure
     source https://api.nuget.org/v3/index.json

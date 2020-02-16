@@ -6,15 +6,33 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "hookrouter": "^1.2.3",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
-    "react-scripts": "3.4.0"
+    "react-scripts": "3.4.0",
+    "reactstrap": "8.4.1",
+    "react-hook-form": "4.9.4",
+    "prop-types": "15.7.2",
+    "bootstrap": "4.4.1",
+    "@auth0/auth0-spa-js": "1.6.4",
+    "react-map-gl": "5.2.3",
+    "viewport-mercator-project": "7.0.1",
+    "yup": "0.28.1",
+    "geolocation-utils": "1.2.2"
+  },
+  "devDependencies": {
+    "fable-compiler": "2.4.13",
+    "fable-splitter": "2.1.12",
+    "prettier": "1.19.1",
+    "node-sass": "4.13.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "fable": "fable-splitter fsharp/client.fsproj --allFiles -o src/bin",
+    "prebuild": "yarn fable"
   },
   "eslintConfig": {
     "extends": "react-app"

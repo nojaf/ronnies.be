@@ -1,5 +1,6 @@
 #r "paket: groupref build //"
 #load ".fake/build.fsx/intellisense.fsx"
+#load ".fake/build.fsx/intellisense_lazy.fsx"
 #nowarn "52"
 
 open Fake.Core
@@ -7,18 +8,28 @@ open Fake.Core.TargetOperators
 open Fake.DotNet
 open Fake.IO
 open Fake.IO.Globbing.Operators
+open Fake.IO.FileSystemOperators
 open Fake.JavaScript
 open System.IO
+open Fantomas
+open Fantomas.FormatConfig
 
 let root = __SOURCE_DIRECTORY__
-let clientDir = Path.Combine(root,"src","client-react")
-let serverDir = Path.Combine(root, "src", "server")
+let clientPath = Path.Combine(root,"src","client")
+let serverPath = Path.Combine(root, "src", "server")
 let serverProject = "Ronnies.Server.fsproj"
-let serverProjectPath = Path.Combine(serverDir, serverProject)
+let serverProjectPath = Path.Combine(serverPath, serverProject)
 let artifactPath = Path.Combine(__SOURCE_DIRECTORY__, "artifacts")
 let wwwroot = Path.Combine(artifactPath,  "wwwroot")
 let sln = Path.Combine(__SOURCE_DIRECTORY__, "ronnies.be.sln")
+let yarnSetParams = (fun (c: Yarn.YarnParams) -> { c with WorkingDirectory = clientPath })
+let fsharpFiles = !!"src/**/*.fs" -- "src/**/obj/**" -- "src/**/node_modules/**" -- "src/**/.fable/**"
+let javaScriptFiles = ["src/**/*.js";"src/*.js"]
 
+let fantomasConfig =
+    match CodeFormatter.ReadConfiguration(root </> "fantomas-config.json") with
+    | Success c -> c
+    | _ -> failwith "Cannot parse fantomas-config.json"
 
 Target.create "Clean"
     (fun _ ->
@@ -26,16 +37,78 @@ Target.create "Clean"
         Shell.cleanDir artifactPath
     )
 
+Target.create "Format" (fun _ ->
+//    fsharpFiles
+//    |> FakeHelpers.formatCode fantomasConfig
+//    |> Async.RunSynchronously
+//    |> printfn "Formatted F# files: %A"
+
+    javaScriptFiles
+    |> List.iter (fun js -> Yarn.exec (sprintf "prettier %s --write" js) yarnSetParams))
+
+let removeTemporary (results: FakeHelpers.FormatResult []): unit =
+    let removeIfHasTemporary result =
+        match result with
+        | FakeHelpers.Formatted(_, tempFile) -> File.Delete(tempFile)
+        | FakeHelpers.Error(_)
+        | FakeHelpers.Unchanged(_) -> ()
+    results |> Array.iter removeIfHasTemporary
+
+let checkCodeAndReport (config: FormatConfig) (files: seq<string>): Async<string []> =
+    async {
+        let! results = files |> FakeHelpers.formatFilesAsync config
+        results |> removeTemporary
+
+        let toChange result =
+            match result with
+            | FakeHelpers.Formatted(file, _) -> Some(file, None)
+            | FakeHelpers.Error(file, ex) -> Some(file, Some(ex))
+            | FakeHelpers.Unchanged(_) -> None
+
+        let changes =
+            results |> Array.choose toChange
+
+        let isChangeWithErrors =
+            function
+            | _, Some(_) -> true
+            | _, None -> false
+
+        if Array.exists isChangeWithErrors changes then raise <| FakeHelpers.CodeFormatException changes
+
+        let formattedFilename =
+            function
+            | _, Some(_) -> None
+            | filename, None -> Some(filename)
+
+        return changes |> Array.choose formattedFilename
+    }
+
+Target.create "CheckCodeFormat" (fun _ ->
+    let needFormatting =
+        fsharpFiles
+        |> checkCodeAndReport fantomasConfig
+        |> Async.RunSynchronously
+
+    match Array.length needFormatting with
+    | 0 -> Trace.log "No files need formatting"
+    | _ ->
+        Trace.log "The following files need formatting:"
+        needFormatting |> Array.iter Trace.log
+        failwith "Some files need formatting, check output for more info"
+
+    javaScriptFiles
+    |> List.iter (fun js -> Yarn.exec (sprintf "prettier %s --check" js) yarnSetParams))
+
 Target.create "Install"
     (fun _ -> DotNet.restore (DotNet.Options.withWorkingDirectory root) sln)
 
 Target.create "InstallClient"
     (fun _ ->
-        Yarn.installPureLock (fun o -> { o with WorkingDirectory = clientDir })
+        Yarn.installPureLock (fun o -> { o with WorkingDirectory = clientPath })
     )
 
 Target.create "BuildClient" (fun _ ->
-    Yarn.exec "build" (fun opt -> { opt with WorkingDirectory = clientDir })
+    Yarn.exec "build" (fun opt -> { opt with WorkingDirectory = clientPath })
 )
 
 Target.create "Build"
@@ -57,7 +130,7 @@ Target.create "Build"
 Target.create "Watch" (fun _ ->
     let fableWatch =
         async {
-            Yarn.exec "start" (fun opt -> { opt with WorkingDirectory = clientDir;  })
+            Yarn.exec "start" (fun opt -> { opt with WorkingDirectory = clientPath;  })
         }
         
     let serverWatch =
@@ -65,7 +138,7 @@ Target.create "Watch" (fun _ ->
             let fcswatch =
                 Command.RawCommand("fcswatch", Arguments.OfArgs ["--project-file"; serverProjectPath; "--logger-level"; "normal"])
                 |> CreateProcess.fromCommand
-                |> CreateProcess.withWorkingDirectory serverDir
+                |> CreateProcess.withWorkingDirectory serverPath
                 |> Proc.startAndAwait
                 |> Async.Ignore
             do! fcswatch
@@ -77,6 +150,8 @@ Target.create "Watch" (fun _ ->
 )
 
 // Build order
+"InstallClient" ==> "Format"
+
 "Clean" ==> "Install" ==> "InstallClient" ==> "BuildClient" ==> "Build"
 
 "Watch"

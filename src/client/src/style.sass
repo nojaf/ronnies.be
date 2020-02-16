@@ -1,0 +1,162 @@
+$primary: #791716
+$success: #388647
+$info: #1C5086
+$danger: #900435
+$warning: #DEAF0F
+$link: $primary
+
+@import "../node_modules/bootstrap/scss/_functions.scss"
+@import "../node_modules/bootstrap/scss/_variables.scss"
+@import "../node_modules/bootstrap/scss/_mixins.scss"
+@import "../node_modules/bootstrap/scss/_root.scss"
+@import "../node_modules/bootstrap/scss/_reboot.scss"
+@import "../node_modules/bootstrap/scss/_type.scss"
+//@import "../node_modules/bootstrap/scss/_images.scss"
+//@import "../node_modules/bootstrap/scss/_code.scss"
+@import "../node_modules/bootstrap/scss/_grid.scss"
+//@import "../node_modules/bootstrap/scss/_tables.scss"
+@import "../node_modules/bootstrap/scss/_forms.scss"
+@import "../node_modules/bootstrap/scss/_buttons.scss"
+@import "../node_modules/bootstrap/scss/_transitions.scss"
+//@import "../node_modules/bootstrap/scss/_dropdown.scss"
+@import "../node_modules/bootstrap/scss/_button-group.scss"
+@import "../node_modules/bootstrap/scss/_input-group.scss"
+@import "../node_modules/bootstrap/scss/_custom-forms.scss"
+@import "../node_modules/bootstrap/scss/_nav.scss"
+@import "../node_modules/bootstrap/scss/_navbar.scss"
+//@import "../node_modules/bootstrap/scss/_card.scss"
+//@import "../node_modules/bootstrap/scss/_breadcrumb.scss"
+//@import "../node_modules/bootstrap/scss/_pagination.scss"
+//@import "../node_modules/bootstrap/scss/_badge.scss"
+//@import "../node_modules/bootstrap/scss/_jumbotron.scss"
+@import "../node_modules/bootstrap/scss/_alert.scss"
+//@import "../node_modules/bootstrap/scss/_progress.scss"
+//@import "../node_modules/bootstrap/scss/_media.scss"
+//@import "../node_modules/bootstrap/scss/_list-group.scss"
+//@import "../node_modules/bootstrap/scss/_close.scss"
+//@import "../node_modules/bootstrap/scss/_toasts.scss"
+//@import "../node_modules/bootstrap/scss/_modal.scss"
+//@import "../node_modules/bootstrap/scss/_tooltip.scss"
+//@import "../node_modules/bootstrap/scss/_popover.scss"
+//@import "../node_modules/bootstrap/scss/_carousel.scss"
+//@import "../node_modules/bootstrap/scss/_spinners.scss"
+@import "../node_modules/bootstrap/scss/_utilities.scss"
+//@import "../node_modules/bootstrap/scss/_print.scss"
+
+html, body, #app, main
+  height: 100%
+  
+main
+  display: flex
+  flex-direction: column
+  .navbar
+    z-index: 10
+
+.navbar-brand img
+  max-height: 30px
+
+.avatar
+  height: 30px
+  @extend .mr-2
+
+.mapContainer
+  position: fixed
+  width: 100vw
+  height: 100vh
+  top: 0
+  left: 0
+  z-index: -1
+  &.home
+    z-index: 0
+
+@keyframes fadein
+  from
+    opacity: 0
+  to
+    opacity: 1
+
+.fadeable
+  opacity: 0
+  animation: fadein 1s
+
+.page
+  background-color: $white
+  flex: 1
+
+#locationPickerContainer
+    height: 40vh
+    width: 100%
+
+#preloader
+  position: fixed
+  top: 0
+  left: 0
+  width: 100%
+  height: 100%
+
+#loader
+  display: block
+  position: relative
+  left: 50%
+  top: 50%
+  width: 150px
+  height: 150px
+  margin: -75px 0 0 -75px
+  border-radius: 50%
+  border: 3px solid transparent
+  border-top-color: $primary
+  -webkit-animation: spin 2s linear infinite
+  animation: spin 2s linear infinite
+
+#loader:before
+  content: ""
+  position: absolute
+  top: 5px
+  left: 5px
+  right: 5px
+  bottom: 5px
+  border-radius: 50%
+  border: 3px solid transparent
+  border-top-color: darken($primary, 10%)
+  -webkit-animation: spin 3s linear infinite
+  animation: spin 3s linear infinite
+
+#loader:after
+  content: ""
+  position: absolute
+  top: 15px
+  left: 15px
+  right: 15px
+  bottom: 15px
+  border-radius: 50%
+  border: 3px solid transparent
+  border-top-color: lighten($primary, 10%)
+  -webkit-animation: spin 1.5s linear infinite
+  animation: spin 1.5s linear infinite
+
+@-webkit-keyframes spin
+  0%
+    -webkit-transform: rotate(0deg)
+    -ms-transform: rotate(0deg)
+    transform: rotate(0deg)
+
+  100%
+    -webkit-transform: rotate(360deg)
+    -ms-transform: rotate(360deg)
+    transform: rotate(360deg)
+
+
+@keyframes spin
+  0%
+    -webkit-transform: rotate(0deg)
+    -ms-transform: rotate(0deg)
+    transform: rotate(0deg)
+
+  100%
+    -webkit-transform: rotate(360deg)
+    -ms-transform: rotate(360deg)
+    transform: rotate(360deg)
+
+form
+  label
+    font-weight: bold
