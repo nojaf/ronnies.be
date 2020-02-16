@@ -1,0 +1,71 @@
+source https://api.nuget.org/v3/index.json
+
+storage: none
+framework: netcore3.1, netstandard2.0, netstandard2.1
+
+group client
+    source https://api.nuget.org/v3/index.json
+    storage:none
+    framework: netstandard2.0
+
+    nuget FSharp.Core
+    nuget Fable.Browser.Navigator
+    nuget Fable.React
+    nuget Thoth.Json
+    nuget Fable.Reactstrap
+    nuget Fable.Promise
+
+group server
+    source https://api.nuget.org/v3/index.json
+    storage:none
+    framework: netcoreapp3.1
+
+    nuget FSharp.Core
+    nuget FSharp.Data.GraphQL.Server
+    nuget GeoCoordinate.NetCore
+    nuget Hellang.Middleware.SpaFallback
+    nuget Microsoft.AspNetCore.Authentication.JwtBearer
+    nuget Microsoft.AspNetCore.Server.Kestrel
+    nuget Microsoft.AspNetCore.Owin
+    nuget Microsoft.AspNetCore.StaticFiles
+    nuget Microsoft.Extensions.Configuration.Json
+    nuget Microsoft.Extensions.Logging.Console
+    nuget Microsoft.Extensions.Logging.Debug
+    nuget WebPush
+    nuget Thoth.Json.Net
+    nuget CosmoStore
+    nuget CosmoStore.InMemory
+    nuget System.Memory
+
+group test
+    source https://api.nuget.org/v3/index.json
+    storage:none
+    framework: netcoreapp3.1
+
+    nuget FSharp.Core
+    nuget xunit
+    nuget xunit.runner.visualstudio
+    nuget Microsoft.NET.Test.Sdk
+
+group build
+    storage: none
+    source https://api.nuget.org/v3/index.json
+
+    nuget FSharp.Core
+    nuget Fake.DotNet.Cli
+    nuget Fake.DotNet.Paket
+    nuget Fake.Core.Target
+    nuget Fake.Core.Process
+    nuget Fake.Core.String
+    nuget Fake.Core.ReleaseNotes
+    nuget Fake.IO.FileSystem
+    nuget Fake.Tools.Git
+    nuget Fake.JavaScript.Yarn
+
+group infrastructure
+    source https://api.nuget.org/v3/index.json
+    storage:none
+    framework: netcoreapp3.1
+
+    nuget Pulumi.Azure 1.13.0-preview
+    nuget Pulumi.FSharp 1.10.1-preview
