@@ -21,4 +21,4 @@ let useSetToken() =
 
 let useDump() =
     let model = useModel()
-    JS.JSON.stringify(model, space = 4)
+    JS.JSON.stringify (model, space = 4)

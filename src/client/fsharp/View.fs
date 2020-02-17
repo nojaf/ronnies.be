@@ -27,7 +27,6 @@ let ElmishCapture =
                     ({ Model = model
                        Dispatch = dispatch })
 
-            Hooks.useEffect
-                ((fun () -> Program.mkProgram State.init State.update view |> Program.run), Array.empty)
+            Hooks.useEffect ((fun () -> Program.mkProgram State.init State.update view |> Program.run), Array.empty)
 
             contextProvider appContext state.current [ props.children ]), "ElmishCapture", memoEqualsButFunctions)
