@@ -15,7 +15,7 @@ let appContext = ReactBindings.React.createContext (defaultContextValue)
 
 let ElmishCapture =
     FunctionComponent.Of
-        ((fun (props: {| children: ReactElement; token: string |}) ->
+        ((fun (props: {| children: ReactElement |}) ->
 
             let state: IStateHook<AppContext> =
                 Hooks.useState
@@ -28,6 +28,6 @@ let ElmishCapture =
                        Dispatch = dispatch })
 
             Hooks.useEffect
-                ((fun () -> Program.mkProgram State.init State.update view |> Program.runWith props.token), Array.empty)
+                ((fun () -> Program.mkProgram State.init State.update view |> Program.run), Array.empty)
 
             contextProvider appContext state.current [ props.children ]), "ElmishCapture", memoEqualsButFunctions)

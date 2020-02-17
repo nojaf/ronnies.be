@@ -1,11 +1,14 @@
 import React from "react";
 import { Layout } from "./Components";
-import { Auth0Provider, ronnyOptions } from "./Auth";
+import { Auth0Provider, config } from "./Auth";
+import { ElmishCapture } from "./bin/View";
 
 function App() {
   return (
-    <Auth0Provider {...ronnyOptions}>
-      <Layout />
+    <Auth0Provider {...config}>
+      <ElmishCapture>
+        <Layout />
+      </ElmishCapture>
     </Auth0Provider>
   );
 }

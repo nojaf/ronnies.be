@@ -6,8 +6,9 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="paket.references" />
-    <Compile Include="../shared/Shared.fs"/>
+    <Compile Include="../shared/Shared.fs" />
     <Compile Include="Authentication.fs" />
+    <Compile Include="Validation.fs" />
     <Compile Include="EventStore.fs" />
     <Compile Include="Function.fs" />
   </ItemGroup>

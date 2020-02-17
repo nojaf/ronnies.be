@@ -31,6 +31,20 @@ let fantomasConfig =
     | Success c -> c
     | _ -> failwith "Cannot parse fantomas-config.json"
 
+module Azure =
+    let az parameters =
+        let azPath = ProcessUtils.findPath [] "az"
+        CreateProcess.fromRawCommand azPath parameters
+        |> Proc.run
+        |> ignore
+
+    let func parameters =
+        let funcPath = ProcessUtils.findPath [] "func"
+        CreateProcess.fromRawCommand funcPath parameters
+        |> CreateProcess.withWorkingDirectory serverPath
+        |> Proc.run
+        |> ignore
+
 Target.create "Clean"
     (fun _ ->
         !! "src/server/bin" ++ "src/server/obj" |> Seq.iter Shell.cleanDir
@@ -127,27 +141,47 @@ Target.create "Build"
         serverProjectPath
 )
 
-Target.create "Watch" (fun _ ->
-    let fableWatch =
-        async {
-            Yarn.exec "start" (fun opt -> { opt with WorkingDirectory = clientPath;  })
-        }
-        
-    let serverWatch =
-        async {
-            let fcswatch =
-                Command.RawCommand("fcswatch", Arguments.OfArgs ["--project-file"; serverProjectPath; "--logger-level"; "normal"])
-                |> CreateProcess.fromCommand
-                |> CreateProcess.withWorkingDirectory serverPath
-                |> Proc.startAndAwait
-                |> Async.Ignore
-            do! fcswatch
-        }
 
-    Async.Parallel [fableWatch; serverWatch]
-    |> Async.RunSynchronously
-    |> ignore
-)
+Target.create "Watch" (fun _ ->
+    let fableOutput output =
+        Trace.tracefn "%s" output
+        if output = "fable: Watching..." then Yarn.exec "start" yarnSetParams
+
+    let fableError output =
+        Trace.traceErrorfn "\n%s\n" output
+
+    let compileFable =
+        CreateProcess.fromRawCommand Yarn.defaultYarnParams.YarnFilePath [ "fable"; "-d"; "--watch" ]
+        |> CreateProcess.withWorkingDirectory clientPath
+        |> CreateProcess.redirectOutput
+        |> CreateProcess.withOutputEventsNotNull fableOutput fableError
+        |> Proc.startAndAwait
+        |> Async.Ignore
+
+    let stopFunc() = System.Diagnostics.Process.GetProcessesByName("func") |> Seq.iter (fun p -> p.Kill())
+
+    let rec startFunc() =
+        let dirtyWatcher: System.IDisposable ref = ref null
+
+        let watcher =
+            !!(serverPath </> "*.fs") ++ (serverPath </> "*.fsproj")
+            |> ChangeWatcher.run (fun changes ->
+                printfn "FILE CHANGE %A" changes
+                if !dirtyWatcher <> null then
+                    (!dirtyWatcher).Dispose()
+                    stopFunc()
+                    startFunc())
+
+        dirtyWatcher := watcher
+
+        Azure.func ["start"]
+
+    let runAzureFunction = async { startFunc() }
+
+    Async.Parallel [ runAzureFunction; compileFable ]
+    |> Async.Ignore
+    |> Async.RunSynchronously)
+
 
 // Build order
 "InstallClient" ==> "Format"

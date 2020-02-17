@@ -9,24 +9,26 @@ open Pulumi.Azure.Storage
 
 
 let infra() =
+    let stackName = Pulumi.Deployment.Instance.StackName
 
     // Create an Azure Resource Group
-    let resourceGroupArgs = ResourceGroupArgs(Name = input "rg-ronnies")
-    let resourceGroup = ResourceGroup("rg-ronnies", args = resourceGroupArgs)
+    let resourceGroupArgs = ResourceGroupArgs(Name = input (sprintf "rg-ronnies-%s" stackName))
+    let resourceGroup = ResourceGroup(sprintf "rg-ronnies-%s" stackName, args = resourceGroupArgs)
 
     // Create an Azure Storage Account
     let storageAccount =
         Account
             ("storageronnies",
              AccountArgs
-                 (ResourceGroupName = io resourceGroup.Name, Name = input "storronnies",
+                 (ResourceGroupName = io resourceGroup.Name, Name = input (sprintf "storronnies%s" stackName),
                   AccountReplicationType = input "LRS", AccountTier = input "Standard"))
 
     let applicationsInsight =
         Insights
             ("ai-ronnies",
              InsightsArgs
-                 (ResourceGroupName = io resourceGroup.Name, Name = input "ai-ronnies", ApplicationType = input "web"))
+                 (ResourceGroupName = io resourceGroup.Name, Name = input (sprintf "ai-ronnies-%s" stackName),
+                  ApplicationType = input "web"))
 
 
     let appServicePlan =
@@ -35,13 +37,13 @@ let infra() =
              PlanArgs
                  (ResourceGroupName = io resourceGroup.Name, Kind = input "FunctionApp",
                   Sku = input (PlanSkuArgs(Tier = input "Dynamic", Size = input "Y1")),
-                  Name = input "azfun-ronnies-plan"))
+                  Name = input (sprintf "azfun-ronnies-plan-%s" stackName)))
 
     let app =
         FunctionApp
             ("azfun-ronnies-plan",
              FunctionAppArgs
-                 (ResourceGroupName = io resourceGroup.Name, Name = input "azfun-ronnies",
+                 (ResourceGroupName = io resourceGroup.Name, Name = input (sprintf "azfun-ronnies-%s" stackName),
                   AppServicePlanId = io appServicePlan.Id,
                   StorageConnectionString = io storageAccount.PrimaryConnectionString,
                   AppSettings =

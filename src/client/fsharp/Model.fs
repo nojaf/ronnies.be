@@ -1,6 +1,13 @@
 module Ronnies.Client.Model
 
-type Model =
-    { Events: obj list }
+type Role =
+    | Admin
+    | Editor
+    | Visitor
 
-type Msg = | NoOp
+type Model =
+    { Events: obj list
+      AuthorizationToken: string option
+      Role: Role }
+
+type Msg = SetToken of string
