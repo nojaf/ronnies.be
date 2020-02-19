@@ -1006,6 +1006,8 @@ STORAGE: NONE
 RESTRICTION: == netcoreapp3.1
 NUGET
   remote: https://api.nuget.org/v3/index.json
+    AccidentalFish.FSharp.Validation (0.10.1)
+      FSharp.Core (>= 4.5.2)
     CosmoStore (3.0.1)
       FSharp.Core (>= 4.3.1)
       System.Reactive (>= 4.0)

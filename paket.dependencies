@@ -25,6 +25,7 @@ group server
     nuget Microsoft.NET.Sdk.Functions
     nuget Thoth.Json.Net
     nuget Microsoft.IdentityModel.Protocols.OpenIdConnect
+    nuget AccidentalFish.FSharp.Validation
 
 group test
     source https://api.nuget.org/v3/index.json

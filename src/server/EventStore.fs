@@ -15,7 +15,7 @@ let private eventStore = TableStorage.EventStore.getEventStore config
 [<Literal>]
 let private EventStream = "ronnies.be"
 
-let private encodeEvent = Encode.Auto.generateEncoder<Event>()
+let encodeEvent = Encode.Auto.generateEncoder<Event>()
 let decodeEvent = Decode.Auto.generateDecoder<Event>()
 
 let private getUnionCaseName (x: 'a) =
