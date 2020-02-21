@@ -52,63 +52,28 @@ Target.create "Clean"
     )
 
 Target.create "Format" (fun _ ->
-//    fsharpFiles
-//    |> FakeHelpers.formatCode fantomasConfig
-//    |> Async.RunSynchronously
-//    |> printfn "Formatted F# files: %A"
+    fsharpFiles
+    |> FakeHelpers.formatCode fantomasConfig
+    |> Async.RunSynchronously
+    |> printfn "Formatted F# files: %A"
 
     javaScriptFiles
     |> List.iter (fun js -> Yarn.exec (sprintf "prettier %s --write" js) yarnSetParams))
 
-let removeTemporary (results: FakeHelpers.FormatResult []): unit =
-    let removeIfHasTemporary result =
-        match result with
-        | FakeHelpers.Formatted(_, tempFile) -> File.Delete(tempFile)
-        | FakeHelpers.Error(_)
-        | FakeHelpers.Unchanged(_) -> ()
-    results |> Array.iter removeIfHasTemporary
-
-let checkCodeAndReport (config: FormatConfig) (files: seq<string>): Async<string []> =
-    async {
-        let! results = files |> FakeHelpers.formatFilesAsync config
-        results |> removeTemporary
-
-        let toChange result =
-            match result with
-            | FakeHelpers.Formatted(file, _) -> Some(file, None)
-            | FakeHelpers.Error(file, ex) -> Some(file, Some(ex))
-            | FakeHelpers.Unchanged(_) -> None
-
-        let changes =
-            results |> Array.choose toChange
-
-        let isChangeWithErrors =
-            function
-            | _, Some(_) -> true
-            | _, None -> false
-
-        if Array.exists isChangeWithErrors changes then raise <| FakeHelpers.CodeFormatException changes
-
-        let formattedFilename =
-            function
-            | _, Some(_) -> None
-            | filename, None -> Some(filename)
-
-        return changes |> Array.choose formattedFilename
-    }
-
 Target.create "CheckCodeFormat" (fun _ ->
-    let needFormatting =
+    let result =
         fsharpFiles
-        |> checkCodeAndReport fantomasConfig
+        |> FakeHelpers.checkCode fantomasConfig
         |> Async.RunSynchronously
 
-    match Array.length needFormatting with
-    | 0 -> Trace.log "No files need formatting"
-    | _ ->
+    if result.IsValid then
+        Trace.log "No files need formatting with Fantomas"
+    elif result.NeedsFormatting then
         Trace.log "The following files need formatting:"
-        needFormatting |> Array.iter Trace.log
+        List.iter Trace.log result.Formatted
         failwith "Some files need formatting, check output for more info"
+    else
+        Trace.logf "Errors while formatting: %A" result.Errors
 
     javaScriptFiles
     |> List.iter (fun js -> Yarn.exec (sprintf "prettier %s --check" js) yarnSetParams))
