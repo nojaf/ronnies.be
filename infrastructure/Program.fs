@@ -49,7 +49,9 @@ let infra() =
                   AppSettings =
                       inputMap
                           [ "FUNCTIONS_WORKER_RUNTIME", input "DotNet"
-                            "APPINSIGHTS_INSTRUMENTATIONKEY", io applicationsInsight.InstrumentationKey ],
+                            "APPINSIGHTS_INSTRUMENTATIONKEY", io applicationsInsight.InstrumentationKey
+                            "StorageAccountKey", io storageAccount.PrimaryAccessKey
+                            "StorageAccountName", io storageAccount.Name ],
                   SiteConfig =
                       input
                           (FunctionAppSiteConfigArgs
