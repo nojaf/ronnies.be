@@ -17,6 +17,8 @@ type LocationAdded =
       Name: string
       Location: Location
       Price: Price
+      IsDraft: bool
+      Remark: string option
       Date: DateTime
       Creator: UserId }
 
@@ -27,7 +29,7 @@ type Event =
     | NameUpdated of id: Identifier * name: string
     | PriceUpdated of id: Identifier * price: Price
     | LocationUpdated of id: Identifier * location: Location
-    | DescriptionUpdated of id: Identifier * description: string
+    | RemarkUpdated of id: Identifier * description: string
     | IsDraftUpdated of id: Identifier * isDraft: bool
     | NewLeaderInHighScores of user: EventSource * score: int
     | LocationAddedNotificationSent of LocationAddedNotification

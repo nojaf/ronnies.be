@@ -6,6 +6,7 @@ open Microsoft.Extensions.Logging
 open Microsoft.IdentityModel.Protocols
 open Microsoft.IdentityModel.Protocols.OpenIdConnect
 open Microsoft.IdentityModel.Tokens
+open Ronnies.Shared
 open System
 open System.IdentityModel.Tokens.Jwt
 open System.Security.Claims
@@ -13,12 +14,17 @@ open System.Security.Claims
 let private Auth0Domain = Environment.GetEnvironmentVariable("Auth0Domain")
 let private Auth0Audiences = Environment.GetEnvironmentVariable("Auth0Audience") |> Array.singleton
 
-type ClaimsPrincipal with
-    member this.HasPermission name = this.Claims |> Seq.exists (fun c -> c.Type = "permissions" && c.Value = name)
+let private collectClaims (user: ClaimsPrincipal) =
+    user.Claims
+    |> Seq.choose (fun c ->
+        if c.Type = "permissions" then Some c.Value else None)
+    |> Seq.toList
 
 let private authenticateRequest (logger: ILogger) header =
-    let token = System.Text.RegularExpressions.Regex.Replace(header, "bearer\s?", System.String.Empty)
+    let token = System.Text.RegularExpressions.Regex.Replace(header, "(b|B)earer\s?", System.String.Empty)
+#if DEBUG
     printfn "token: %s" token
+#endif
     Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII <- true
     let parameters = TokenValidationParameters()
     parameters.ValidIssuer <- (sprintf "https://%s/" Auth0Domain)
@@ -35,15 +41,16 @@ let private authenticateRequest (logger: ILogger) header =
             let! config = manager.GetConfigurationAsync().ConfigureAwait(false)
             parameters.IssuerSigningKeys <- config.SigningKeys
             let user, _ = handler.ValidateToken((token: string), parameters)
-            if user.HasPermission("use:application") then
-                return Some user.Identity.Name
-            else
-                logger.LogError(sprintf "User has a valid token but lacks the correct permission")
-                return None
+            return Ok(user.Identity.Name, collectClaims user)
         }
     with exn ->
         logger.LogError(sprintf "Could not authenticate token %s\n%A" token exn)
-        task { return None }
+        task { return Error "invalid or empty token" }
 
 type HttpRequest with
     member this.Authenticate(logger: ILogger) = authenticateRequest logger (this.Headers.["Authorization"].ToString())
+
+let mayWriteEvent permissions event =
+    match event with
+    | LocationAdded _ -> Seq.contains "write:location" permissions
+    | _ -> false

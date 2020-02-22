@@ -18,7 +18,7 @@ let private EventStream = "ronnies.be"
 let encodeEvent = Encode.Auto.generateEncoder<Event>()
 let decodeEvent = Decode.Auto.generateDecoder<Event>()
 
-let private getUnionCaseName (x: 'a) =
+let getUnionCaseName (x: 'a) =
     match FSharpValue.GetUnionFields(x, typeof<'a>) with
     | case, _ -> case.Name
 

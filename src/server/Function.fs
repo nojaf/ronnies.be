@@ -1,5 +1,6 @@
 module Ronnies.Server.Function
 
+open System
 open FSharp.Control.Tasks
 open Microsoft.AspNetCore.Http
 open Microsoft.Azure.WebJobs
@@ -41,16 +42,20 @@ let private sendBadRequest err =
     new HttpResponseMessage(HttpStatusCode.BadRequest,
                             Content = new StringContent(err, System.Text.Encoding.UTF8, "application/text"))
 
-let private unAuthorized() =
-    new HttpResponseMessage(HttpStatusCode.Unauthorized)
+let private sendUnAuthorizedRequest err =
+    new HttpResponseMessage(HttpStatusCode.Unauthorized,
+                            Content = new StringContent(err, System.Text.Encoding.UTF8, "application/text"))
+    |> Task.lift
 
-let private decodeEvents (body: Stream) userId =
+let private decodeEvents (body: Stream) user =
     let json = using (new StreamReader(body)) (fun stream -> stream.ReadToEnd())
     Decode.fromString (Decode.list EventStore.decodeEvent) json
-    |> Result.map (fun events -> userId, events)
+    |> Result.map (fun events -> user, events)
     |> Result.mapError (sendInternalError >> Task.lift)
 
-let private validateEvents (userId, events) =
+let private validateEvents request =
+    let (_, events) = request
+
     let errors =
         events
         |> List.choose (fun event ->
@@ -62,12 +67,25 @@ let private validateEvents (userId, events) =
 
     match errors with
     | [] ->
-        Ok(userId, events)
+        Ok request
     | _ ->
         let responseBody = Encode.list errors |> Encode.toString 4
         Error(sendBadRequest responseBody |> Task.lift)
 
-let persistEvents (userId, events) =
+let private authenticateEvents request =
+    let ((_, permissions), events) = request
+    let unauthorizedEvents =
+        events |> List.filter (Authentication.mayWriteEvent permissions >> not)
+    if List.isEmpty unauthorizedEvents then
+        Ok request
+    else
+        Error
+            (Seq.map EventStore.getUnionCaseName unauthorizedEvents
+             |> String.concat Environment.NewLine
+             |> sendUnAuthorizedRequest)
+
+let persistEvents request =
+    let ((userId, _), events) = request
     task {
         do! EventStore.appendEvents userId events
         return sendText "Events persisted"
@@ -77,11 +95,12 @@ let persistEvents (userId, events) =
 let AddEvents([<HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)>] req: HttpRequest, log: ILogger) =
     log.LogInformation("F# HTTP trigger function processed a request...")
     task {
-        let! userId = req.Authenticate(log)
-        let! response = Result.ofOption userId
-                        |> Result.mapError (unAuthorized >> Task.lift)
+        let! user = req.Authenticate(log)
+        let! response = user
+                        |> Result.mapError sendUnAuthorizedRequest
                         |> Result.bind (decodeEvents req.Body)
                         |> Result.bind (validateEvents)
+                        |> Result.bind (authenticateEvents)
                         |> Result.map (persistEvents)
                         |> Result.either
         return response
