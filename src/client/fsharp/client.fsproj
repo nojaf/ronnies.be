@@ -11,6 +11,7 @@
     <Compile Include="View.fs" />
     <Compile Include="Hooks.fs" />
     <Content Include="js\jwt.js" />
+    <Compile Include="Components.fs" />
   </ItemGroup>
   <Import Project="..\..\..\.paket\Paket.Restore.targets" />
 

@@ -11,6 +11,7 @@ import {
 } from "reactstrap";
 import Collapse from "reactstrap/es/Collapse";
 import Nav from "reactstrap/es/Nav";
+import { WhenEditor } from '../bin/Components';
 
 const Navigation = ({ role }) => {
   const [collapsed, setCollapsed] = useState(true);
@@ -42,7 +43,7 @@ const Navigation = ({ role }) => {
     </span>
   );
 
-  const navLink = (link, name) => {
+  const MenuLink = ({ link, name }) => {
     const isActive = link === path;
     return (
       <NavItem key={link}>
@@ -53,25 +54,25 @@ const Navigation = ({ role }) => {
     );
   };
 
-  const extraMenuItems = (() => {
-    if (!isAuthenticated) {
-      return [navLink("/")];
-    } else {
-      switch (role) {
-        case "Admin":
-        case "Editor":
-          return [
-            navLink("/", "Koarte"),
-            navLink("/add-location", "E nieuwen toevoegen"),
-            navLink("/user-scores", "Klassement"),
-            navLink("/rules", "Reglement"),
-            navLink("/settings", "Instellingen")
-          ];
-        default:
-          return [navLink("/", "Koarte"), navLink("/settings", "Instellingen")];
-      }
-    }
-  })();
+  // const extraMenuItems = (() => {
+  //   if (!isAuthenticated) {
+  //     return [navLink("/", "Koarte")];
+  //   } else {
+  //     switch (role) {
+  //       case "Admin":
+  //       case "Editor":
+  //         return [
+  //           navLink("/", "Koarte"),
+  //           navLink("/add-location", "E nieuwen toevoegen"),
+  //           navLink("/user-scores", "Klassement"),
+  //           navLink("/rules", "Reglement"),
+  //           navLink("/settings", "Instellingen")
+  //         ];
+  //       default:
+  //         return [navLink("/", "Koarte"), navLink("/settings", "Instellingen")];
+  //     }
+  //   }
+  // })();
 
   return (
     <Navbar color="primary" dark expand={"md"}>
@@ -81,7 +82,13 @@ const Navigation = ({ role }) => {
       <NavbarToggler onClick={() => setCollapsed(!collapsed)} />
       <Collapse isOpen={!collapsed} navbar>
         <Nav navbar className="mr-auto">
-          {extraMenuItems}
+          <MenuLink name={'Koarte'} link={'/'} />
+          <WhenEditor>
+            {/*<MenuLink name={'E nieuwen toevoegen'} link={'/add-location'} />*/}
+            {/*<MenuLink name={'Klassement'} link={'/user-scores'} />*/}
+            {/*<MenuLink name={'Reglement'} link={'/rules'} />*/}
+            <MenuLink name={'Instellingen'} link={'/settings'} />
+          </WhenEditor>
           {loginButton}
         </Nav>
         {userElement}

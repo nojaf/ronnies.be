@@ -22,3 +22,7 @@ let useSetToken() =
 let useDump() =
     let model = useModel()
     JS.JSON.stringify (model, space = 4)
+
+let useRole() =
+    let model = useModel()
+    model.Role

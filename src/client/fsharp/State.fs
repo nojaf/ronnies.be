@@ -22,6 +22,7 @@ let private getRole token =
     else Role.Visitor
 
 let update msg model =
+    printfn "update"
     match msg with
     | SetToken token ->
         { model with

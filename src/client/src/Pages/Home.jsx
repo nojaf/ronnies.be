@@ -1,8 +1,8 @@
 import React from 'react';
-import {useDump} from "../bin/Hooks";
+// import {useDump} from "../bin/Hooks";
 
 const Home = () => {
-    const model = useDump();
+    const model = 'meh' // useDump();
     return (
         <div>
             Home<br />
