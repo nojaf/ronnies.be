@@ -13,7 +13,7 @@ let private isValidLongitude propertyName (v: float) =
                  property = propertyName } ])
 
 let private isValidLatitude propertyName (v: float) =
-    if (v >= -85.0) && (v <= 85.0) then
+    if (v >= -90.0) && (v <= 90.0) then
         Ok
     else
         Errors
@@ -51,8 +51,8 @@ let private validateLocation =
         validate (fun l -> l.Name)
             [ isNotEmpty
               hasMinLengthOf 3 ]
-        validate (fun l -> fst l.Location) [ isValidLongitude ]
-        validate (fun l -> snd l.Location) [ isValidLatitude ]
+        validate (fun l -> fst l.Location) [ isValidLatitude ]
+        validate (fun l -> snd l.Location) [ isValidLongitude ]
         validate (fun l -> l.Price) [ isGreaterThan 0. ]
         validate (fun l -> l.Date) [ isNotMinDate ]
         validate (fun l -> l.Creator) [ isNotEmpty ]
