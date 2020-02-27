@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from 'prop-types'
 import { redirectUri, useAuth0 } from "../Auth";
+import { currentDomain} from "../Auth/config";
 import { A, usePath } from "hookrouter";
 import {
   Navbar,
@@ -24,7 +25,9 @@ const Navigation = ({ role }) => {
   };
   const logoutHandler = ev => {
     ev.preventDefault();
-    logout();
+    logout({
+      returnTo: currentDomain
+    });
   };
   let loginButton = isAuthenticated ? (
     <NavItem onClick={logoutHandler}>
