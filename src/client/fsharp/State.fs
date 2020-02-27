@@ -11,7 +11,7 @@ let initialState: Model =
 
 let init _ = initialState, Cmd.none
 
-let private getPermissions (token: string): string array = import "getPermissions" "./js/jwt"
+let private getPermissions (_token: string): string array = import "getPermissions" "./js/jwt"
 
 let private getRole token =
     let permissions = getPermissions token
