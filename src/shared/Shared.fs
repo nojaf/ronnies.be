@@ -34,3 +34,26 @@ type Event =
     | NewLeaderInHighScores of user: EventSource * score: int
     | LocationAddedNotificationSent of LocationAddedNotification
     | LocationMarkedAsDuplicate of id: Identifier
+
+let newId(): Identifier = System.Guid.NewGuid()
+
+[<RequireQualifiedAccess>]
+module Projections =
+    let getTotal events =
+        events
+        |> List.filter (function
+            | LocationAdded _ -> true
+            | _ -> false)
+        |> List.length
+
+    let getRonniesWithLocation events =
+        events
+        |> List.choose (function
+            | LocationAdded({ Location = location; Name = name }) -> Some(name, location)
+            | _ -> None)
+
+    let getRonnies projection events =
+        events
+        |> List.choose (function
+            | LocationAdded la -> Some(projection la)
+            | _ -> None)

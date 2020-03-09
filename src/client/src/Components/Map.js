@@ -23,8 +23,7 @@ const Map = ({ ronnies }) => {
     latitude: bounds.latitude,
     longitude: bounds.longitude,
     zoom: bounds.zoom,
-    mapboxApiAccessToken:
-      "pk.eyJ1Ijoibm9qYWYiLCJhIjoiY2p6eHV4ODkwMWNoaTNidXRqeGlrb2JpMSJ9.x6fTQsfCfGMKwxpdKxjhMQ"
+    mapboxApiAccessToken: process.env.REACT_APP_MAPBOX
   });
   const path = usePath();
   const containerClassName = `mapContainer ${path === "/" ? "home" : ""}`;

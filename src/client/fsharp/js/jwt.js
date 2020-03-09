@@ -12,3 +12,8 @@ export function getPermissions(jwtToken){
     const token = parseJwt(jwtToken) || {permissions:[]};
     return token.permissions;
 }
+
+export function getUserId(jwtToken){
+    const token = parseJwt(jwtToken) || {sub:null};
+    return token.sub;
+}

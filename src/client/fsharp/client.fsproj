@@ -6,6 +6,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="paket.references" />
+    <Compile Include="../../shared/Shared.fs" />
+    <Compile Include="Decoders.fs" />
     <Compile Include="Model.fs" />
     <Compile Include="State.fs" />
     <Compile Include="View.fs" />

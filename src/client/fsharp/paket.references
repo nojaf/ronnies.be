@@ -4,3 +4,4 @@ Fable.Elmish
 Fable.Promise
 Fable.Fetch
 Thoth.Json
+Fable.Browser.Geolocation

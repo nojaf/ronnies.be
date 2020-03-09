@@ -57,26 +57,6 @@ const Navigation = ({ role }) => {
     );
   };
 
-  // const extraMenuItems = (() => {
-  //   if (!isAuthenticated) {
-  //     return [navLink("/", "Koarte")];
-  //   } else {
-  //     switch (role) {
-  //       case "Admin":
-  //       case "Editor":
-  //         return [
-  //           navLink("/", "Koarte"),
-  //           navLink("/add-location", "E nieuwen toevoegen"),
-  //           navLink("/user-scores", "Klassement"),
-  //           navLink("/rules", "Reglement"),
-  //           navLink("/settings", "Instellingen")
-  //         ];
-  //       default:
-  //         return [navLink("/", "Koarte"), navLink("/settings", "Instellingen")];
-  //     }
-  //   }
-  // })();
-
   return (
     <Navbar color="primary" dark expand={"md"}>
       <NavbarBrand href={"/"}>
@@ -87,10 +67,10 @@ const Navigation = ({ role }) => {
         <Nav navbar className="mr-auto">
           <MenuLink name={'Koarte'} link={'/'} />
           <WhenEditor>
-            {/*<MenuLink name={'E nieuwen toevoegen'} link={'/add-location'} />*/}
+            <MenuLink name={'E nieuwen toevoegen'} link={'/add-location'} />
             {/*<MenuLink name={'Klassement'} link={'/user-scores'} />*/}
             {/*<MenuLink name={'Reglement'} link={'/rules'} />*/}
-            <MenuLink name={'Instellingen'} link={'/settings'} />
+            {/*<MenuLink name={'Instellingen'} link={'/settings'} />*/}
           </WhenEditor>
           {loginButton}
         </Nav>
