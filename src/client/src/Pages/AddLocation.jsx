@@ -21,7 +21,7 @@ const defaultValues = {
   name: "",
   location: [0, 0],
   price: null,
-  isDraft: true,
+  isDraft: false,
   remark: ""
 };
 
@@ -185,7 +185,6 @@ const AddLocation = () => {
               Save!
             </Button>
           </div>
-          {JSON.stringify(errors)}
         </Form>
       </div>
     </div>
