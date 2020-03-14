@@ -7,6 +7,7 @@ import { useAuth0 } from "../Auth";
 import Loading from "./Loading";
 import {useSetToken, useAppLoading, useAppException} from "../bin/Hooks";
 import AppError from "./AppError";
+import {Container} from "reactstrap";
 
 const Layout = () => {
   const routeResult = useRoutes(routes);
@@ -31,7 +32,9 @@ const Layout = () => {
   ) : (
     <main>
       <Navigation role={"Admin"} />
+      <Container className={"py-2"}>
       {(appException && <AppError error={appException}/>) || routeResult || <NotFound />}
+      </Container>
     </main>
   );
 };

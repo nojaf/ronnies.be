@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import ReactMapGL, { Marker } from "react-map-gl";
 import { useRonniesNearUserLocation } from "../bin/Hooks";
+import { useGeolocation } from "react-use";
+import { Loading } from "./index";
 
 const UserIcon = () => {
   return (
@@ -39,41 +41,52 @@ const UserIcon = () => {
   );
 };
 
-const AddLocationPicker = ({ onChange, userLocation }) => {
+const AddLocationPicker = ({ onChange, invalid }) => {
+  const { latitude, longitude, loading } = useGeolocation();
+  const [userLatitude, setUserLatitude] = useState(50.946139);
+  const [userLongitude, setUserLongitude] = useState(3.138671);
   const [viewport, setViewport] = useState({
     width: "100%",
     height: "100%",
-    latitude: userLocation[0],
-    longitude: userLocation[1],
+    latitude: userLatitude,
+    longitude: userLongitude,
     zoom: 16,
     mapboxApiAccessToken: process.env.REACT_APP_MAPBOX
   });
+  const [nearbyRonnies, updateNearbyRonnies] = useRonniesNearUserLocation();
+  const [ronnyLocation, setRonnyLocation] = useState([
+    userLatitude,
+    userLongitude
+  ]);
 
-  useEffect(() => {
-    if (viewport.latitude === 0.0 || viewport.longitude === 0.0) {
-      const nextViewport = Object.assign({}, viewport, {
-        latitude: userLocation[0],
-        longitude: userLocation[1]
-      });
-      setViewport(nextViewport);
-    }
-  }, [userLocation, viewport]);
-
-  const nearbyRonniesHelper = useRonniesNearUserLocation();
-  const nearbyRonnies = nearbyRonniesHelper(userLocation);
-  const [ronnyLocation, setRonnyLocation] = useState(userLocation);
-  // Set the ronny location equal to the users start location
-  useEffect(() => {
-    if (userLocation && ronnyLocation[0] === 0.0 && ronnyLocation[1] === 0.0) {
-      setRonnyLocation(userLocation);
-      onChange({ ronny: userLocation, user: userLocation });
-    }
-  }, [userLocation, ronnyLocation, onChange]);
+  useEffect(
+    () => {
+      if (!loading) {
+        setUserLatitude(latitude);
+        setUserLongitude(longitude);
+        const userLocation = [latitude, longitude];
+        setViewport({
+          width: "100%",
+          height: "100%",
+          latitude: latitude,
+          longitude: longitude,
+          zoom: 16,
+          mapboxApiAccessToken: process.env.REACT_APP_MAPBOX
+        });
+        setRonnyLocation(userLocation);
+        updateNearbyRonnies(userLocation);
+        onChange({ ronny: userLocation, user: userLocation });
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [loading]
+  );
 
   const onMapClick = ev => {
     const coords = ev.lngLat.reverse();
     setRonnyLocation(coords);
-    onChange({ ronny: coords, user: userLocation });
+    updateNearbyRonnies(coords);
+    onChange({ ronny: coords, user: [userLatitude, userLongitude] });
   };
 
   const existingRonny = ({ lat, lng }, i) => {
@@ -85,8 +98,10 @@ const AddLocationPicker = ({ onChange, userLocation }) => {
     );
   };
 
-  return (
-    <div className={"add-location-picker border p-1"}>
+  return loading ? (
+    <Loading />
+  ) : (
+    <div className={`add-location-picker border p-1 ${invalid ? "border-danger" : ""}`}>
       <div className={"row"}>
         <div className={"col-lg-6 map-wrapper"}>
           <ReactMapGL
@@ -108,8 +123,8 @@ const AddLocationPicker = ({ onChange, userLocation }) => {
             </Marker>
             <Marker
               key={"user"}
-              latitude={userLocation[0]}
-              longitude={userLocation[1]}
+              latitude={userLatitude}
+              longitude={userLongitude}
               offsetLeft={0}
               offsetTop={0}
             >
@@ -133,7 +148,8 @@ const AddLocationPicker = ({ onChange, userLocation }) => {
 };
 
 AddLocationPicker.propTypes = {
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
+  invalid: PropTypes.bool.isRequired
 };
 
 export default AddLocationPicker;

@@ -1,60 +1,118 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import { useForm, Controller } from "react-hook-form";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { Button, ButtonGroup, Form, FormGroup, Input, Label } from "reactstrap";
 import { AddLocationPicker } from "../Components";
 import * as yup from "yup";
 import { useAddLocationEvent, isFurtherAwayThen } from "../bin/Hooks";
 import { navigate } from "hookrouter";
 
-const AddLocation = ({ userLocation }) => {
-  const schema = yup.object().shape({
-    name: yup.string().required(),
-    location: yup
-      .array()
-      .required()
-      .of(yup.number())
-      .min(2)
-      .max(2)
-      .test(
-        "distance",
-        "De geselecteerde locaties is verder dan een honderd meter van woa daj nu zit, das de bedoeling niet.",
-        value => {
-          const tooFar = isFurtherAwayThen(0.1, userLocation, value);
-          return !tooFar;
+const schema = yup.object().shape({
+  name: yup.string().required(),
+  price: yup
+    .number()
+    .transform(value => (isNaN(value) ? undefined : value))
+    .required("De prijs is verplicht!")
+    .positive(),
+  isDraft: yup.bool().required(),
+  remark: yup.string()
+});
+
+const defaultValues = {
+  name: "",
+  location: [0, 0],
+  price: null,
+  isDraft: true,
+  remark: ""
+};
+
+const validateLocationDistance = (ronny, user) => {
+  return isFurtherAwayThen(0.1, ronny, user)
+    ? {
+        values: {},
+        errors: {
+          location:
+            "De geselecteerde locaties is verder dan een honderd meter van woa daj nu zit, das de bedoeling niet."
         }
-      ),
-    price: yup
-      .number()
-      .required()
-      .positive(),
-    isDraft: yup.bool().required(),
-    remark: yup.string()
+      }
+    : {
+        values: {
+          location: ronny
+        },
+        errors: {}
+      };
+};
+
+const AddLocation = () => {
+  const [userLocation, setUserLocation] = useState([0, 0]);
+  const [errors, setErrors] = useState({});
+  const validationResolver = data => {
+    const yupValidation = schema
+      .validate(data, { abortEarly: false })
+      .then(values => {
+        return { values, errors: {} };
+      })
+      .catch(yupError => {
+        const errors = yupError.inner
+          ? yupError.inner.reduce((acc, next) => {
+              return Object.assign(acc, { [next.path]: next.errors[0] });
+            }, {})
+          : {};
+
+        return {
+          values: {},
+          errors
+        };
+      });
+
+    const locationValidation = Promise.resolve(
+      validateLocationDistance(data.location, userLocation)
+    );
+
+    return Promise.all([yupValidation, locationValidation]).then(
+      ([yupResult, locationResult]) => {
+        return {
+          values: Object.assign({}, yupResult.values, locationResult.values),
+          errors: Object.assign({}, yupResult.errors, locationResult.errors)
+        };
+      }
+    );
+  };
+
+  const { register, handleSubmit, setValue } = useForm({
+    defaultValues
   });
-  const { register, handleSubmit, errors, setValue, control } = useForm({
-    defaultValues: {
-      name: "Van Eyck Zwembad",
-      location: userLocation,
-      price: 2.5,
-      isDraft: false,
-      remark: ""
-    },
-    validationSchema: schema,
-    reValidateMode: "onChange"
-  });
+
+  const hasError = name => Object.keys(errors).includes(name);
 
   const saveLocation = useAddLocationEvent();
 
   const onSubmit = values => {
-    saveLocation(values);
-    navigate(`/`);
+    validationResolver(values).then(result => {
+      if (Object.keys(result.errors).length) {
+        setErrors(result.errors);
+      } else {
+        setErrors({});
+        saveLocation(values);
+        navigate(`/`);
+      }
+    });
   };
 
-  const [isDraft, setIsDraft] = useState(false);
+  const [isDraft, setIsDraft] = useState(defaultValues.isDraft);
   const toggleIsDraft = () => {
     setIsDraft(!isDraft);
     setValue("isDraft", !isDraft);
   };
+
+  const handleLocationChange = ({ ronny, user }) => {
+    setValue("location", ronny);
+    setUserLocation(user);
+  };
+
+  useEffect(() => {
+    register({ name: "location" });
+    register({ name: "isDraft" });
+  }, [register]);
 
   return (
     <div className={"h-100 bg-white pt-2"}>
@@ -68,7 +126,7 @@ const AddLocation = ({ userLocation }) => {
               name="name"
               autoComplete="off"
               innerRef={register}
-              invalid={errors.name}
+              invalid={hasError("name")}
               placeholder="Officiele name van de plekke woa daj zit"
             />
           </FormGroup>
@@ -78,17 +136,12 @@ const AddLocation = ({ userLocation }) => {
             <p className="text-muted">
               Mikt zo goed meugelijk, tis de R die telt
             </p>
-            <Controller
-              name={"location"}
-              as={AddLocationPicker}
-              control={control}
-              userLocation={userLocation}
-              onChange={([{ ronny, user }]) => {
-                return ronny;
-              }}
+            <AddLocationPicker
+              onChange={handleLocationChange}
+              invalid={hasError("location")}
             />
-            {errors.location && (
-              <p className={"text-danger"}>{errors.location.message}</p>
+            {hasError("location") && (
+              <p className={"text-danger"}>{errors.location}</p>
             )}
           </FormGroup>
           <FormGroup className={"col-lg-6 px-0"}>
@@ -99,13 +152,12 @@ const AddLocation = ({ userLocation }) => {
               autoComplete={"off"}
               step="0.01"
               innerRef={register}
-              invalid={errors.price}
+              invalid={hasError("price")}
               placeholder={"Oevele de beeste?"}
             />
           </FormGroup>
           <FormGroup className={"col-lg-6 px-0"}>
             <Label for={"isDraft"}>Ist vant vat?</Label>
-            <input type={"hidden"} name={"isDraft"} ref={register} />
             <br />
             <ButtonGroup>
               <Button
@@ -133,14 +185,13 @@ const AddLocation = ({ userLocation }) => {
               Save!
             </Button>
           </div>
+          {JSON.stringify(errors)}
         </Form>
       </div>
     </div>
   );
 };
 
-AddLocation.propTypes = {
-  userLocation: PropTypes.arrayOf(PropTypes.number)
-};
+AddLocation.propTypes = {};
 
 export default AddLocation;

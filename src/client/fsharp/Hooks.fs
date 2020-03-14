@@ -56,57 +56,34 @@ let private distanceBetweenTwoPoints (latA, lngA) (latB, lngB) =
         dist
 
 [<Global("navigator.geolocation")>]
-let private geolocation: Browser.Types.Geolocation option = jsNative
+let private geolocation: Browser.Types.Geolocation = jsNative
 
-let useUserLocation() =
-    let error = Hooks.useState<string option> (None)
-    let location = Hooks.useState<Ronnies.Shared.Location> ((0., 0.))
+open Fable.Core.JsInterop
 
-    let onLocationChange (event: Position) =
-        let roundedLocation = Math.Round(event.coords.latitude, 5), Math.Round(event.coords.longitude, 5)
-        if roundedLocation <> location.current then
-            location.update roundedLocation
+let useGeolocation () : {| loading:bool
+                           latitude: float
+                           longitude: float
+                           error: obj |} = import "useGeolocation" "react-use"
 
-    let onError (event: PositionError) = error.update (Some event.message)
-
-    Hooks.useEffectDisposable
-        ((fun () ->
-            let mutable watchId: float = 0.
-            match geolocation with
-            | Some geo ->
-                watchId <- geo.watchPosition (onLocationChange, onError)
-                { new System.IDisposable with
-                    member this.Dispose() =
-                        if watchId <> 0. then geo.clearWatch (watchId) }
-            | None ->
-                error.update (Some "Geolocation is not supported")
-                { new System.IDisposable with
-                    member this.Dispose() = () }), Array.empty)
-
-    {| errors = error.current
-       location = location.current |}
-
+let isDefaultLocation (a:Ronnies.Shared.Location) = a = (0.,0.)
 
 let useRonniesNearUserLocation() =
     let events = useEvents()
     let radius = 0.5 //0.250
-    f (fun userLocation ->
-        let nearbyRonnies = Hooks.useState ([||])
+    let nearbyRonnies = Hooks.useState ([||])
+    let update userLocation =
         let ronniesWithLocation = Projections.getRonniesWithLocation events
+        ronniesWithLocation
+        |> List.filter
+            (snd >> (fun ronnyLocation -> distanceBetweenTwoPoints userLocation ronnyLocation <= radius))
+        |> List.toArray
+        |> Array.map (fun (name, location) ->
+            {| name = name
+               lat = fst location
+               lng = snd location |})
+        |> nearbyRonnies.update
 
-        Hooks.useEffect
-            ((fun () ->
-                    ronniesWithLocation
-                    |> List.filter
-                        (snd >> (fun ronnyLocation -> distanceBetweenTwoPoints userLocation ronnyLocation <= radius))
-                    |> List.toArray
-                    |> Array.map (fun (name, location) ->
-                        {| name = name
-                           lat = fst location
-                           lng = snd location |})
-                    |> nearbyRonnies.update), [| userLocation |])
-
-        nearbyRonnies.current)
+    (nearbyRonnies.current, update)
 
 let useRonniesList() =
     let events = useEvents()
@@ -117,19 +94,24 @@ let useRonniesList() =
     |> List.toArray
     |> Array.sortBy (fun p -> p.name.ToLower())
 
+[<Emit("parseFloat(parseFloat($0).toFixed(2))")>]
+let parseAndTrim (_:string) : float = jsNative
+
 let useAddLocationEvent() =
     let dispatch = useDispatch()
     let { UserId = userId } = useModel()
-    f (fun (addLocation: {| name: string; location: Ronnies.Shared.Location; price: float; isDraft: bool; remark: string option |}) ->
-            Event.LocationAdded
-                ({ Id = Ronnies.Shared.newId()
-                   Name = addLocation.name
-                   Location = addLocation.location
-                   Price = addLocation.price
-                   IsDraft = addLocation.isDraft
-                   Remark = addLocation.remark
-                   Creator = Option.defaultValue "" userId
-                   Date = System.DateTime.Now })
+    f (fun (addLocation: {| name: string; location: Ronnies.Shared.Location; price: string; isDraft: bool; remark: string option |}) ->
+            let addLocation =
+                { Id = Ronnies.Shared.newId()
+                  Name = addLocation.name
+                  Location = addLocation.location
+                  Price = parseAndTrim addLocation.price
+                  IsDraft = addLocation.isDraft
+                  Remark = addLocation.remark
+                  Creator = Option.defaultValue "" userId
+                  Date = System.DateTime.Now }
+
+            Event.LocationAdded addLocation
             |> AddLocation
             |> dispatch)
 

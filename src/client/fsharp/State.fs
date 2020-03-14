@@ -49,14 +49,12 @@ let private authorizationHeader token =
 let private addLocationEvents (token, event) =
     let url = sprintf "%s/api/AddEvents" baseUrl
     let json = encodeEvents (List.singleton event)
+    JS.console.log json
     fetch url
         [ RequestProperties.Body(!^json)
           RequestProperties.Method HttpMethod.POST
           authorizationHeader token ]
-    |> Promise.map (fun _ ->
-        { Icon = "success"
-          Title = "Saved"
-          Body = "Jupse, alle data in the cloud enzo" })
+    |> Promise.map (ignore)
 
 let private nextKey map =
     if Map.isEmpty map then
@@ -88,12 +86,21 @@ let update msg model =
         let cmd =
             match model.AuthorizationToken with
             | Some authToken ->
-                Cmd.OfPromise.either addLocationEvents (authToken, event) ShowToast AppException
+                Cmd.OfPromise.either addLocationEvents (authToken, event) LocationAdded AppException
             | None -> Cmd.none
 
         let events = event::model.Events
 
         { model with IsLoading = true; Events = events }, cmd
+    | LocationAdded _ ->
+        let cmd =
+            { Icon = "success"
+              Title = "Saved"
+              Body = "Jupse, alle data in the cloud enzo" }
+            |> Msg.ShowToast
+            |> Cmd.ofMsg
+        { model with IsLoading = false }, cmd
+
     | ShowToast(toast) ->
         let toastId = nextKey model.Toasts
         let toasts = Map.add toastId toast model.Toasts

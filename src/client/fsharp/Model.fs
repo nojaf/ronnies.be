@@ -26,6 +26,7 @@ type Msg =
     | EventsReceived of Event list
     | AppException of exn
     | AddLocation of Event
+    | LocationAdded of unit
     //| PersistEvents of Event list
     | ShowToast of Toast
     | ClearToast of int

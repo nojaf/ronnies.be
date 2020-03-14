@@ -17,7 +17,7 @@ open Fantomas.FormatConfig
 let root = __SOURCE_DIRECTORY__
 let clientPath = Path.Combine(root,"src","client")
 let serverPath = Path.Combine(root, "src", "server")
-let serverProject = "Ronnies.Server.fsproj"
+let serverProject = "server.fsproj"
 let serverProjectPath = Path.Combine(serverPath, serverProject)
 let artifactPath = Path.Combine(__SOURCE_DIRECTORY__, "artifacts")
 let wwwroot = Path.Combine(artifactPath,  "wwwroot")
@@ -90,13 +90,10 @@ Target.create "BuildClient" (fun _ ->
     Yarn.exec "build" (fun opt -> { opt with WorkingDirectory = clientPath })
 )
 
-Target.create "Build"
+Target.create "DeployClient" (fun _ -> Yarn.exec "deploy" yarnSetParams)
+
+Target.create "BuildServer"
     (fun _ ->
-
-    if not (File.exists wwwroot) then
-        Shell.mkdir wwwroot
-
-    Shell.copyRecursive "src/RonniesClient/output/" wwwroot false |> ignore
 
     DotNet.publish (fun p ->
         { p with
@@ -104,6 +101,9 @@ Target.create "Build"
             OutputPath = Some artifactPath
         })
         serverProjectPath
+
+    Zip.createZip artifactPath "func.zip" "" Zip.DefaultZipLevel false (!! "./artifacts/*.*" ++ "./artifacts/**/*.*")
+    Shell.mv "func.zip" artifactPath
 )
 
 
@@ -151,7 +151,11 @@ Target.create "Watch" (fun _ ->
 // Build order
 "InstallClient" ==> "Format"
 
-"Clean" ==> "Install" ==> "InstallClient" ==> "BuildClient" ==> "Build"
+"Clean" ==> "Install" ==> "InstallClient" ==> "BuildClient"
+
+"Clean" ==> "BuildServer"
+
+"Clean" ==> "BuildClient" ==> "DeployClient"
 
 "Watch"
     <== [ "InstallClient" ]

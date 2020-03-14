@@ -354,3 +354,4 @@ infrastructure/scratch.ps1
 .paket/load
 migration/
 watch.ps1
+production.ps1

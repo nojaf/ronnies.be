@@ -11,7 +11,7 @@ const AppError = ({ error }) => {
         <p className={"text-danger"}>En de keuning is e blootn</p>
         <hr className={"my-2"} />
         <p>
-          Euhm, jah, oe goat dat oal 😅 ,<br />
+          Euhm, jah, oe goat dat oal <span role={"img"} aria-label={""}>😅</span> ,<br />
           bugje in de software. Kan gebeuren zekers
         </p>
         <p className="lead">
