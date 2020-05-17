@@ -54,7 +54,7 @@ group build
     nuget Fake.Tools.Git
     nuget Fake.JavaScript.Yarn
     nuget FSharp.Compiler.Service
-    nuget Fantomas 3.3.0
+    nuget Fantomas 4.0.0-alpha-005
 
 group infrastructure
     source https://api.nuget.org/v3/index.json
