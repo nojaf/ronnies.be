@@ -7,16 +7,23 @@ open Ronnies.Shared
 open System
 open Thoth.Json.Net
 
-let private storageAccountName = Environment.GetEnvironmentVariable("StorageAccountName")
-let private storageAuthKey = Environment.GetEnvironmentVariable("StorageAccountKey")
-let private config = TableStorage.Configuration.CreateDefault storageAccountName storageAuthKey
-let private eventStore = TableStorage.EventStore.getEventStore config
+let private storageAccountName =
+    Environment.GetEnvironmentVariable("StorageAccountName")
+
+let private storageAuthKey =
+    Environment.GetEnvironmentVariable("StorageAccountKey")
+
+let private config =
+    TableStorage.Configuration.CreateDefault storageAccountName storageAuthKey
+
+let private eventStore =
+    TableStorage.EventStore.getEventStore config
 
 [<Literal>]
 let private EventStream = "ronnies.be"
 
-let encodeEvent = Encode.Auto.generateEncoder<Event>()
-let decodeEvent = Decode.Auto.generateDecoder<Event>()
+let encodeEvent = Encode.Auto.generateEncoder<Event> ()
+let decodeEvent = Decode.Auto.generateDecoder<Event> ()
 
 let getUnionCaseName (x: 'a) =
     match FSharpValue.GetUnionFields(x, typeof<'a>) with
@@ -58,9 +65,12 @@ let appendEvents userId (events: Event list) =
     let cosmoEvents = List.map (createEvent userId) events
     task { do! appendToAzureTableStorage cosmoEvents }
 
-let getEvents() =
+let getEvents () =
     task {
         let! cosmoEvents = eventStore.GetEvents EventStream AllEvents
-        let events = List.map (fun (ce: EventRead<JsonValue, _>) -> ce.Data) cosmoEvents
+
+        let events =
+            List.map (fun (ce: EventRead<JsonValue, _>) -> ce.Data) cosmoEvents
+
         return events
     }

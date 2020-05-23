@@ -11,7 +11,9 @@ type AppContext =
       Dispatch: Dispatch<Msg> }
 
 let private defaultContextValue: AppContext = Fable.Core.JS.undefined
-let appContext = ReactBindings.React.createContext (defaultContextValue)
+
+let appContext =
+    ReactBindings.React.createContext (defaultContextValue)
 
 let ElmishCapture =
     FunctionComponent.Of
@@ -23,10 +25,14 @@ let ElmishCapture =
                        Dispatch = ignore })
 
             let view model dispatch =
-                state.update
-                    ({ Model = model
-                       Dispatch = dispatch })
+                state.update ({ Model = model; Dispatch = dispatch })
 
-            Hooks.useEffect ((fun () -> Program.mkProgram State.init State.update view |> Program.run), Array.empty)
+            Hooks.useEffect
+                ((fun () ->
+                    Program.mkProgram State.init State.update view
+                    |> Program.run),
+                 Array.empty)
 
-            contextProvider appContext state.current [ props.children ]), "ElmishCapture", memoEqualsButFunctions)
+            contextProvider appContext state.current [ props.children ]),
+         "ElmishCapture",
+         memoEqualsButFunctions)

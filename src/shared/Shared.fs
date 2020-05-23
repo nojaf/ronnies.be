@@ -35,7 +35,7 @@ type Event =
     | LocationAddedNotificationSent of LocationAddedNotification
     | LocationMarkedAsDuplicate of id: Identifier
 
-let newId(): Identifier = System.Guid.NewGuid()
+let newId (): Identifier = System.Guid.NewGuid()
 
 [<RequireQualifiedAccess>]
 module Projections =
@@ -49,7 +49,7 @@ module Projections =
     let getRonniesWithLocation events =
         events
         |> List.choose (function
-            | LocationAdded({ Location = location; Name = name }) -> Some(name, location)
+            | LocationAdded ({ Location = location; Name = name }) -> Some(name, location)
             | _ -> None)
 
     let getRonnies projection events =

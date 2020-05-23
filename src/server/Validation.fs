@@ -48,9 +48,7 @@ let private isNotMinDate propertyName value =
 let private validateLocation =
     createValidatorFor<LocationAdded> () {
         validate (fun l -> l.Id) [ isNotEmptyGuid ]
-        validate (fun l -> l.Name)
-            [ isNotEmpty
-              hasMinLengthOf 3 ]
+        validate (fun l -> l.Name) [ isNotEmpty; hasMinLengthOf 3 ]
         validate (fun l -> fst l.Location) [ isValidLatitude ]
         validate (fun l -> snd l.Location) [ isValidLongitude ]
         validate (fun l -> l.Price) [ isGreaterThan 0. ]
@@ -64,7 +62,8 @@ let private validateEvent event =
     | _ -> ValidationState.Errors []
 
 let private collectErrors errors =
-    errors |> List.map (fun { message = message; property = property } -> sprintf "%s: %s" property message)
+    errors
+    |> List.map (fun { message = message; property = property } -> sprintf "%s: %s" property message)
 
 let getValidationErrors event =
     match validateEvent event with

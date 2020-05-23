@@ -17,7 +17,8 @@ module Task =
     let lift = System.Threading.Tasks.Task.FromResult
 
 module Result =
-    let either = function
+    let either =
+        function
         | Ok t
         | Error t -> t
 
@@ -48,7 +49,9 @@ let private sendUnAuthorizedRequest err =
     |> Task.lift
 
 let private decodeEvents (body: Stream) user =
-    let json = using (new StreamReader(body)) (fun stream -> stream.ReadToEnd())
+    let json =
+        using (new StreamReader(body)) (fun stream -> stream.ReadToEnd())
+
     Decode.fromString (Decode.list EventStore.decodeEvent) json
     |> Result.map (fun events -> user, events)
     |> Result.mapError (sendInternalError >> Task.lift)
@@ -66,16 +69,18 @@ let private validateEvents request =
                       "errors", ((List.map Encode.string errs) |> Encode.list) ]))
 
     match errors with
-    | [] ->
-        Ok request
+    | [] -> Ok request
     | _ ->
         let responseBody = Encode.list errors |> Encode.toString 4
         Error(sendBadRequest responseBody |> Task.lift)
 
 let private authenticateEvents request =
     let ((_, permissions), events) = request
+
     let unauthorizedEvents =
-        events |> List.filter (Authentication.mayWriteEvent permissions >> not)
+        events
+        |> List.filter (Authentication.mayWriteEvent permissions >> not)
+
     if List.isEmpty unauthorizedEvents then
         Ok request
     else
@@ -92,28 +97,30 @@ let persistEvents request =
     }
 
 [<FunctionName("AddEvents")>]
-let AddEvents([<HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)>] req: HttpRequest, log: ILogger) =
+let AddEvents ([<HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)>] req: HttpRequest, log: ILogger) =
     log.LogInformation("F# HTTP trigger function processed a request...")
     task {
         let! user = req.Authenticate(log)
-        let! response = user
-                        |> Result.mapError sendUnAuthorizedRequest
-                        |> Result.bind (decodeEvents req.Body)
-                        |> Result.bind (validateEvents)
-                        |> Result.bind (authenticateEvents)
-                        |> Result.map (persistEvents)
-                        |> Result.either
+
+        let! response =
+            user
+            |> Result.mapError sendUnAuthorizedRequest
+            |> Result.bind (decodeEvents req.Body)
+            |> Result.bind (validateEvents)
+            |> Result.bind (authenticateEvents)
+            |> Result.map (persistEvents)
+            |> Result.either
+
         return response
     }
 
 
 [<FunctionName("GetEvents")>]
-let GetEvents([<HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)>] req: HttpRequest, log: ILogger) =
+let GetEvents ([<HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)>] req: HttpRequest, log: ILogger) =
     log.LogInformation("F# HTTP trigger function processed a request.........")
 
     task {
-        let! events = EventStore.getEvents()
-        let json =
-            Encode.list events |> Encode.toString 4
+        let! events = EventStore.getEvents ()
+        let json = Encode.list events |> Encode.toString 4
         return sendJson json
     }

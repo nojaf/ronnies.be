@@ -20,22 +20,25 @@ let initialState: Model =
 [<Emit("process.env.REACT_APP_BACKEND")>]
 let private baseUrl: string = jsNative
 
-let private getEvents() =
+let private getEvents () =
     let url = sprintf "%s/api/GetEvents" baseUrl
     fetch url []
-    |> Promise.bind (fun res -> res.text())
+    |> Promise.bind (fun res -> res.text ())
     |> Promise.map (fun json ->
         match decodeEvents json with
         | Ok events -> events
         | Error e -> failwithf "%s" e)
 
-let init _ = initialState, Cmd.OfPromise.either getEvents () Msg.EventsReceived Msg.AppException
+let init _ =
+    initialState, Cmd.OfPromise.either getEvents () Msg.EventsReceived Msg.AppException
 
 let private getPermissions (_token: string): string array = import "getPermissions" "./js/jwt"
 
 let private getRole token =
     let permissions = getPermissions token
-    let hasPermission name = Array.exists (fun p -> p = name) permissions
+
+    let hasPermission name =
+        Array.exists (fun p -> p = name) permissions
 
     if hasPermission "delete:location" then Role.Admin
     elif hasPermission "write:location" then Role.Editor
@@ -66,32 +69,42 @@ let private nextKey map =
         |> (+) 1
 
 let private hideToastIn toastId miliSecondes dispatch =
-    JS.setTimeout (fun () -> dispatch (Msg.ClearToast toastId)) miliSecondes |> ignore
+    JS.setTimeout (fun () -> dispatch (Msg.ClearToast toastId)) miliSecondes
+    |> ignore
 
 let update msg model =
-    #if DEBUG
+#if DEBUG
     printfn "update, %A" msg
-    #endif
+#endif
     match msg with
     | SetToken token ->
         { model with
               AuthorizationToken = Some token
               Role = getRole token
-              UserId = getUserId token }, Cmd.none
+              UserId = getUserId token },
+        Cmd.none
     | EventsReceived events ->
-        { model with Events = events; IsLoading = false }, Cmd.none
+        { model with
+              Events = events
+              IsLoading = false },
+        Cmd.none
     | AppException exn ->
-        { model with AppException = Some exn; IsLoading = false }, Cmd.none
+        { model with
+              AppException = Some exn
+              IsLoading = false },
+        Cmd.none
     | AddLocation event ->
         let cmd =
             match model.AuthorizationToken with
-            | Some authToken ->
-                Cmd.OfPromise.either addLocationEvents (authToken, event) LocationAdded AppException
+            | Some authToken -> Cmd.OfPromise.either addLocationEvents (authToken, event) LocationAdded AppException
             | None -> Cmd.none
 
-        let events = event::model.Events
+        let events = event :: model.Events
 
-        { model with IsLoading = true; Events = events }, cmd
+        { model with
+              IsLoading = true
+              Events = events },
+        cmd
     | LocationAdded _ ->
         let cmd =
             { Icon = "success"
@@ -99,9 +112,10 @@ let update msg model =
               Body = "Jupse, alle data in the cloud enzo" }
             |> Msg.ShowToast
             |> Cmd.ofMsg
+
         { model with IsLoading = false }, cmd
 
-    | ShowToast(toast) ->
+    | ShowToast (toast) ->
         let toastId = nextKey model.Toasts
         let toasts = Map.add toastId toast model.Toasts
         { model with Toasts = toasts }, Cmd.ofSub (hideToastIn toastId 2500)

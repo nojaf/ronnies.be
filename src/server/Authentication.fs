@@ -11,17 +11,21 @@ open System
 open System.IdentityModel.Tokens.Jwt
 open System.Security.Claims
 
-let private Auth0Domain = Environment.GetEnvironmentVariable("Auth0Domain")
-let private Auth0Audiences = Environment.GetEnvironmentVariable("Auth0Audience") |> Array.singleton
+let private Auth0Domain =
+    Environment.GetEnvironmentVariable("Auth0Domain")
+
+let private Auth0Audiences =
+    Environment.GetEnvironmentVariable("Auth0Audience")
+    |> Array.singleton
 
 let private collectClaims (user: ClaimsPrincipal) =
     user.Claims
-    |> Seq.choose (fun c ->
-        if c.Type = "permissions" then Some c.Value else None)
+    |> Seq.choose (fun c -> if c.Type = "permissions" then Some c.Value else None)
     |> Seq.toList
 
 let private authenticateRequest (logger: ILogger) header =
-    let token = System.Text.RegularExpressions.Regex.Replace(header, "(b|B)earer\s?", System.String.Empty)
+    let token =
+        System.Text.RegularExpressions.Regex.Replace(header, "(b|B)earer\s?", System.String.Empty)
 #if DEBUG
     printfn "token: %s" token
 #endif
@@ -31,16 +35,21 @@ let private authenticateRequest (logger: ILogger) header =
     parameters.ValidAudiences <- Auth0Audiences
     parameters.ValidateIssuer <- true
     parameters.NameClaimType <- ClaimTypes.NameIdentifier // Auth0 related, see https://community.auth0.com/t/access-token-doesnt-contain-a-sub-claim/17671/2
+
     let manager =
         ConfigurationManager<OpenIdConnectConfiguration>
             (sprintf "https://%s/.well-known/openid-configuration" Auth0Domain, OpenIdConnectConfigurationRetriever())
+
     let handler = JwtSecurityTokenHandler()
 
     try
         task {
             let! config = manager.GetConfigurationAsync().ConfigureAwait(false)
             parameters.IssuerSigningKeys <- config.SigningKeys
-            let user, _ = handler.ValidateToken((token: string), parameters)
+
+            let user, _ =
+                handler.ValidateToken((token: string), parameters)
+
             return Ok(user.Identity.Name, collectClaims user)
         }
     with exn ->

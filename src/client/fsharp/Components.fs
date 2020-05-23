@@ -7,8 +7,10 @@ open Ronnies.Client.Hooks
 let WhenEditor =
     FunctionComponent.Of
         ((fun (props: {| children: ReactElement |}) ->
-            let role = useRole()
+            let role = useRole ()
             match role with
             | Role.Editor
             | Role.Admin -> props.children
-            | _ -> null), "WhenEditor", equalsButFunctions)
+            | _ -> null),
+         "WhenEditor",
+         equalsButFunctions)
