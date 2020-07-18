@@ -3,17 +3,18 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>Ronnies.Client</RootNamespace>
+    <DefineConstants>FABLE_COMPILER</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="paket.references" />
-    <Compile Include="../../shared/Shared.fs" />
-    <Compile Include="Decoders.fs" />
-    <Compile Include="Model.fs" />
-    <Compile Include="State.fs" />
-    <Compile Include="View.fs" />
-    <Compile Include="Hooks.fs" />
-    <Content Include="js\jwt.js" />
-    <Compile Include="Components.fs" />
+    <Compile Include="../../shared/Domain.fs" />
+<!--    <Compile Include="Decoders.fs" />-->
+<!--    <Compile Include="Model.fs" />-->
+<!--    <Compile Include="State.fs" />-->
+<!--    <Compile Include="View.fs" />-->
+<!--    <Compile Include="Hooks.fs" />-->
+<!--    <Content Include="js\jwt.js" />-->
+<!--    <Compile Include="Components.fs" />-->
   </ItemGroup>
   <Import Project="..\..\..\.paket\Paket.Restore.targets" />
 

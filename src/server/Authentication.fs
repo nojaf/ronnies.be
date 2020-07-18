@@ -57,7 +57,8 @@ let private authenticateRequest (logger: ILogger) header =
         task { return Error "invalid or empty token" }
 
 type HttpRequest with
-    member this.Authenticate(logger: ILogger) = authenticateRequest logger (this.Headers.["Authorization"].ToString())
+    member this.Authenticate(logger: ILogger) =
+        authenticateRequest logger (this.Headers.["Authorization"].ToString())
 
 let mayWriteEvent permissions event =
     match event with

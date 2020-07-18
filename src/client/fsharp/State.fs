@@ -53,7 +53,8 @@ let private addLocationEvents (token, event) =
     let url = sprintf "%s/api/AddEvents" baseUrl
     let json = encodeEvents (List.singleton event)
     JS.console.log json
-    fetch url
+    fetch
+        url
         [ RequestProperties.Body(!^json)
           RequestProperties.Method HttpMethod.POST
           authorizationHeader token ]

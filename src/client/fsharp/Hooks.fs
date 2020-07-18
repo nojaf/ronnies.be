@@ -1,7 +1,6 @@
 module Ronnies.Client.Hooks
 
 open System
-open Browser.Types
 open Fable.Core
 open Fable.React
 open Ronnies.Client.Model
@@ -64,10 +63,12 @@ let private geolocation: Browser.Types.Geolocation = jsNative
 
 open Fable.Core.JsInterop
 
-let useGeolocation (): {| loading: bool
-                          latitude: float
-                          longitude: float
-                          error: obj |} = import "useGeolocation" "react-use"
+let useGeolocation ()
+                   : {| loading: bool
+                        latitude: float
+                        longitude: float
+                        error: obj |} =
+    import "useGeolocation" "react-use"
 
 let isDefaultLocation (a: Ronnies.Shared.Location) = a = (0., 0.)
 

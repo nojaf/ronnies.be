@@ -55,11 +55,10 @@ let infra () =
                   AppServicePlanId = io appServicePlan.Id,
                   StorageConnectionString = io storageAccount.PrimaryConnectionString,
                   AppSettings =
-                      inputMap
-                          [ "FUNCTIONS_WORKER_RUNTIME", input "DotNet"
-                            "APPINSIGHTS_INSTRUMENTATIONKEY", io applicationsInsight.InstrumentationKey
-                            "StorageAccountKey", io storageAccount.PrimaryAccessKey
-                            "StorageAccountName", io storageAccount.Name ],
+                      inputMap [ "FUNCTIONS_WORKER_RUNTIME", input "DotNet"
+                                 "APPINSIGHTS_INSTRUMENTATIONKEY", io applicationsInsight.InstrumentationKey
+                                 "StorageAccountKey", io storageAccount.PrimaryAccessKey
+                                 "StorageAccountName", io storageAccount.Name ],
                   SiteConfig =
                       input
                           (FunctionAppSiteConfigArgs
@@ -68,16 +67,14 @@ let infra () =
                                    input
                                        (FunctionAppSiteConfigCorsArgs
                                            (AllowedOrigins =
-                                               inputList
-                                                   [ input "https://ronnies.be"
-                                                     input "http://localhost:3000" ])))),
+                                               inputList [ input "https://ronnies.be"
+                                                           input "http://localhost:3000" ])))),
                   HttpsOnly = input true,
                   Version = input "~3"))
 
     // Export the connection string for the storage account
-    dict
-        [ ("connectionString", storageAccount.PrimaryConnectionString :> obj)
-          ("endpointHostName", app.DefaultHostname :> obj) ]
+    dict [ ("connectionString", storageAccount.PrimaryConnectionString :> obj)
+           ("endpointHostName", app.DefaultHostname :> obj) ]
 
 [<EntryPoint>]
 let main _ = Deployment.run infra

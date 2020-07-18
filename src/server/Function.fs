@@ -64,9 +64,8 @@ let private validateEvents request =
         |> List.choose (fun event ->
             Validation.getValidationErrors event
             |> Option.map (fun errs ->
-                Encode.object
-                    [ "event", EventStore.encodeEvent event
-                      "errors", ((List.map Encode.string errs) |> Encode.list) ]))
+                Encode.object [ "event", EventStore.encodeEvent event
+                                "errors", ((List.map Encode.string errs) |> Encode.list) ]))
 
     match errors with
     | [] -> Ok request

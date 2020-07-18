@@ -1,9 +1,11 @@
 module Ronnies.Client.View
 
 open Elmish
+open Feliz
 open Fable.React
 open Ronnies.Client.Model
 open Ronnies.Client
+open Feliz.UseElmish
 
 [<NoComparison>]
 type AppContext =
@@ -13,26 +15,13 @@ type AppContext =
 let private defaultContextValue: AppContext = Fable.Core.JS.undefined
 
 let appContext =
-    ReactBindings.React.createContext (defaultContextValue)
+    React.createContext (defaultValue = defaultContextValue)
 
 let ElmishCapture =
-    FunctionComponent.Of
-        ((fun (props: {| children: ReactElement |}) ->
+    React.functionComponent
+        ("ElmishComponent",
+         (fun (props: {| children: ReactElement |}) ->
+             let model, dispatch =
+                 React.useElmish (State.init, State.update, [||])
 
-            let state: IStateHook<AppContext> =
-                Hooks.useState
-                    ({ Model = State.initialState
-                       Dispatch = ignore })
-
-            let view model dispatch =
-                state.update ({ Model = model; Dispatch = dispatch })
-
-            Hooks.useEffect
-                ((fun () ->
-                    Program.mkProgram State.init State.update view
-                    |> Program.run),
-                 Array.empty)
-
-            contextProvider appContext state.current [ props.children ]),
-         "ElmishCapture",
-         memoEqualsButFunctions)
+             React.contextProvider (appContext, ({ Model = model; Dispatch = dispatch }), props.children)))

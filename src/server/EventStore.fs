@@ -31,7 +31,8 @@ let getUnionCaseName (x: 'a) =
 
 type EventMetaData =
     { Creator: string }
-    static member Encode emd = Encode.object [ "creator", Encode.string emd.Creator ]
+    static member Encode emd =
+        Encode.object [ "creator", Encode.string emd.Creator ]
 
 let private createEvent creator event =
     { Id = (Guid.NewGuid())
