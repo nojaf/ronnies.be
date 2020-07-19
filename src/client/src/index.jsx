@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
-import {AddLocationPage} from './bin/AddLocation/View'
+import AddLocationPage from './bin/Pages/AddLocation'
 import './style.css'
 
 ReactDOM.render(

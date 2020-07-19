@@ -31,6 +31,7 @@ let getUnionCaseName (x: 'a) =
 
 type EventMetaData =
     { Creator: string }
+
     static member Encode emd =
         Encode.object [ "creator", Encode.string emd.Creator ]
 
@@ -50,7 +51,10 @@ let rec private appendToAzureTableStorage (cosmoEvents: EventWrite<JsonValue> se
         let moreThanBatchLimit = Seq.length cosmoEvents > BatchLimit
 
         let batch =
-            if moreThanBatchLimit then Seq.take BatchLimit cosmoEvents else cosmoEvents
+            if moreThanBatchLimit then
+                Seq.take BatchLimit cosmoEvents
+            else
+                cosmoEvents
             |> List.ofSeq
 
         let! _ = eventStore.AppendEvents EventStream Any batch

@@ -40,9 +40,12 @@ let private getRole token =
     let hasPermission name =
         Array.exists (fun p -> p = name) permissions
 
-    if hasPermission "delete:location" then Role.Admin
-    elif hasPermission "write:location" then Role.Editor
-    else Role.Visitor
+    if hasPermission "delete:location" then
+        Role.Admin
+    elif hasPermission "write:location" then
+        Role.Editor
+    else
+        Role.Visitor
 
 let private getUserId (_token: string): string option = import "getUserId" "./js/jwt"
 

@@ -12,6 +12,7 @@ type ValidationErrorType =
     | InvalidLongitude
     | EmptyString
     | InvalidStringLength of expected: int * actual: int
+    | InvalidNumber
     | NegativeNumber
     | InvalidGuidString
 
@@ -133,12 +134,16 @@ type Currency =
 
     static member Read (Currency (v, t)) = v, t
 
-    static member Parse (value: decimal) (currencyType: string) =
-        if value <= 0m then
-            Failure [ NegativeNumber ]
-        else
-            ThreeLetterString.Parse currencyType
-            |> ValidationResult.map (fun currencyType -> Currency(value, currencyType))
+    static member Parse (value: string) (currencyType: string) =
+        match System.Decimal.TryParse(value.Replace(",", ".")) with
+        | false, _ ->
+            Failure [ InvalidNumber ]
+        | true, value ->
+            if value <= 0m then
+                Failure [ NegativeNumber ]
+            else
+                ThreeLetterString.Parse currencyType
+                |> ValidationResult.map (fun currencyType -> Currency(value, currencyType))
 
 let private mapValidationError propertyName
                                (v: ValidationResult<'a, ValidationErrorType>)

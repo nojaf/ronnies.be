@@ -16,6 +16,6 @@ open Feliz
 //            | _ -> null)
 
 let loading info =
-            div [ Id "preloader" ] [
-                div [Id "loader"] [ str info ]
-            ]
+    div [ Id "preloader" ] [
+        div [ Id "loader" ] [ str info ]
+    ]

@@ -20,7 +20,11 @@ let private Auth0Audiences =
 
 let private collectClaims (user: ClaimsPrincipal) =
     user.Claims
-    |> Seq.choose (fun c -> if c.Type = "permissions" then Some c.Value else None)
+    |> Seq.choose (fun c ->
+        if c.Type = "permissions" then
+            Some c.Value
+        else
+            None)
     |> Seq.toList
 
 let private authenticateRequest (logger: ILogger) header =
@@ -57,7 +61,8 @@ let private authenticateRequest (logger: ILogger) header =
         task { return Error "invalid or empty token" }
 
 type HttpRequest with
-    member this.Authenticate(logger: ILogger) =
+
+    member this.Authenticate (logger: ILogger) =
         authenticateRequest logger (this.Headers.["Authorization"].ToString())
 
 let mayWriteEvent permissions event =
