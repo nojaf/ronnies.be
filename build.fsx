@@ -1,6 +1,5 @@
 #r "paket: groupref build //"
 #load ".fake/build.fsx/intellisense.fsx"
-#load ".fake/build.fsx/intellisense_lazy.fsx"
 #nowarn "52"
 
 open Fake.Core
@@ -26,11 +25,6 @@ let yarnSetParams = (fun (c: Yarn.YarnParams) -> { c with WorkingDirectory = cli
 let fsharpFiles = !!"src/**/*.fs" -- "src/**/obj/**" -- "src/**/node_modules/**" -- "src/**/.fable/**"
 let javaScriptFiles = ["src/**/*.js";"src/*.js"]
 
-let fantomasConfig =
-    match CodeFormatter.ReadConfiguration(root </> "fantomas-config.json") with
-    | Success c -> c
-    | _ -> failwith "Cannot parse fantomas-config.json"
-
 module Azure =
     let az parameters =
         let azPath = ProcessUtils.findPath [] "az"
@@ -53,7 +47,7 @@ Target.create "Clean"
 
 Target.create "Format" (fun _ ->
     fsharpFiles
-    |> FakeHelpers.formatCode fantomasConfig
+    |> FakeHelpers.formatCode
     |> Async.RunSynchronously
     |> printfn "Formatted F# files: %A"
 
@@ -63,7 +57,7 @@ Target.create "Format" (fun _ ->
 Target.create "CheckCodeFormat" (fun _ ->
     let result =
         fsharpFiles
-        |> FakeHelpers.checkCode fantomasConfig
+        |> FakeHelpers.checkCode
         |> Async.RunSynchronously
 
     if result.IsValid then
@@ -123,6 +117,14 @@ Target.create "Watch" (fun _ ->
         |> Proc.startAndAwait
         |> Async.Ignore
 
+    Yarn.exec "sass" (fun o -> { o with WorkingDirectory =clientPath })
+
+    let compileSass =
+        CreateProcess.fromRawCommand Yarn.defaultYarnParams.YarnFilePath [ "sass"; "--watch" ]
+        |> CreateProcess.withWorkingDirectory clientPath
+        |> Proc.startAndAwait
+        |> Async.Ignore
+
     let stopFunc() = System.Diagnostics.Process.GetProcessesByName("func") |> Seq.iter (fun p -> p.Kill())
 
     let rec startFunc() =
@@ -143,7 +145,7 @@ Target.create "Watch" (fun _ ->
 
     let runAzureFunction = async { startFunc() }
 
-    Async.Parallel [ runAzureFunction; compileFable ]
+    Async.Parallel [ (*runAzureFunction;*) compileSass;  compileFable ]
     |> Async.Ignore
     |> Async.RunSynchronously)
 

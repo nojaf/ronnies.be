@@ -355,3 +355,7 @@ infrastructure/scratch.ps1
 migration/
 watch.ps1
 production.ps1
+src/client-old
+src/client/src/bin
+src/client/fsharp/bin
+src/client/fsharp/obj

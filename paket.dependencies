@@ -16,7 +16,7 @@ group client
     nuget Fable.Browser.Geolocation
     nuget Thoth.Json
     nuget Feliz.UseElmish
-    nuget FSharpPlus
+    nuget Zanaptak.TypedCssClasses
 
 group server
     source https://api.nuget.org/v3/index.json
@@ -29,7 +29,6 @@ group server
     nuget Thoth.Json.Net
     # workaround for https://github.com/Azure/azure-functions-host/issues/6070
     nuget Microsoft.IdentityModel.Protocols.OpenIdConnect 5.5.0
-    nuget FSharpPlus
 
 group test
     source https://api.nuget.org/v3/index.json
@@ -57,7 +56,7 @@ group build
     nuget Fake.Tools.Git
     nuget Fake.JavaScript.Yarn
     nuget FSharp.Compiler.Service
-    nuget Fantomas 4.0.0-alpha-007
+    nuget Fantomas 4.0.0-alpha-014
 
 group infrastructure
     source https://api.nuget.org/v3/index.json

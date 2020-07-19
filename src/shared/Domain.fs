@@ -1,7 +1,5 @@
 module Ronnies.Domain
 
-open FSharpPlus
-open FSharpPlus.Data
 open System
 #if FABLE_COMPILER
 open Thoth.Json
@@ -17,7 +15,37 @@ type ValidationErrorType =
     | NegativeNumber
     | InvalidGuidString
 
-type ValidationError = string * ValidationErrorType list
+type ValidationError = string * ValidationErrorType
+
+let private curry f a b = f (a, b)
+
+type ValidationResult<'a, 'b> =
+    | Success of 'a
+    | Failure of 'b list
+
+module ValidationResult =
+    let map f xResult =
+        match xResult with
+        | Success x -> Success(f x)
+        | Failure errs -> Failure errs
+
+
+    let lift x = Success x
+
+    let apply fResult xResult =
+        match fResult, xResult with
+        | Success f, Success x -> Success(f x)
+        | Failure errs, Success _ -> Failure errs
+        | Success _, Failure errs -> Failure errs
+        | Failure errs1, Failure errs2 -> Failure(List.concat [ errs1; errs2 ])
+
+    let bind f xResult =
+        match xResult with
+        | Success x -> f x
+        | Failure errs -> Failure errs
+
+let private (<!>) = ValidationResult.map
+let private (<*>) = ValidationResult.apply
 
 type NonEmptyString =
     | NonEmptyString of string
@@ -25,7 +53,7 @@ type NonEmptyString =
     static member Read (NonEmptyString v) = v
 
     static member Parse (v: string) =
-        if System.String.IsNullOrWhiteSpace(v) then
+        if String.IsNullOrWhiteSpace(v) then
             Failure [ EmptyString ]
         else
             Success(NonEmptyString v)
@@ -47,7 +75,7 @@ type Identifier =
     static member Read (Identifier (identifier)) = identifier
 
     static member Parse (v: string) =
-        match System.Guid.TryParse(v) with
+        match Guid.TryParse(v) with
         | true, v -> Identifier v |> Success
         | false, _ -> Failure [ InvalidGuidString ]
 
@@ -81,7 +109,7 @@ type Location =
     static member Read (Location (Latitude (lat), Longitude (lng))) = lat, lng
 
     static member Parse lat lng =
-        curryN Location
+        curry Location
         <!> Latitude.Parse lat
         <*> Longitude.Parse lng
 
@@ -92,7 +120,7 @@ type ThreeLetterString =
     static member Read (ThreeLetterString (s)) = s
 
     static member Parse s =
-        if System.String.IsNullOrWhiteSpace s then
+        if String.IsNullOrWhiteSpace s then
             Failure [ EmptyString ]
         elif s.Length <> 3 then
             Failure [ InvalidStringLength(3, s.Length) ]
@@ -110,12 +138,17 @@ type Currency =
             Failure [ NegativeNumber ]
         else
             ThreeLetterString.Parse currencyType
-            |> Validation.map (fun currencyType -> Currency(value, currencyType))
+            |> ValidationResult.map (fun currencyType -> Currency(value, currencyType))
 
-let private mapValidationError propertyName v =
+let private mapValidationError propertyName
+                               (v: ValidationResult<'a, ValidationErrorType>)
+                               : ValidationResult<'a, ValidationError> =
     match v with
     | Success s -> Success s
-    | Failure errors -> ValidationError(propertyName, errors) |> Failure
+    | Failure errors ->
+        errors
+        |> List.map (fun e -> propertyName, e)
+        |> Failure
 
 type LocationAdded =
     { Id: Identifier
@@ -152,15 +185,18 @@ type LocationAdded =
                 |> mapValidationError "currency")
                 price
                 currency
-        <*> (Validation.Success >> mapValidationError "draft") isDraft
-        <*> (Validation.Success >> mapValidationError "remark") remark
-        <*> (Validation.Success >> mapValidationError "created") created
+        <*> (ValidationResult.lift
+             >> mapValidationError "draft") isDraft
+        <*> (ValidationResult.lift
+             >> mapValidationError "remark") remark
+        <*> (ValidationResult.lift
+             >> mapValidationError "created") created
         <*> (NonEmptyString.Parse
              >> mapValidationError "creator") creator
 
 type LocationAddedNotification = unit
 
-type Event = LocationAdded of LocationAdded
+// type Event = LocationAdded of LocationAdded
 //    | NameUpdated of id: Identifier * name: string
 //    | PriceUpdated of id: Identifier * price: Price
 //    | LocationUpdated of id: Identifier * location: Location

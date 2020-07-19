@@ -14,7 +14,10 @@
 <!--    <Compile Include="View.fs" />-->
 <!--    <Compile Include="Hooks.fs" />-->
 <!--    <Content Include="js\jwt.js" />-->
-<!--    <Compile Include="Components.fs" />-->
+    <Compile Include="Styles.fs" />
+    <Compile Include="Components.fs" />
+    <Compile Include="AddLocation\View.fs" />
+    <Compile Include="App.fs" />
   </ItemGroup>
   <Import Project="..\..\..\.paket\Paket.Restore.targets" />
 
