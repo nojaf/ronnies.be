@@ -9,10 +9,10 @@ open Feliz.UseElmish
 
 [<NoComparison>]
 type AppContext =
-    { Model: Model
-      Dispatch: Dispatch<Msg> }
+    { Model : Model
+      Dispatch : Dispatch<Msg> }
 
-let private defaultContextValue: AppContext = Fable.Core.JS.undefined
+let private defaultContextValue : AppContext = Fable.Core.JS.undefined
 
 let appContext =
     React.createContext (defaultValue = defaultContextValue)
@@ -20,7 +20,7 @@ let appContext =
 let ElmishCapture =
     React.functionComponent
         ("ElmishComponent",
-         (fun (props: {| children: ReactElement |}) ->
+         (fun (props : {| children : ReactElement |}) ->
              let model, dispatch =
                  React.useElmish (State.init, State.update, [||])
 

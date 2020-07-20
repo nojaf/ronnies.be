@@ -48,6 +48,11 @@ module ValidationResult =
 let private (<!>) = ValidationResult.map
 let private (<*>) = ValidationResult.apply
 
+module Decode =
+    let failWithDomainErrors<'t, 'e> (errors: 'e list) : string -> JsonValue -> Result<'t, DecoderError> =
+        sprintf "Invalid value according to the domain: %A" errors
+        |> Decode.fail
+
 type NonEmptyString =
     | NonEmptyString of string
 
@@ -59,19 +64,11 @@ type NonEmptyString =
         else
             Success(NonEmptyString v)
 
-    static member Serialize: Encoder<NonEmptyString> =
-        fun (NonEmptyString v) -> Encode.string v
-
-    static member Deserialize: Decoder<NonEmptyString> =
-        Decode.string
-        |> Decode.andThen (fun v ->
-            match NonEmptyString.Parse v with
-            | Success v -> Decode.succeed v
-            | Failure _ -> Decode.fail "Not an non empty string")
-
 type Identifier =
     private
     | Identifier of Guid
+
+    static member Create () = Identifier(Guid.NewGuid())
 
     static member Read (Identifier (identifier)) = identifier
 
@@ -79,6 +76,8 @@ type Identifier =
         match Guid.TryParse(v) with
         | true, v -> Identifier v |> Success
         | false, _ -> Failure [ InvalidGuidString ]
+
+    static member Parse(v: Guid) = Identifier(v)
 
 type Latitude =
     | Latitude of float
@@ -136,8 +135,7 @@ type Currency =
 
     static member Parse (value: string) (currencyType: string) =
         match System.Decimal.TryParse(value.Replace(",", ".")) with
-        | false, _ ->
-            Failure [ InvalidNumber ]
+        | false, _ -> Failure [ InvalidNumber ]
         | true, value ->
             if value <= 0m then
                 Failure [ NegativeNumber ]
@@ -155,7 +153,7 @@ let private mapValidationError propertyName
         |> List.map (fun e -> propertyName, e)
         |> Failure
 
-type LocationAdded =
+type AddLocation =
     { Id: Identifier
       Name: NonEmptyString
       Location: Location
@@ -178,7 +176,7 @@ type LocationAdded =
                   Creator = creator }
 
         createFn
-        <!> (Identifier.Parse >> mapValidationError "id") id
+        <!> (ValidationResult.lift >> mapValidationError "id") id
         <*> (NonEmptyString.Parse >> mapValidationError "name") name
         <*> (fun lat lng ->
                 Location.Parse lat lng
@@ -187,7 +185,7 @@ type LocationAdded =
                 lng
         <*> (fun p c ->
                 Currency.Parse p c
-                |> mapValidationError "currency")
+                |> mapValidationError "price")
                 price
                 currency
         <*> (ValidationResult.lift
@@ -199,9 +197,67 @@ type LocationAdded =
         <*> (NonEmptyString.Parse
              >> mapValidationError "creator") creator
 
+    static member Encoder: Encoder<AddLocation> =
+        fun addLocation ->
+            let (Identifier(id)) = addLocation.Id
+            let (Location(Latitude(lat),Longitude(lng))) = addLocation.Location
+            let (Currency(price, ThreeLetterString(currency))) = addLocation.Price
+            let (NonEmptyString(creator)) = addLocation.Creator
+
+            Encode.object [ "id", Encode.guid id
+                            "name", Encode.string (NonEmptyString.Read addLocation.Name)
+                            "location", Encode.tuple2 Encode.float Encode.float (lat, lng)
+                            "price", Encode.tuple2 Encode.decimal Encode.string (price, currency)
+                            "isDraft", Encode.bool addLocation.IsDraft
+                            "remark", Encode.option Encode.string addLocation.Remark
+                            "created", Encode.datetimeOffset addLocation.Created
+                            "creator", Encode.string creator ]
+
+    static member Decoder: Decoder<AddLocation> =
+        Decode.object (fun get ->
+                let lat,lng = get.Required.Field "location" (Decode.tuple2 Decode.float Decode.float)
+                let price, currency = get.Required.Field "price" (Decode.tuple2 Decode.string Decode.string)
+
+                (get.Required.Field "id" Decode.guid |> Identifier.Parse),
+                get.Required.Field "name" Decode.string,
+                lat,
+                lng,
+                price,
+                currency,
+                (get.Required.Field "isDraft" Decode.bool),
+                (get.Optional.Field "remark" (Decode.string)),
+                (get.Required.Field "created" Decode.datetimeOffset),
+                (get.Required.Field "creator" Decode.string)
+        )
+        |> Decode.andThen (fun (id, name, lat, lng, price, currency, isDraft, remark, created, creator) ->
+            let result = AddLocation.Parse id name lat lng price currency isDraft remark created creator
+            match result with
+            | Success addLocation -> Decode.succeed addLocation
+            | Failure errors -> Decode.failWithDomainErrors errors)
+
 type LocationAddedNotification = unit
 
-// type Event = LocationAdded of LocationAdded
+type Event =
+    | LocationAdded of AddLocation
+
+    static member Encoder: Encoder<Event> =
+        fun event ->
+            match event with
+            | LocationAdded addLocation ->
+                Encode.array [| Encode.string "locationAdded"
+                                AddLocation.Encoder addLocation |]
+
+    static member Decoder: Decoder<Event> =
+        Decode.index 0 Decode.string
+        |> Decode.andThen (fun caseName ->
+            match caseName with
+            | "locationAdded" ->
+                Decode.index 1 AddLocation.Decoder
+                |> Decode.map LocationAdded
+            | _ ->
+                sprintf "`%s` is not a valid case for Event" caseName
+                |> Decode.fail)
+
 //    | NameUpdated of id: Identifier * name: string
 //    | PriceUpdated of id: Identifier * price: Price
 //    | LocationUpdated of id: Identifier * location: Location

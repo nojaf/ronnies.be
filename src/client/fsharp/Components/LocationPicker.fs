@@ -8,12 +8,14 @@ open Ronnies.Client.Components.Loading
 
 type LatLng = float * float
 
+[<NoEquality>]
+[<NoComparison>]
 type LocationPickerProps =
-    { OnChange: LatLng -> LatLng -> unit
-      ExistingLocations: (string * LatLng) list }
+    { OnChange : LatLng -> LatLng -> unit
+      ExistingLocations : (string * LatLng) list }
 
 let LocationPicker =
-    React.functionComponent (fun (props: LocationPickerProps) ->
+    React.functionComponent (fun (props : LocationPickerProps) ->
         let geolocation = useGeolocation ()
         let (userLatitude, setUserLatitude) = React.useState (50.946139)
         let (userLongitude, setUserLongitude) = React.useState (3.138671)
@@ -46,7 +48,7 @@ let LocationPicker =
                         (geolocation.latitude, geolocation.longitude)),
              [| box geolocation.loading |])
 
-        let onMapClick (ev: MapClickEvent) =
+        let onMapClick (ev : MapClickEvent) =
             let (lat, lng) = ev.LatLng()
             setRonnyLatitude lat
             setRonnyLongitude lng
@@ -73,9 +75,7 @@ let LocationPicker =
                          Longitude viewport.longitude
                          Zoom viewport.zoom
                          MapClassName "add-location-map"
-                         MapStyle "mapbox://styles/nojaf/ck7846xt30p791inshughvnc0"
-                         MapboxApiAccessToken
-                             "pk.eyJ1Ijoibm9qYWYiLCJhIjoiY2p6eHV4ODkwMWNoaTNidXRqeGlrb2JpMSJ9.x6fTQsfCfGMKwxpdKxjhMQ" ] [
+                         MapStyle "mapbox://styles/nojaf/ck7846xt30p791inshughvnc0" ] [
                 ofList existingRonnies
                 Marker [ MarkerKey "ronny"
                          MarkerLatitude ronnyLatitude

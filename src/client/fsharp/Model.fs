@@ -3,9 +3,9 @@ module Ronnies.Client.Model
 open Ronnies.Shared
 
 type Toast =
-    { Icon: string
-      Title: string
-      Body: string }
+    { Icon : string
+      Title : string
+      Body : string }
 
 type Role =
     | Admin
@@ -13,13 +13,13 @@ type Role =
     | Visitor
 
 type Model =
-    { Events: Event list
-      AuthorizationToken: string option
-      UserId: string option
-      Role: Role
-      Toasts: Map<int, Toast>
-      IsLoading: bool
-      AppException: exn option }
+    { Events : Event list
+      AuthorizationToken : string option
+      UserId : string option
+      Role : Role
+      Toasts : Map<int, Toast>
+      IsLoading : bool
+      AppException : exn option }
 
 type Msg =
     | SetToken of string

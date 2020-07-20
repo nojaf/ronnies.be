@@ -59,18 +59,18 @@ let private distanceBetweenTwoPoints (latA, lngA) (latB, lngB) =
         dist
 
 [<Global("navigator.geolocation")>]
-let private geolocation: Browser.Types.Geolocation = jsNative
+let private geolocation : Browser.Types.Geolocation = jsNative
 
 open Fable.Core.JsInterop
 
 let useGeolocation ()
-                   : {| loading: bool
-                        latitude: float
-                        longitude: float
-                        error: obj |} =
+                   : {| loading : bool
+                        latitude : float
+                        longitude : float
+                        error : obj |} =
     import "useGeolocation" "react-use"
 
-let isDefaultLocation (a: Ronnies.Shared.Location) = a = (0., 0.)
+let isDefaultLocation (a : Ronnies.Shared.Location) = a = (0., 0.)
 
 let useRonniesNearUserLocation () =
     let events = useEvents ()
@@ -106,16 +106,16 @@ let useRonniesList () =
     |> Array.sortBy (fun p -> p.name.ToLower())
 
 [<Emit("parseFloat(parseFloat($0).toFixed(2))")>]
-let parseAndTrim (_: string): float = jsNative
+let parseAndTrim (_ : string) : float = jsNative
 
 let useAddLocationEvent () =
     let dispatch = useDispatch ()
     let { UserId = userId } = useModel ()
-    f (fun (addLocation: {| name: string
-                            location: Ronnies.Shared.Location
-                            price: string
-                            isDraft: bool
-                            remark: string option |}) ->
+    f (fun (addLocation : {| name : string
+                             location : Ronnies.Shared.Location
+                             price : string
+                             isDraft : bool
+                             remark : string option |}) ->
             let addLocation =
                 { Id = Ronnies.Shared.newId ()
                   Name = addLocation.name

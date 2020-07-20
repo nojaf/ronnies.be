@@ -178,14 +178,14 @@ let private currencies =
       "ZMW", "Zambiaanse kwacha" ]
 
 type private Model =
-    { Name: string
-      Price: string
-      Currency: string
-      Latitude: float
-      Longitude: float
-      IsDraft: bool
-      Remark: string
-      Errors: Map<string, string list> }
+    { Name : string
+      Price : string
+      Currency : string
+      Latitude : float
+      Longitude : float
+      IsDraft : bool
+      Remark : string
+      Errors : Map<string, string list> }
 
 let private init _ =
     { Name = ""
@@ -205,12 +205,12 @@ type private Msg =
     | UpdateLocation of float * float
     | UpdateIsDraft of bool
     | UpdateRemark of string
-    | UpdateLocationError of isError: bool
+    | UpdateLocationError of isError : bool
     | Submit
 
 let private update msg model =
     match msg with
-    | UpdateName n -> ({ model with Name = n }: Model), Cmd.none
+    | UpdateName n -> ({ model with Name = n } : Model), Cmd.none
     | UpdatePrice p -> { model with Price = p }, Cmd.none
     | UpdateCurrency c -> { model with Currency = c }, Cmd.none
     | UpdateLocation (lat, lng) ->
@@ -230,7 +230,7 @@ let private update msg model =
 
         { model with Errors = errors }, Cmd.none
     | Submit ->
-        let id = Guid.NewGuid().ToString()
+        let id = Identifier.Create()
 
         let remark =
             if String.IsNullOrWhiteSpace model.Remark then
@@ -239,7 +239,7 @@ let private update msg model =
                 Some model.Remark
 
         let result =
-            LocationAdded.Parse
+            AddLocation.Parse
                 id
                 model.Name
                 model.Latitude
@@ -250,8 +250,6 @@ let private update msg model =
                 remark
                 DateTimeOffset.Now
                 "nojaf"
-
-        printfn "%A" result
 
         match result with
         | Success locationAdded ->
@@ -278,6 +276,7 @@ let private update msg model =
                 |> List.groupBy fst
                 |> List.fold (fun acc (key, errors) -> Map.add key (List.map (snd >> mapError) errors) acc) errs
 
+            printfn "Errors while validating: %A" errors
             { model with Errors = errors }, Cmd.none
 
 let private mapToCurrencyItem (currencyCode, description) =
@@ -315,19 +314,16 @@ let private AddLocationPage =
             React.useElmish (init, update, Array.empty)
 
         let updateOnChange msg =
-            fun (ev: Browser.Types.Event) -> ev.Value |> msg |> dispatch
+            fun (ev : Browser.Types.Event) -> ev.Value |> msg |> dispatch
             |> OnChange
 
         let onLocationChanges userLocation ronnyLocation =
             dispatch (UpdateLocation ronnyLocation)
 
-            printfn "distance %A" (distanceBetweenTwoPoints userLocation ronnyLocation)
-
             let isTooFar =
                 distanceBetweenTwoPoints userLocation ronnyLocation > 0.25
 
             dispatch (UpdateLocationError isTooFar)
-            printfn "%A %A" userLocation ronnyLocation
 
         let locationError =
             Map.tryFind "distance" model.Errors
@@ -336,6 +332,16 @@ let private AddLocationPage =
                                    Bootstrap.AlertDanger ] ] [
                     str (String.concat "\n" errors)
                 ])
+
+        let hasErrors key = Map.containsKey key model.Errors
+
+        let inputErrors key =
+            Map.tryFind key model.Errors
+            |> Option.map (fun errors ->
+                div [ ClassName Bootstrap.InvalidFeedback ] [
+                    String.concat "\n" errors |> str
+                ])
+            |> ofOption
 
         div [ classNames [ Bootstrap.Container
                            Bootstrap.P3 ] ] [
@@ -347,16 +353,24 @@ let private AddLocationPage =
                        dispatch Submit) ] [
                 div [ ClassName Bootstrap.FormGroup ] [
                     label [] [ str "Naam*" ]
-                    input [ ClassName Bootstrap.FormControl
+                    input [ classNames [ Bootstrap.FormControl
+                                         if hasErrors "name" then
+                                             Bootstrap.IsInvalid ]
                             DefaultValue model.Name
                             updateOnChange UpdateName ]
+                    inputErrors "name"
                 ]
                 div [ ClassName Bootstrap.FormGroup ] [
                     label [] [ str "Prijs*" ]
                     div [ ClassName Bootstrap.InputGroup ] [
-                        input [ ClassName Bootstrap.FormControl
+                        input [ classNames [ Bootstrap.FormControl
+                                             if hasErrors "price" then
+                                                 Bootstrap.IsInvalid ]
+                                Type "number"
+                                Step "0.01"
                                 DefaultValue model.Price
                                 updateOnChange UpdatePrice ]
+
                         div [ ClassName Bootstrap.InputGroupAppend ] [
                             select [ classNames [ Bootstrap.CustomSelect ]
                                      updateOnChange UpdateCurrency
@@ -366,6 +380,7 @@ let private AddLocationPage =
                                 ofList (List.map mapToCurrencyItem currencies)
                             ]
                         ]
+                        inputErrors "price"
                     ]
                 ]
                 div [] [

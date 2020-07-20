@@ -6,22 +6,22 @@ open Fable.React
 open Fable.React.Props
 open Feliz
 
-let useGeolocation: unit -> {| latitude: float
-                               longitude: float
-                               loading: bool |} = import "useGeolocation" "react-use"
+let useGeolocation : unit -> {| latitude : float
+                                longitude : float
+                                loading : bool |} = import "useGeolocation" "react-use"
 
 type Viewport =
-    { width: string
-      height: string
-      latitude: float
-      longitude: float
-      zoom: int }
+    { width : string
+      height : string
+      latitude : float
+      longitude : float
+      zoom : int }
 
 type MapClickEvent =
     inherit Browser.Types.Event
 
     [<Emit("$0.lngLat.reverse()")>]
-    abstract LatLng: unit -> (float * float)
+    abstract LatLng : unit -> (float * float)
 
 type ReactMapGLProp =
     | [<CompiledName("width")>] MapWidth of string
@@ -35,8 +35,16 @@ type ReactMapGLProp =
     | MapStyle of string
     | MapboxApiAccessToken of string
 
-let inline ReactMapGL (props: ReactMapGLProp list) (children: ReactElement seq): Fable.React.ReactElement =
-    ofImport "default" "react-map-gl" (keyValueList Fable.Core.CaseRules.LowerFirst props) children
+[<Emit("import.meta.env.SNOWPACK_PUBLIC_MAPBOX")>]
+let private mapboxApiAccessToken : string = jsNative
+
+let inline ReactMapGL (props : ReactMapGLProp list) (children : ReactElement seq) : Fable.React.ReactElement =
+    let allProps =
+        (MapboxApiAccessToken mapboxApiAccessToken)
+        :: props
+        |> keyValueList Fable.Core.CaseRules.LowerFirst
+
+    ofImport "default" "react-map-gl" allProps children
 
 type MarkerProp =
     | [<CompiledName("key")>] MarkerKey of string
@@ -45,7 +53,7 @@ type MarkerProp =
     | OffsetLeft of int
     | OffsetTop of int
 
-let inline Marker (props: MarkerProp list) (children: ReactElement seq): Fable.React.ReactElement =
+let inline Marker (props : MarkerProp list) (children : ReactElement seq) : Fable.React.ReactElement =
     ofImport "Marker" "react-map-gl" (keyValueList Fable.Core.CaseRules.LowerFirst props) children
 
 let UserIcon =

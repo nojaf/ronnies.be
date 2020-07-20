@@ -8,7 +8,7 @@ open Fable.Core
 open Fetch
 
 
-let initialState: Model =
+let initialState : Model =
     { Events = []
       AuthorizationToken = None
       Role = Role.Visitor
@@ -18,7 +18,7 @@ let initialState: Model =
       Toasts = Map.empty }
 
 [<Emit("process.env.REACT_APP_BACKEND")>]
-let private baseUrl: string = jsNative
+let private baseUrl : string = jsNative
 
 let private getEvents () =
     let url = sprintf "%s/api/GetEvents" baseUrl
@@ -32,7 +32,7 @@ let private getEvents () =
 let init _ =
     initialState, Cmd.OfPromise.either getEvents () Msg.EventsReceived Msg.AppException
 
-let private getPermissions (_token: string): string array = import "getPermissions" "./js/jwt"
+let private getPermissions (_token : string) : string array = import "getPermissions" "./js/jwt"
 
 let private getRole token =
     let permissions = getPermissions token
@@ -47,7 +47,7 @@ let private getRole token =
     else
         Role.Visitor
 
-let private getUserId (_token: string): string option = import "getUserId" "./js/jwt"
+let private getUserId (_token : string) : string option = import "getUserId" "./js/jwt"
 
 let private authorizationHeader token =
     requestHeaders [ HttpRequestHeaders.Authorization(sprintf "bearer %s" token) ]
