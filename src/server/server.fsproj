@@ -7,10 +7,9 @@
   <ItemGroup>
     <None Include="paket.references" />
     <Compile Include="../shared/Domain.fs" />
-<!--    <Compile Include="Authentication.fs" />-->
-<!--    <Compile Include="Validation.fs" />-->
-<!--    <Compile Include="EventStore.fs" />-->
-<!--    <Compile Include="Function.fs" />-->
+    <Compile Include="Authentication.fs" />
+    <Compile Include="EventStore.fs" />
+    <Compile Include="Function.fs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="host.json">

@@ -1,31 +1,17 @@
 module Ronnies.Server.Function
 
-open System
 open FSharp.Control.Tasks
 open Microsoft.AspNetCore.Http
 open Microsoft.Azure.WebJobs
 open Microsoft.Azure.WebJobs.Extensions.Http
 open Microsoft.Extensions.Logging
-open Ronnies.Server
-open Ronnies.Server.Authentication
 open System.IO
 open System.Net
 open System.Net.Http
 open Thoth.Json.Net
-
-module Task =
-    let lift = System.Threading.Tasks.Task.FromResult
-
-module Result =
-    let either =
-        function
-        | Ok t
-        | Error t -> t
-
-    let ofOption =
-        function
-        | Some x -> Ok x
-        | None -> Error()
+open Ronnies.Domain
+open Ronnies.Server.Authentication
+open Ronnies.Server.EventStore
 
 let private sendJson json =
     new HttpResponseMessage(HttpStatusCode.OK,
@@ -46,80 +32,52 @@ let private sendBadRequest err =
 let private sendUnAuthorizedRequest err =
     new HttpResponseMessage(HttpStatusCode.Unauthorized,
                             Content = new StringContent(err, System.Text.Encoding.UTF8, "application/text"))
-    |> Task.lift
 
-let private decodeEvents (body: Stream) user =
-    let json =
-        using (new StreamReader(body)) (fun stream -> stream.ReadToEnd())
-
-    Decode.fromString (Decode.list EventStore.decodeEvent) json
-    |> Result.map (fun events -> user, events)
-    |> Result.mapError (sendInternalError >> Task.lift)
-
-let private validateEvents request =
-    let (_, events) = request
-
-    let errors =
-        events
-        |> List.choose (fun event ->
-            Validation.getValidationErrors event
-            |> Option.map (fun errs ->
-                Encode.object [ "event", EventStore.encodeEvent event
-                                "errors", ((List.map Encode.string errs) |> Encode.list) ]))
-
-    match errors with
-    | [] -> Ok request
-    | _ ->
-        let responseBody = Encode.list errors |> Encode.toString 4
-        Error(sendBadRequest responseBody |> Task.lift)
-
-let private authenticateEvents request =
-    let ((_, permissions), events) = request
-
-    let unauthorizedEvents =
-        events
-        |> List.filter (Authentication.mayWriteEvent permissions >> not)
-
-    if List.isEmpty unauthorizedEvents then
-        Ok request
-    else
-        Error
-            (Seq.map EventStore.getUnionCaseName unauthorizedEvents
-             |> String.concat Environment.NewLine
-             |> sendUnAuthorizedRequest)
-
-let persistEvents request =
-    let ((userId, _), events) = request
+let persistEvents userId events =
     task {
         do! EventStore.appendEvents userId events
         return sendText "Events persisted"
     }
 
-[<FunctionName("AddEvents")>]
-let AddEvents ([<HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)>] req: HttpRequest, log: ILogger) =
+[<FunctionName("add-events")>]
+let AddEvents ([<HttpTrigger(AuthorizationLevel.Function, "post", Route = null)>] req : HttpRequest, log : ILogger) =
     log.LogInformation("F# HTTP trigger function processed a request...")
     task {
-        let! user = req.Authenticate(log)
+        let user = req.GetUser log
 
-        let! response =
-            user
-            |> Result.mapError sendUnAuthorizedRequest
-            |> Result.bind (decodeEvents req.Body)
-            |> Result.bind (validateEvents)
-            |> Result.bind (authenticateEvents)
-            |> Result.map (persistEvents)
-            |> Result.either
+        let json =
+            using (new StreamReader(req.Body)) (fun stream -> stream.ReadToEnd())
 
-        return response
+        let eventsResult =
+            Thoth.Json.Net.Decode.fromString (Decode.list Event.Decoder) json
+
+        match eventsResult with
+        | Ok events when List.forall (Authentication.mayWriteEvent user.Permissions) events ->
+            return! persistEvents user.Id events
+        | Ok event ->
+            let msg =
+                sprintf "Unauthorized to persist event %s" (getUnionCaseName event)
+
+            return sendUnAuthorizedRequest msg
+        | Error err ->
+            log.LogError(err)
+            return (sendBadRequest "Invalid event json")
     }
 
-
-[<FunctionName("GetEvents")>]
-let GetEvents ([<HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)>] req: HttpRequest, log: ILogger) =
+[<FunctionName("get-events")>]
+let GetEvents ([<HttpTrigger(AuthorizationLevel.Function, "get", Route = null)>] req : HttpRequest, log : ILogger) =
     log.LogInformation("F# HTTP trigger function processed a request.........")
 
     task {
-        let! events = EventStore.getEvents ()
-        let json = Encode.list events |> Encode.toString 4
+        let lastEvent =
+            match req.Query.TryGetValue "lastEvent" with
+            | true, lastEvent -> lastEvent.ToString() |> (int64) |> Some
+            | _ -> None
+
+        let! events = EventStore.getEvents lastEvent
+
+        let json =
+            events |> Encode.object |> Encode.toString 4
+
         return sendJson json
     }

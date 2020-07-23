@@ -28,7 +28,7 @@ group server
     nuget Microsoft.NET.Sdk.Functions
     nuget Thoth.Json.Net
     # workaround for https://github.com/Azure/azure-functions-host/issues/6070
-    nuget Microsoft.IdentityModel.Protocols.OpenIdConnect 5.5.0
+    nuget System.IdentityModel.Tokens.Jwt 5.5.0
 
 group test
     source https://api.nuget.org/v3/index.json
@@ -75,3 +75,4 @@ group migration
     nuget FSharp.Data
     nuget Microsoft.Data.SQLite
     nuget Thoth.Json.Net
+    nuget System.IdentityModel.Tokens.Jwt

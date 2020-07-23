@@ -3,7 +3,7 @@ module Ronnies.Server.EventStore
 open CosmoStore
 open FSharp.Control.Tasks
 open Microsoft.FSharp.Reflection
-open Ronnies.Shared
+open Ronnies.Domain
 open System
 open Thoth.Json.Net
 
@@ -22,15 +22,12 @@ let private eventStore =
 [<Literal>]
 let private EventStream = "ronnies.be"
 
-let encodeEvent = Encode.Auto.generateEncoder<Event> ()
-let decodeEvent = Decode.Auto.generateDecoder<Event> ()
-
-let getUnionCaseName (x: 'a) =
+let getUnionCaseName (x : 'a) =
     match FSharpValue.GetUnionFields(x, typeof<'a>) with
     | case, _ -> case.Name
 
 type EventMetaData =
-    { Creator: string }
+    { Creator : string }
 
     static member Encode emd =
         Encode.object [ "creator", Encode.string emd.Creator ]
@@ -40,13 +37,13 @@ let private createEvent creator event =
       CorrelationId = None
       CausationId = None
       Name = getUnionCaseName event
-      Data = encodeEvent event
+      Data = Ronnies.Domain.Event.Encoder event
       Metadata = Some(EventMetaData.Encode { Creator = creator }) }
 
 [<Literal>]
 let private BatchLimit = 99
 
-let rec private appendToAzureTableStorage (cosmoEvents: EventWrite<JsonValue> seq) =
+let rec private appendToAzureTableStorage (cosmoEvents : EventWrite<JsonValue> seq) =
     task {
         let moreThanBatchLimit = Seq.length cosmoEvents > BatchLimit
 
@@ -66,16 +63,19 @@ let rec private appendToAzureTableStorage (cosmoEvents: EventWrite<JsonValue> se
             return ()
     }
 
-let appendEvents userId (events: Event list) =
+let appendEvents userId (events : Event list) =
     let cosmoEvents = List.map (createEvent userId) events
     task { do! appendToAzureTableStorage cosmoEvents }
 
-let getEvents () =
+let getEvents (lastEvent : int64 option) =
     task {
-        let! cosmoEvents = eventStore.GetEvents EventStream AllEvents
+        let! cosmoEvents =
+            match lastEvent with
+            | Some lastVersion -> eventStore.GetEvents EventStream (EventsReadRange.FromVersion(lastVersion + 1L))
+            | None -> eventStore.GetEvents EventStream EventsReadRange.AllEvents
 
         let events =
-            List.map (fun (ce: EventRead<JsonValue, _>) -> ce.Data) cosmoEvents
+            List.map (fun (ce : EventRead<JsonValue, _>) -> ce.Version.ToString(), ce.Data) cosmoEvents
 
         return events
     }
