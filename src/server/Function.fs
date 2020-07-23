@@ -35,8 +35,15 @@ let private sendUnAuthorizedRequest err =
 
 let persistEvents userId events =
     task {
-        do! EventStore.appendEvents userId events
-        return sendText "Events persisted"
+        let! addedEvents = EventStore.appendEvents userId events
+
+        let json =
+            addedEvents
+            |> List.map (fun evRead -> evRead.Version.ToString(), evRead.Data)
+            |> Encode.object
+            |> Encode.toString 4
+
+        return sendJson json
     }
 
 [<FunctionName("add-events")>]

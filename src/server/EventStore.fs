@@ -54,18 +54,19 @@ let rec private appendToAzureTableStorage (cosmoEvents : EventWrite<JsonValue> s
                 cosmoEvents
             |> List.ofSeq
 
-        let! _ = eventStore.AppendEvents EventStream Any batch
+        let! events = eventStore.AppendEvents EventStream Any batch
 
         if moreThanBatchLimit then
             let rest = Seq.skip BatchLimit cosmoEvents
-            return! appendToAzureTableStorage rest
+            let! others = appendToAzureTableStorage rest
+            return events @ others
         else
-            return ()
+            return events
     }
 
 let appendEvents userId (events : Event list) =
     let cosmoEvents = List.map (createEvent userId) events
-    task { do! appendToAzureTableStorage cosmoEvents }
+    task { return! appendToAzureTableStorage cosmoEvents }
 
 let getEvents (lastEvent : int64 option) =
     task {

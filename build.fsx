@@ -145,7 +145,7 @@ Target.create "Watch" (fun _ ->
 
     let runAzureFunction = async { startFunc() }
 
-    Async.Parallel [ (*runAzureFunction;*) compileSass;  compileFable ]
+    Async.Parallel [ runAzureFunction; compileSass;  compileFable ]
     |> Async.Ignore
     |> Async.RunSynchronously)
 
