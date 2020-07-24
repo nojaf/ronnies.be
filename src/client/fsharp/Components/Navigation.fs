@@ -13,6 +13,8 @@ let To url = HTMLAttr.Custom("to", url)
 let Link (props : IHTMLProp seq) (children : ReactElement seq) =
     ofImport "Link" "@reach/router" (keyValueList Fable.Core.CaseRules.LowerFirst props) children
 
+let useNavigate () : string -> unit = import "useNavigate" "@reach/router"
+
 let private Navigation =
     React.functionComponent
         ("Navigation",

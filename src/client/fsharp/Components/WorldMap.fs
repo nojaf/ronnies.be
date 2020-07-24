@@ -1,6 +1,5 @@
 module Ronnies.Client.Components.WorldMap
 
-open Fable.Core.JsInterop
 open Fable.React
 open Fable.React.Props
 open Feliz

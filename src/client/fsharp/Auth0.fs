@@ -45,6 +45,7 @@ type IdToken =
     abstract sub_jwk : string option with get, set
     abstract cnf : string option with get, set
     abstract sid : string option with get, set
+
     [<Emit("$0[\"https://ronnies.be/roles\"]")>]
     abstract roles : string array
 

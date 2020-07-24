@@ -8,9 +8,11 @@ open Fable.React.Props
 open Feliz
 open Feliz.UseElmish
 open Elmish
-open Ronnies.Client.Styles
-open Ronnies.Client.Components.LocationPicker
 open Ronnies.Domain
+open Ronnies.Client.Styles
+open Ronnies.Client.Components.EventContext
+open Ronnies.Client.Components.LocationPicker
+open Ronnies.Client.Components.Navigation
 
 let private currencies =
     [ "EUR", "Euro"
@@ -208,7 +210,7 @@ type private Msg =
     | UpdateLocationError of isError : bool
     | Submit
 
-let private update msg model =
+let private update onSubmit msg model =
     match msg with
     | UpdateName n -> ({ model with Name = n } : Model), Cmd.none
     | UpdatePrice p -> { model with Price = p }, Cmd.none
@@ -254,7 +256,7 @@ let private update msg model =
         match result with
         | Success locationAdded ->
             printfn "valid location %A" locationAdded
-            { model with Errors = Map.empty }, Cmd.none
+            { model with Errors = Map.empty }, Cmd.ofSub (fun _ -> onSubmit locationAdded)
         | Failure validationErrors ->
             let mapError errorType =
                 match errorType with
@@ -312,8 +314,15 @@ let private AddLocationPage =
     React.functionComponent
         ("AddLocationPage",
          (fun () ->
+             let eventCtx = React.useContext (eventContext)
+             let navigate = useNavigate ()
+
+             let onSubmit (addEvent : AddLocation) =
+                 eventCtx.AddEvents [ Event.LocationAdded addEvent ]
+                 |> Promise.iter (fun _ -> navigate "/")
+
              let model, dispatch =
-                 React.useElmish (init, update, Array.empty)
+                 React.useElmish (init, update onSubmit, Array.empty)
 
              let updateOnChange msg =
                  fun (ev : Browser.Types.Event) -> ev.Value |> msg |> dispatch

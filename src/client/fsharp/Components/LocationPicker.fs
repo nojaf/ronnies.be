@@ -67,7 +67,7 @@ let LocationPicker =
                      ])
 
              if geolocation.loading then
-                 loading "Locatie ant zoeken"
+                 loading
              else
                  ReactMapGL [ OnViewportChange setViewport
                               OnClick onMapClick

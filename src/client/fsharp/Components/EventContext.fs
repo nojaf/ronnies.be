@@ -2,8 +2,7 @@ module Ronnies.Client.Components.EventContext
 
 open Fable.Core
 open Feliz
-open Fetch
-open Thoth.Json
+open Auth0
 open Ronnies.Domain
 open Ronnies.Client
 
@@ -32,8 +31,12 @@ let Events =
         ("Events",
          (fun (props : {| children : ReactElement |}) ->
              let (events, setEvents) = React.useState ([])
+             let auth0 = useAuth0 ()
 
-             let addEvents (appendEvents : Event list) = Promise.lift ()
+             let addEvents (appendEvents : Event list) =
+                 auth0.getAccessTokenSilently ()
+                 |> Promise.bind (IdbKeyVal.persistEvents appendEvents)
+                 |> Promise.map (fun persistedEvents -> setEvents (events @ persistedEvents))
 
              React.useEffectOnce (fun () -> fetchLatestEvents setEvents)
 

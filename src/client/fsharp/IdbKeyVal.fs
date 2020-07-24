@@ -44,6 +44,27 @@ let getAllEvents () : JS.Promise<Event list> =
         |> Promise.all
         |> Promise.map (List.ofArray))
 
+let private addEventsToIdb (response : Response) =
+    response.text ()
+    |> Promise.bind (fun json ->
+        let result =
+            Decode.fromString (Decode.keyValuePairs Event.Decoder) json
+
+        match result with
+        | Ok events ->
+            let persistEventsPromise =
+                events
+                |> List.map (fun (k, v) -> addEvent ((int) k) (Event.Encoder v))
+                |> Promise.all
+                |> Promise.map (fun _ -> [])
+
+            let newEventsPromise = Promise.lift (List.map snd events)
+
+            Promise.all [ newEventsPromise
+                          persistEventsPromise ]
+            |> Promise.map (List.concat)
+        | Error err -> Promise.reject err)
+
 let syncLatestEvents () =
     getLastEvent ()
     |> Promise.bind (fun lastEvent ->
@@ -53,15 +74,22 @@ let syncLatestEvents () =
             | None -> sprintf "%s/api/get-events" Config.backendUrl
 
         Fetch.fetch url [ requestHeaders [ HttpRequestHeaders.ContentType "application/json" ] ])
-    |> Promise.bind (fun response -> response.text ())
-    |> Promise.bind (fun json ->
-        let result =
-            Decode.fromString (Decode.keyValuePairs Event.Decoder) json
+    |> Promise.bind addEventsToIdb
 
-        match result with
-        | Ok events ->
-            events
-            |> List.map (fun (k, v) -> addEvent ((int) k) (Event.Encoder v))
-            |> Promise.all
-            |> Promise.map ignore
-        | Error err -> Promise.reject err)
+let persistEvents (events : Event list) authToken =
+    let url =
+        sprintf "%s/api/add-events" Config.backendUrl
+
+    let json =
+        events
+        |> List.map Event.Encoder
+        |> Encode.list
+        |> Encode.toString 4
+
+    fetch
+        url
+        [ RequestProperties.Method HttpMethod.POST
+          RequestProperties.Body(!^json)
+          requestHeaders [ HttpRequestHeaders.ContentType "application/json"
+                           HttpRequestHeaders.Authorization(sprintf "Bearer %s" authToken) ] ]
+    |> Promise.bind addEventsToIdb
