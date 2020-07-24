@@ -8,19 +8,19 @@
   <ItemGroup>
     <Content Include="paket.references" />
     <Compile Include="../../shared/Domain.fs" />
-<!--    <Compile Include="Decoders.fs" />-->
-<!--    <Compile Include="Model.fs" />-->
-<!--    <Compile Include="State.fs" />-->
-<!--    <Compile Include="View.fs" />-->
-<!--    <Compile Include="Hooks.fs" />-->
-<!--    <Content Include="js\jwt.js" />-->
-<!--    <Compile Include="Components.fs" />-->
+    <Compile Include="Config.fs" />
     <Compile Include="Styles.fs" />
+    <Compile Include="IdbKeyVal.fs" />
     <Compile Include="Components\ReactMapGL.fs" />
     <Compile Include="Components\Loading.fs" />
     <Compile Include="Components\LocationPicker.fs" />
+    <Compile Include="Components\EventContext.fs" />
+    <Compile Include="Components\Navigation.fs" />
+    <Compile Include="Components\WorldMap.fs" />
     <Compile Include="Pages\AddLocation.fs" />
+    <Compile Include="Pages\Home.fs" />
     <Compile Include="App.fs" />
+    
   </ItemGroup>
   <Import Project="..\..\..\.paket\Paket.Restore.targets" />
 

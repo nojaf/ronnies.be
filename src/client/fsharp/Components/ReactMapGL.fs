@@ -8,7 +8,8 @@ open Feliz
 
 let useGeolocation : unit -> {| latitude : float
                                 longitude : float
-                                loading : bool |} = import "useGeolocation" "react-use"
+                                loading : bool
+                                error : obj option |} = import "useGeolocation" "react-use"
 
 type Viewport =
     { width : string

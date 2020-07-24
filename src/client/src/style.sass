@@ -43,14 +43,17 @@ $link: $primary
 @import "../node_modules/bootstrap/scss/_utilities.scss"
 //@import "../node_modules/bootstrap/scss/_print.scss"
 
-html, body, #root
-  height: 100%
-  
 main
-  display: flex
-  flex-direction: column
   .navbar
     z-index: 10
+
+#world-map
+  position: fixed
+  top: 0
+  left: 0
+  height: 100vh
+  width: 100vw
+  z-index: -1
 
 .navbar-brand img
   max-height: 30px
@@ -68,6 +71,14 @@ main
   z-index: -1
   &.home
     z-index: 0
+
+.page
+  width: 100vw
+  background-color: $white
+  height: calc(100vh - 60px)
+
+.pointer
+  cursor: pointer
 
 @keyframes fadein
   from
