@@ -1,26 +1,33 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Router, Link } from "@reach/router"
+import { Router } from '@reach/router';
+import { Auth0Provider } from '@auth0/auth0-react';
 import AddLocationPage from './bin/Pages/AddLocation';
 import './style.css';
 import { Events } from './bin/Components/EventContext';
-import WorldMap from "./bin/Components/WorldMap";
 import Navigation from './bin/Components/Navigation';
 import HomePage from './bin/Pages/Home';
 
 const App = () => {
   return (
     <React.StrictMode>
-      <Events>
-        <main>
-          <Navigation />
+      <Auth0Provider
+        domain={import.meta.env.SNOWPACK_PUBLIC_AUTH0_DOMAIN}
+        clientId={import.meta.env.SNOWPACK_PUBLIC_AUTH0_CIENT_ID}
+        audience={import.meta.env.SNOWPACK_PUBLIC_AUTH0_AUDIENCE}
+        scope={import.meta.env.SNOWPACK_PUBLIC_AUTH0_SCOPE}
+        redirectUri={window.location.origin}
+      >
+        <Events>
+          <main>
+            <Navigation />
             <Router>
               <HomePage path="/" />
               <AddLocationPage path="/add-location" />
             </Router>
-          <WorldMap />
-        </main>
-      </Events>
+          </main>
+        </Events>
+      </Auth0Provider>
     </React.StrictMode>
   );
 };

@@ -29,7 +29,7 @@ let private getLocations (events : Event list) =
               longitude = lng }
             :: acc) [] events
 
-let private WorldMap =
+let WorldMap =
     React.functionComponent
         ("WordMap",
          (fun () ->
@@ -72,6 +72,20 @@ let private WorldMap =
                                ClassName Bootstrap.Pointer ]
                      ])
 
+             let userIcon =
+                 if not geolocation.loading
+                    && Option.isNone geolocation.error then
+                     Marker [ MarkerKey "user"
+                              MarkerLatitude geolocation.latitude
+                              MarkerLongitude geolocation.longitude
+                              OffsetTop 0
+                              OffsetLeft 0 ] [
+                         UserIcon
+                     ]
+                     |> Some
+                 else
+                     None
+
              div [ Id "world-map" ] [
                  ReactMapGL [ OnViewportChange setViewport
                               MapWidth viewport.width
@@ -80,8 +94,7 @@ let private WorldMap =
                               Longitude viewport.longitude
                               Zoom viewport.zoom
                               MapStyle "mapbox://styles/nojaf/ck0wtbppf0jal1cq72o8i8vm1" ] [
+                     ofOption userIcon
                      ofList icons
                  ]
              ]))
-
-exportDefault WorldMap
