@@ -7,7 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="paket.references" />
+    <Compile Include="OutputBuilder.fs" />
     <Compile Include="Program.fs" />
+    <Content Include="init-azure.ps1" />
   </ItemGroup>
 
   <Import Project="..\.paket\Paket.Restore.targets" />

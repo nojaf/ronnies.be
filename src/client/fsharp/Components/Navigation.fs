@@ -78,6 +78,14 @@ let private Navigation =
                   [| box auth0.user
                      box auth0.isLoading |])
 
+             React.useEffect
+                 ((fun () ->
+                     if not auth0.isLoading && auth0.isAuthenticated then
+                         auth0.getAccessTokenSilently ()
+                         |> Promise.iter (fun token -> Fable.Core.JS.console.log token)),
+                  [| box auth0.user
+                     box auth0.isLoading |])
+
              let menuLink path label =
                  li [ classNames [ Bootstrap.NavItem ]
                       Key(sprintf "menu-%s" path) ] [

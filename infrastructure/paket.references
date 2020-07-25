@@ -2,3 +2,5 @@ group infrastructure
 
 Pulumi.Azure
 Pulumi.FSharp
+Microsoft.Azure.Management.Fluent
+Microsoft.Azure.Management.AppService.Fluent

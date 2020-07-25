@@ -92,12 +92,9 @@ Target.create "BuildServer"
     DotNet.publish (fun p ->
         { p with
             Configuration = DotNet.BuildConfiguration.Release
-            OutputPath = Some artifactPath
+            OutputPath = Some (artifactPath </> "server")
         })
         serverProjectPath
-
-    Zip.createZip artifactPath "func.zip" "" Zip.DefaultZipLevel false (!! "./artifacts/*.*" ++ "./artifacts/**/*.*")
-    Shell.mv "func.zip" artifactPath
 )
 
 
