@@ -231,6 +231,8 @@ let private update onSubmit msg model =
                 Map.remove "distance" model.Errors
 
         { model with Errors = errors }, Cmd.none
+    | Submit when (Map.containsKey "distance" model.Errors) ->
+        model, Cmd.none
     | Submit ->
         let id = Identifier.Create()
 
@@ -278,7 +280,6 @@ let private update onSubmit msg model =
                 |> List.groupBy fst
                 |> List.fold (fun acc (key, errors) -> Map.add key (List.map (snd >> mapError) errors) acc) errs
 
-            printfn "Errors while validating: %A" errors
             { model with Errors = errors }, Cmd.none
 
 let private mapToCurrencyItem (currencyCode, description) =
