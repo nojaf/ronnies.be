@@ -74,8 +74,7 @@ let private Navigation =
              React.useEffect
                  ((fun () ->
                      if not auth0.isLoading && auth0.isAuthenticated then
-                         auth0.getIdTokenClaims ()
-                         |> Promise.iter (fun claims -> setRoles (claims.roles))),
+                         setRoles auth0.user.roles),
                   [| box auth0.user
                      box auth0.isLoading |])
 
