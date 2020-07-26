@@ -9,4 +9,5 @@ let backendUrl : string = jsNative
 [<Emit("process.env.REACT_APP_SUBSCRIPTION_KEY")>]
 let private subscriptionKey : string = jsNative
 
-let subscriptionHeader = Fetch.Types.HttpRequestHeaders.Custom ("Ocp-Apim-Subscription-Key", box subscriptionKey)
+let subscriptionHeader =
+    Fetch.Types.HttpRequestHeaders.Custom("Ocp-Apim-Subscription-Key", box subscriptionKey)

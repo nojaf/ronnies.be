@@ -231,8 +231,7 @@ let private update onSubmit msg model =
                 Map.remove "distance" model.Errors
 
         { model with Errors = errors }, Cmd.none
-    | Submit when (Map.containsKey "distance" model.Errors) ->
-        model, Cmd.none
+    | Submit when (Map.containsKey "distance" model.Errors) -> model, Cmd.none
     | Submit ->
         let id = Identifier.Create()
 
@@ -317,10 +316,10 @@ let private AddLocationPage =
          (fun () ->
              let eventCtx = React.useContext (eventContext)
              let navigate = useNavigate ()
-             let (isSubmitting, setIsSubmitting) = React.useState(false)
+             let (isSubmitting, setIsSubmitting) = React.useState (false)
 
              let onSubmit (addEvent : AddLocation) =
-                 setIsSubmitting(true)
+                 setIsSubmitting (true)
                  eventCtx.AddEvents [ Event.LocationAdded addEvent ]
                  |> Promise.iter (fun _ -> navigate "/")
 
@@ -362,7 +361,7 @@ let private AddLocationPage =
                                     Bootstrap.P3 ] ] [
                      h1 [] [ str "E nieuwen toevoegen" ]
                      if isSubmitting then
-                        Ronnies.Client.Components.Loading.loading "ant opslaan..."
+                         Ronnies.Client.Components.Loading.loading "ant opslaan..."
                      else
                          form [ classNames [ Bootstrap.ColMd6
                                              Bootstrap.P0 ]
@@ -451,7 +450,7 @@ let private AddLocationPage =
                                  ]
                              ]
                          ]
-                     ]
+                 ]
              ]))
 
 exportDefault AddLocationPage

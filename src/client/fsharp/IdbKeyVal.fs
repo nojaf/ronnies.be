@@ -73,8 +73,10 @@ let syncLatestEvents () =
             | Some id -> sprintf "%s/api/get-events?lastEvent=%i" Config.backendUrl id
             | None -> sprintf "%s/api/get-events" Config.backendUrl
 
-        Fetch.fetch url [ requestHeaders [ HttpRequestHeaders.ContentType "application/json"
-                                           Config.subscriptionHeader ] ])
+        Fetch.fetch
+            url
+            [ requestHeaders [ HttpRequestHeaders.ContentType "application/json"
+                               Config.subscriptionHeader ] ])
     |> Promise.bind addEventsToIdb
 
 let persistEvents (events : Event list) authToken =

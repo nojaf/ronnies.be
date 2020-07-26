@@ -79,14 +79,6 @@ let private Navigation =
                   [| box auth0.user
                      box auth0.isLoading |])
 
-             React.useEffect
-                 ((fun () ->
-                     if not auth0.isLoading && auth0.isAuthenticated then
-                         auth0.getAccessTokenSilently ()
-                         |> Promise.iter (fun token -> Fable.Core.JS.console.log token)),
-                  [| box auth0.user
-                     box auth0.isLoading |])
-
              let menuLink path label =
                  li [ classNames [ Bootstrap.NavItem ]
                       Key(sprintf "menu-%s" path) ] [
@@ -96,6 +88,26 @@ let private Navigation =
                          str label
                      ]
                  ]
+
+             let logAuthToken () =
+                 if not auth0.isLoading && auth0.isAuthenticated then
+                     auth0.getAccessTokenSilently ()
+                     |> Promise.iter (fun token -> Fable.Core.JS.console.log token)
+
+             let adminItems =
+                 if Array.contains "admin" roles then
+                     [ li [ classNames [ Bootstrap.NavItem ]
+                            Key "bearerButton"
+                            OnClick(fun ev ->
+                                ev.preventDefault ()
+                                logAuthToken ()) ] [
+                         a [ Href "#"
+                             ClassName Bootstrap.NavLink ] [
+                             str "Bearer"
+                         ]
+                       ] ]
+                 else
+                     []
 
              let editorItems =
                  if Array.contains "admin" roles
@@ -125,6 +137,7 @@ let private Navigation =
                      ul [ classNames [ Bootstrap.NavbarNav
                                        Bootstrap.MrAuto ] ] [
                          ofList editorItems
+                         ofList adminItems
                      ]
                      if not auth0.isLoading then
                          rightNavbar
