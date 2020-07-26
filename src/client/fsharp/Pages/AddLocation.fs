@@ -1,6 +1,7 @@
 module Ronnies.Client.Views.AddLocationPage.View
 
 open System
+open Fable.Core
 open Fable.Core.JsInterop
 open Fable.Import
 open Fable.React
@@ -8,6 +9,7 @@ open Fable.React.Props
 open Feliz
 open Feliz.UseElmish
 open Elmish
+open Auth0
 open Ronnies.Domain
 open Ronnies.Client.Styles
 open Ronnies.Client.Components.EventContext
@@ -208,7 +210,7 @@ type private Msg =
     | UpdateIsDraft of bool
     | UpdateRemark of string
     | UpdateLocationError of isError : bool
-    | Submit
+    | Submit of userId : string
 
 let private update onSubmit msg model =
     match msg with
@@ -231,8 +233,8 @@ let private update onSubmit msg model =
                 Map.remove "distance" model.Errors
 
         { model with Errors = errors }, Cmd.none
-    | Submit when (Map.containsKey "distance" model.Errors) -> model, Cmd.none
-    | Submit ->
+    | Submit _ when (Map.containsKey "distance" model.Errors) -> model, Cmd.none
+    | Submit userId ->
         let id = Identifier.Create()
 
         let remark =
@@ -252,7 +254,7 @@ let private update onSubmit msg model =
                 model.IsDraft
                 remark
                 DateTimeOffset.Now
-                "nojaf"
+                userId
 
         match result with
         | Success locationAdded ->
@@ -317,6 +319,14 @@ let private AddLocationPage =
              let eventCtx = React.useContext (eventContext)
              let navigate = useNavigate ()
              let (isSubmitting, setIsSubmitting) = React.useState (false)
+             let auth0 = useAuth0 ()
+             let (userId, setUserId) = React.useState ("")
+
+             React.useEffect
+                 ((fun () ->
+                     if not (JsInterop.isNullOrUndefined auth0.user) then
+                         setUserId auth0.user.sub),
+                  [| box auth0.user |])
 
              let onSubmit (addEvent : AddLocation) =
                  setIsSubmitting (true)
@@ -367,7 +377,7 @@ let private AddLocationPage =
                                              Bootstrap.P0 ]
                                 OnSubmit(fun ev ->
                                     ev.preventDefault ()
-                                    dispatch Submit) ] [
+                                    dispatch (Submit userId)) ] [
                              div [ ClassName Bootstrap.FormGroup ] [
                                  label [] [ str "Naam*" ]
                                  input [ classNames [ Bootstrap.FormControl

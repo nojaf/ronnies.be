@@ -6,6 +6,10 @@ open Fable.Core.JsInterop
 type Auth0User =
     abstract picture : string
     abstract nickname : string
+    abstract sub : string
+
+    [<Emit("$0[\"https://ronnies.be/roles\"]")>]
+    abstract roles : string array
 
 [<AllowNullLiteral>]
 type IdToken =
