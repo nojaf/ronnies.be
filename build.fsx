@@ -85,8 +85,9 @@ Target.create "InstallClient"
     )
 
 Target.create "BuildClient" (fun _ ->
-    Yarn.exec "fable" (fun opt -> { opt with WorkingDirectory = clientPath })
-    Yarn.exec "build" (fun opt -> { opt with WorkingDirectory = clientPath })
+    Yarn.exec "sass" yarnSetParams
+    Yarn.exec "fable" yarnSetParams
+    Yarn.exec "build" yarnSetParams
 )
 
 Target.create "DeployClient" (fun _ -> Yarn.exec "deploy" yarnSetParams)
