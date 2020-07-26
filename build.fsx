@@ -43,6 +43,10 @@ Target.create "Clean"
     (fun _ ->
         !! "src/server/bin" ++ "src/server/obj" |> Seq.iter Shell.cleanDir
         Shell.cleanDir artifactPath
+        Shell.rm_rf (clientPath </> ".fable")
+        Shell.rm_rf (clientPath </> ".build")
+        Shell.rm_rf (clientPath </> "build")
+        Shell.rm_rf (clientPath </> "src" </> "bin")
     )
 
 Target.create "Format" (fun _ ->
@@ -81,6 +85,7 @@ Target.create "InstallClient"
     )
 
 Target.create "BuildClient" (fun _ ->
+    Yarn.exec "fable" (fun opt -> { opt with WorkingDirectory = clientPath })
     Yarn.exec "build" (fun opt -> { opt with WorkingDirectory = clientPath })
 )
 

@@ -36,7 +36,7 @@ type ReactMapGLProp =
     | MapStyle of string
     | MapboxApiAccessToken of string
 
-[<Emit("import.meta.env.SNOWPACK_PUBLIC_MAPBOX")>]
+[<Emit("process.env.REACT_APP_MAPBOX")>]
 let private mapboxApiAccessToken : string = jsNative
 
 let inline ReactMapGL (props : ReactMapGLProp list) (children : ReactElement seq) : Fable.React.ReactElement =

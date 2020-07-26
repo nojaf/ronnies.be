@@ -171,6 +171,9 @@ let infra () =
                 <method>GET</method>
                 <method>POST</method>
             </allowed-methods>
+            <allowed-headers>
+                <header>*</header>
+            </allowed-headers>
         </cors>
     </inbound>
     <outbound>
@@ -210,6 +213,9 @@ let infra () =
                   ApiName = io api.Name,
                   ProductId = io product.ProductId))
 
+    // Pulumi makes the user id required for subscriptions.
+    // In case of the consumption tier, users are not allowed.
+    // So ARM template serves as a workaround for this limitation.
     let subscriptionArm = """
     {
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -220,6 +226,9 @@ let infra () =
             },
             "productId":{
                 "type":"string"
+            },
+            "primaryKey":{
+                "type":"string"
             }
         },
         "resources": [{
@@ -228,6 +237,7 @@ let infra () =
             "type": "Microsoft.ApiManagement/service/subscriptions",
             "properties": {
                 "scope": "[concat('/products/', parameters('productId'))]",
+                "primaryKey": "[parameters('primaryKey')]",
                 "displayName": "Rudi subscription"
             }
         }]
@@ -242,14 +252,10 @@ let infra () =
                   TemplateBody = input subscriptionArm,
                   Parameters =
                       inputMap [ "apim", io apimServiceName
-                                 "productId", io product.ProductId ],
+                                 "productId", io product.ProductId
+                                 "primaryKey", input (System.Environment.GetEnvironmentVariable("SNOWPACK_PUBLIC_SUBSCRIPTION_KEY")) ],
                   DeploymentMode = input "Incremental"))
 
-    //    let subscription =
-//        Subscription("rudiSubscription", SubscriptionArgs(ResourceGroupName = io apimRgName,
-//                                                          ApiManagementName = io apimServiceName,
-//                                                          ProductId = io product.Id,
-//                                                          DisplayName = input "Rudi subscription"))
 
     let getEventsOperation =
         ApiOperation
@@ -330,7 +336,7 @@ let infra () =
                                 <issuer>https://nojaf.eu.auth0.com/</issuer>
                             </issuers>
                             <required-claims>
-                                <claim name="roles" match="any">
+                                <claim name="https://ronnies.be/roles" match="any">
                                     <value>admin</value>
                                     <value>editor</value>
                                 </claim>

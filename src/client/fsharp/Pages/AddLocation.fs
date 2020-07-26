@@ -316,8 +316,10 @@ let private AddLocationPage =
          (fun () ->
              let eventCtx = React.useContext (eventContext)
              let navigate = useNavigate ()
+             let (isSubmitting, setIsSubmitting) = React.useState(false)
 
              let onSubmit (addEvent : AddLocation) =
+                 setIsSubmitting(true)
                  eventCtx.AddEvents [ Event.LocationAdded addEvent ]
                  |> Promise.iter (fun _ -> navigate "/")
 
@@ -358,94 +360,97 @@ let private AddLocationPage =
                  div [ classNames [ Bootstrap.Container
                                     Bootstrap.P3 ] ] [
                      h1 [] [ str "E nieuwen toevoegen" ]
-                     form [ classNames [ Bootstrap.ColMd6
-                                         Bootstrap.P0 ]
-                            OnSubmit(fun ev ->
-                                ev.preventDefault ()
-                                dispatch Submit) ] [
-                         div [ ClassName Bootstrap.FormGroup ] [
-                             label [] [ str "Naam*" ]
-                             input [ classNames [ Bootstrap.FormControl
-                                                  if hasErrors "name" then
-                                                      Bootstrap.IsInvalid ]
-                                     DefaultValue model.Name
-                                     updateOnChange UpdateName ]
-                             inputErrors "name"
-                         ]
-                         div [ ClassName Bootstrap.FormGroup ] [
-                             label [] [ str "Prijs*" ]
-                             div [ ClassName Bootstrap.InputGroup ] [
+                     if isSubmitting then
+                        Ronnies.Client.Components.Loading.loading "ant opslaan..."
+                     else
+                         form [ classNames [ Bootstrap.ColMd6
+                                             Bootstrap.P0 ]
+                                OnSubmit(fun ev ->
+                                    ev.preventDefault ()
+                                    dispatch Submit) ] [
+                             div [ ClassName Bootstrap.FormGroup ] [
+                                 label [] [ str "Naam*" ]
                                  input [ classNames [ Bootstrap.FormControl
-                                                      if hasErrors "price" then
+                                                      if hasErrors "name" then
                                                           Bootstrap.IsInvalid ]
-                                         Type "number"
-                                         Step "0.01"
-                                         DefaultValue model.Price
-                                         updateOnChange UpdatePrice ]
+                                         DefaultValue model.Name
+                                         updateOnChange UpdateName ]
+                                 inputErrors "name"
+                             ]
+                             div [ ClassName Bootstrap.FormGroup ] [
+                                 label [] [ str "Prijs*" ]
+                                 div [ ClassName Bootstrap.InputGroup ] [
+                                     input [ classNames [ Bootstrap.FormControl
+                                                          if hasErrors "price" then
+                                                              Bootstrap.IsInvalid ]
+                                             Type "number"
+                                             Step "0.01"
+                                             DefaultValue model.Price
+                                             updateOnChange UpdatePrice ]
 
-                                 div [ ClassName Bootstrap.InputGroupAppend ] [
-                                     select [ classNames [ Bootstrap.CustomSelect ]
-                                              updateOnChange UpdateCurrency
-                                              Style [ Background "none"
-                                                      BorderTopLeftRadius "0"
-                                                      BorderBottomLeftRadius "0" ] ] [
-                                         ofList (List.map mapToCurrencyItem currencies)
+                                     div [ ClassName Bootstrap.InputGroupAppend ] [
+                                         select [ classNames [ Bootstrap.CustomSelect ]
+                                                  updateOnChange UpdateCurrency
+                                                  Style [ Background "none"
+                                                          BorderTopLeftRadius "0"
+                                                          BorderBottomLeftRadius "0" ] ] [
+                                             ofList (List.map mapToCurrencyItem currencies)
+                                         ]
+                                     ]
+                                     inputErrors "price"
+                                 ]
+                             ]
+                             div [] [
+                                 label [] [ str "Locatie*" ]
+                                 br []
+                                 div [ Id "locationPickerContainer" ] [
+                                     LocationPicker
+                                         ({ OnChange = onLocationChanges
+                                            ExistingLocations = [] })
+                                 ]
+                                 ofOption locationError
+                             ]
+                             div [ ClassName Bootstrap.FormGroup ] [
+                                 label [] [ str "Ist van vat?" ]
+                                 br []
+                                 div [ ClassName Bootstrap.BtnGroup ] [
+                                     button [ classNames [ Bootstrap.Btn
+                                                           if not model.IsDraft then
+                                                               Bootstrap.BtnPrimary
+                                                           else
+                                                               Bootstrap.BtnOutlinePrimary ]
+                                              OnClick(fun ev ->
+                                                  ev.preventDefault ()
+                                                  dispatch (UpdateIsDraft false)) ] [
+                                         str "Nint"
+                                     ]
+                                     button [ classNames [ Bootstrap.Btn
+                                                           if model.IsDraft then
+                                                               Bootstrap.BtnPrimary
+                                                           else
+                                                               Bootstrap.BtnOutlinePrimary ]
+                                              OnClick(fun ev ->
+                                                  ev.preventDefault ()
+                                                  dispatch (UpdateIsDraft true)) ] [
+                                         str "Joat"
                                      ]
                                  ]
-                                 inputErrors "price"
                              ]
-                         ]
-                         div [] [
-                             label [] [ str "Locatie*" ]
-                             br []
-                             div [ Id "locationPickerContainer" ] [
-                                 LocationPicker
-                                     ({ OnChange = onLocationChanges
-                                        ExistingLocations = [] })
+                             div [ ClassName Bootstrap.FormGroup ] [
+                                 label [] [ str "Opmerking" ]
+                                 textarea [ ClassName Bootstrap.FormControl
+                                            DefaultValue model.Remark
+                                            updateOnChange UpdateRemark ] []
                              ]
-                             ofOption locationError
-                         ]
-                         div [ ClassName Bootstrap.FormGroup ] [
-                             label [] [ str "Ist van vat?" ]
-                             br []
-                             div [ ClassName Bootstrap.BtnGroup ] [
+                             div [ classNames [ Bootstrap.TextRight
+                                                Bootstrap.Pb2 ] ] [
                                  button [ classNames [ Bootstrap.Btn
-                                                       if not model.IsDraft then
-                                                           Bootstrap.BtnPrimary
-                                                       else
-                                                           Bootstrap.BtnOutlinePrimary ]
-                                          OnClick(fun ev ->
-                                              ev.preventDefault ()
-                                              dispatch (UpdateIsDraft false)) ] [
-                                     str "Nint"
+                                                       Bootstrap.BtnPrimary ] ] [
+                                     str "Save!"
                                  ]
-                                 button [ classNames [ Bootstrap.Btn
-                                                       if model.IsDraft then
-                                                           Bootstrap.BtnPrimary
-                                                       else
-                                                           Bootstrap.BtnOutlinePrimary ]
-                                          OnClick(fun ev ->
-                                              ev.preventDefault ()
-                                              dispatch (UpdateIsDraft true)) ] [
-                                     str "Joat"
-                                 ]
-                             ]
-                         ]
-                         div [ ClassName Bootstrap.FormGroup ] [
-                             label [] [ str "Opmerking" ]
-                             textarea [ ClassName Bootstrap.FormControl
-                                        DefaultValue model.Remark
-                                        updateOnChange UpdateRemark ] []
-                         ]
-                         div [ classNames [ Bootstrap.TextRight
-                                            Bootstrap.Pb2 ] ] [
-                             button [ classNames [ Bootstrap.Btn
-                                                   Bootstrap.BtnPrimary ] ] [
-                                 str "Save!"
                              ]
                          ]
                      ]
-                 ]
              ]))
 
 exportDefault AddLocationPage
