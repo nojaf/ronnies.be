@@ -1,0 +1,45 @@
+name: Release to production
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1.4.0
+        with:
+          dotnet-version: 3.1.100
+      - name: Restore local tools
+        run: dotnet tool restore
+      - name: FAKE
+        run: dotnet fake run build.fsx -t PrepareRelease
+        env:
+          REACT_APP_BACKEND: ${{ secrets.BACKEND }}
+          REACT_APP_AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
+          REACT_APP_AUTH0_CIENT_ID: ${{ secrets.AUTH0_CIENT_ID }}
+          REACT_APP_AUTH0_AUDIENCE: ${{ secrets.AUTH0_AUDIENCE }}
+          REACT_APP_AUTH0_SCOPE: ${{ secrets.AUTH0_SCOPE }}
+          REACT_APP_MAPBOX: ${{ secrets.MAPBOX }}
+          REACT_APP_SUBSCRIPTION_KEY: ${{ secrets.SUBSCRIPTION_KEY }}
+      - name: Deploy Frontend
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./src/client/build
+      - name: Deploy Backend
+        uses: docker://pulumi/actions:v2.7.1
+        with:
+          args: up --yes
+        env:
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          PULUMI_ROOT: infrastructure
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          SUBSCRIPTION_KEY: ${{ secrets.SUBSCRIPTION_KEY }}
+          PULUMI_CI: up

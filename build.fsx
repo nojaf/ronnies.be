@@ -152,6 +152,7 @@ Target.create "Watch" (fun _ ->
     |> Async.Ignore
     |> Async.RunSynchronously)
 
+Target.create "PrepareRelease" ignore
 
 // Build order
 "InstallClient" ==> "Format"
@@ -161,6 +162,8 @@ Target.create "Watch" (fun _ ->
 "Clean" ==> "BuildServer"
 
 "Clean" ==> "BuildClient" ==> "DeployClient"
+
+"BuildClient" ==> "BuildServer" ==> "PrepareRelease"
 
 "Watch"
     <== [ "InstallClient" ]

@@ -253,7 +253,7 @@ let infra () =
                   Parameters =
                       inputMap [ "apim", io apimServiceName
                                  "productId", io product.ProductId
-                                 "primaryKey", input (System.Environment.GetEnvironmentVariable("SNOWPACK_PUBLIC_SUBSCRIPTION_KEY")) ],
+                                 "primaryKey", input (System.Environment.GetEnvironmentVariable("SUBSCRIPTION_KEY")) ],
                   DeploymentMode = input "Incremental"))
 
 
