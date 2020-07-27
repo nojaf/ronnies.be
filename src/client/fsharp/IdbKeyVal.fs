@@ -94,6 +94,8 @@ let persistEvents (events : Event list) authToken =
         [ RequestProperties.Method HttpMethod.POST
           RequestProperties.Body(!^json)
           requestHeaders [ HttpRequestHeaders.ContentType "application/json"
-                           HttpRequestHeaders.Authorization(sprintf "Bearer %s" authToken)
+                           Config.authHeader authToken
                            Config.subscriptionHeader ] ]
     |> Promise.bind addEventsToIdb
+
+let removeAllEvents () = clear ronniesStore

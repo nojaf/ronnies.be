@@ -42,9 +42,9 @@ let private Navigation =
 
              let userElement (user : Auth0.Auth0User) =
                  li [ classNames [ Bootstrap.NavItem ] ] [
-                     span [ classNames [ Bootstrap.NavLink
-                                         Bootstrap.Active
-                                         Bootstrap.DefaultCursor ] ] [
+                     Link [ classNames [ Bootstrap.NavLink
+                                         Bootstrap.Active ]
+                            To "/settings" ] [
                          img [ Src user.picture
                                Style [ MarginTop "-2px" ]
                                classNames [ Bootstrap.Avatar ]

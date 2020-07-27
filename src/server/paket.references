@@ -4,3 +4,5 @@ Microsoft.NET.Sdk.Functions
 CosmoStore.TableStorage
 Thoth.Json.Net
 System.IdentityModel.Tokens.Jwt
+WebPush
+FSharp.Data

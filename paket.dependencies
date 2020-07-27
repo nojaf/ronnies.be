@@ -14,6 +14,8 @@ group client
     nuget Fable.Promise
     nuget Fable.Fetch
     nuget Fable.Browser.Geolocation
+    nuget Fable.Browser.Navigator
+    nuget Fable.Browser.Worker
     nuget Thoth.Json
     nuget Feliz.UseElmish
     nuget Zanaptak.TypedCssClasses
@@ -29,6 +31,8 @@ group server
     nuget Thoth.Json.Net
     # workaround for https://github.com/Azure/azure-functions-host/issues/6070
     nuget System.IdentityModel.Tokens.Jwt 5.5.0
+    nuget WebPush
+    nuget FSharp.Data
 
 group test
     source https://api.nuget.org/v3/index.json

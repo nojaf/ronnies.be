@@ -11,6 +11,7 @@
     <Compile Include="Config.fs" />
     <Compile Include="IdbKeyVal.fs" />
     <Compile Include="Auth0.fs" />
+    <Compile Include="ReactToastify.fs" />
     <Compile Include="Styles.fs" />
     <Compile Include="Components\ReactMapGL.fs" />
     <Compile Include="Components\Loading.fs" />
@@ -18,8 +19,11 @@
     <Compile Include="Components\EventContext.fs" />
     <Compile Include="Components\Navigation.fs" />
     <Compile Include="Components\WorldMap.fs" />
+    <Compile Include="Components\Page.fs" />
+    <Compile Include="Components\Switch.fs" />
     <Compile Include="Pages\AddLocation.fs" />
     <Compile Include="Pages\Home.fs" />
+    <Compile Include="Pages\Settings.fs" />
     <Compile Include="App.fs" />
   </ItemGroup>
   <Import Project="..\..\..\.paket\Paket.Restore.targets" />

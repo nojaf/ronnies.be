@@ -3,7 +3,9 @@ import ReactDOM from "react-dom";
 import * as serviceWorker from "./serviceWorker";
 import { Router } from "@reach/router";
 import { Auth0Provider } from "@auth0/auth0-react";
+import { ToastContainer } from "react-toastify";
 import AddLocationPage from "./bin/Pages/AddLocation";
+import Settings from "./bin/Pages/Settings";
 import "./style.css";
 import { Events } from "./bin/Components/EventContext";
 import Navigation from "./bin/Components/Navigation";
@@ -25,7 +27,9 @@ const App = () => {
             <Router>
               <HomePage path="/" />
               <AddLocationPage path="/add-location" />
+              <Settings path="/settings" />
             </Router>
+            <ToastContainer />
           </main>
         </Events>
       </Auth0Provider>
@@ -43,4 +47,13 @@ ReactDOM.render(
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+// serviceWorker.register();
+
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker
+        .register('/sw.js', { scope: './' })
+        .then(swr => {
+            console.log(`Service worker registered`);
+        })
+}
+

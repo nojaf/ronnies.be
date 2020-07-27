@@ -1,5 +1,6 @@
 module Ronnies.Server.Function
 
+open System
 open FSharp.Control.Tasks
 open Microsoft.AspNetCore.Http
 open Microsoft.Azure.WebJobs
@@ -12,6 +13,14 @@ open Thoth.Json.Net
 open Ronnies.Domain
 open Ronnies.Server.Authentication
 open Ronnies.Server.EventStore
+
+type HttpRequest with
+
+    member this.ReadJson () =
+        let json =
+            using (new StreamReader(this.Body)) (fun stream -> stream.ReadToEnd())
+
+        json
 
 let private sendJson json =
     new HttpResponseMessage(HttpStatusCode.OK,
@@ -48,12 +57,10 @@ let persistEvents userId events =
 
 [<FunctionName("add-events")>]
 let AddEvents ([<HttpTrigger(AuthorizationLevel.Function, "post", Route = null)>] req : HttpRequest, log : ILogger) =
-    log.LogInformation("F# HTTP trigger function processed a request...")
+    log.LogInformation("Start add-events")
     task {
         let user = req.GetUser log
-
-        let json =
-            using (new StreamReader(req.Body)) (fun stream -> stream.ReadToEnd())
+        let! json = req.ReadAsStringAsync()
 
         let eventsResult =
             Thoth.Json.Net.Decode.fromString (Decode.list Event.Decoder) json
@@ -73,7 +80,7 @@ let AddEvents ([<HttpTrigger(AuthorizationLevel.Function, "post", Route = null)>
 
 [<FunctionName("get-events")>]
 let GetEvents ([<HttpTrigger(AuthorizationLevel.Function, "get", Route = null)>] req : HttpRequest, log : ILogger) =
-    log.LogInformation("F# HTTP trigger function processed a request.........")
+    log.LogInformation("Start get-events")
 
     task {
         let lastEvent =
@@ -87,4 +94,47 @@ let GetEvents ([<HttpTrigger(AuthorizationLevel.Function, "get", Route = null)>]
             events |> Encode.object |> Encode.toString 4
 
         return sendJson json
+    }
+
+[<FunctionName("add-subscription")>]
+let AddSubscription ([<HttpTrigger(AuthorizationLevel.Function, "post", Route = null)>] req : HttpRequest, log : ILogger) =
+    log.LogInformation("Start add-subscription")
+
+    task {
+        let userFromToken = req.GetUser log
+        let! json = req.ReadAsStringAsync()
+        log.LogInformation json
+        let! managementToken = Authentication.getManagementAccessToken log
+
+        match Decode.fromString PushNotificationSubscription.FromBrowserDecoder json with
+        | Ok subscription ->
+            let! existingSubscriptions =
+                Authentication.getUserPushNotificationSubscriptions log managementToken userFromToken.Id
+
+            if List.forall (fun s -> s.Endpoint <> subscription.Endpoint) existingSubscriptions then
+                do! Authentication.updateUserPushNotificationSubscription
+                        managementToken
+                        userFromToken.Id
+                        (subscription :: existingSubscriptions)
+
+            return sendText "Subscription added"
+
+        | Error err -> return sendBadRequest (err.ToString())
+    }
+
+[<FunctionName("remove-subscription")>]
+let RemoveSubscription ([<HttpTrigger(AuthorizationLevel.Function, "post", Route = null)>] req : HttpRequest,
+                        log : ILogger) =
+    log.LogInformation("Start remove-subscription")
+    task {
+        let user = req.GetUser log
+        let! endpoint = req.ReadAsStringAsync()
+        let! managementToken = Authentication.getManagementAccessToken log
+        let! existingSubscriptions = Authentication.getUserPushNotificationSubscriptions log managementToken user.Id
+
+        let updatedSubscriptions =
+            List.filter (fun s -> s.Endpoint <> endpoint) existingSubscriptions
+
+        do! Authentication.updateUserPushNotificationSubscription managementToken user.Id updatedSubscriptions
+        return sendText "Subscription removed"
     }

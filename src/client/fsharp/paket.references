@@ -5,5 +5,7 @@ Fable.Promise
 Fable.Fetch
 Thoth.Json
 Fable.Browser.Geolocation
+Fable.Browser.Navigator
+Fable.Browser.Worker
 Feliz.UseElmish
 Zanaptak.TypedCssClasses

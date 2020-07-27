@@ -15,7 +15,8 @@
     "react-map-gl": "5.2.7",
     "geolocation-utils": "1.2.3",
     "react-use": "15.3.2",
-    "idb-keyval": "3.2.0"
+    "idb-keyval": "3.2.0",
+    "react-toastify": "6.0.8"
   },
   "devDependencies": {
     "prettier": "^2.0.5",

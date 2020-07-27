@@ -10,11 +10,13 @@ open Ronnies.Client
 [<NoEquality>]
 type EventContext =
     { Events : Event list
-      AddEvents : Event list -> JS.Promise<unit> }
+      AddEvents : Event list -> JS.Promise<unit>
+      ClearCache : unit -> JS.Promise<unit> }
 
 let private emptyEventContext =
     { Events = []
-      AddEvents = fun _ -> Promise.lift () }
+      AddEvents = fun _ -> Promise.lift ()
+      ClearCache = fun _ -> Promise.lift () }
 
 let eventContext =
     React.createContext<EventContext> (defaultValue = emptyEventContext)
@@ -44,8 +46,14 @@ let Events =
 
              React.useEffectOnce (fun () -> fetchLatestEvents setEvents)
 
+             let clearCache () =
+                 IdbKeyVal.removeAllEvents ()
+                 IdbKeyVal.syncLatestEvents ()
+                 |> Promise.map (setEvents)
+
              let contextValue =
                  { Events = events
-                   AddEvents = addEvents }
+                   AddEvents = addEvents
+                   ClearCache = clearCache }
 
              React.contextProvider (eventContext, contextValue, props.children)))
