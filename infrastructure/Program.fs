@@ -182,7 +182,7 @@ let infra () =
 </policies>
 """
 
-    let apiPolicy =
+    let _apiPolicy =
         ApiPolicy
             ("ronnies-policy",
              ApiPolicyArgs
@@ -204,7 +204,7 @@ let infra () =
                   ApprovalRequired = input true,
                   Published = input true))
 
-    let productApi =
+    let _productApi =
         ProductApi
             ("ronnies",
              ProductApiArgs
@@ -244,7 +244,7 @@ let infra () =
     }
 """
 
-    let subscriptionDeployment =
+    let _subscriptionDeployment =
         TemplateDeployment
             ("rudi-sub",
              TemplateDeploymentArgs
@@ -297,7 +297,7 @@ let infra () =
 """                 functionKeyHeader
         }
 
-    let getEventsOperationPolicy =
+    let _getEventsOperationPolicy =
         ApiOperationPolicy
             ("get-events-policy",
              ApiOperationPolicyArgs
@@ -351,7 +351,7 @@ let infra () =
                 """ functionKeyHeader
         }
 
-    let addEventsPolicy =
+    let _addEventsPolicy =
         ApiOperationPolicy
             ("add-events-policy",
              ApiOperationPolicyArgs

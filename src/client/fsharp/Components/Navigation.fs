@@ -1,7 +1,6 @@
 module Ronnies.Client.Components.Navigation
 
 open Browser.Types
-open Fable.Core
 open Fable.Core.JsInterop
 open Fable.React
 open Fable.React.Props
