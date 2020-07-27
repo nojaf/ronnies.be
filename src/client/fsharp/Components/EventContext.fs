@@ -22,9 +22,13 @@ let eventContext =
 /// Syncs the latest events from the backend to the IDB store
 /// Returns all events
 let private fetchLatestEvents setEvents =
-    IdbKeyVal.syncLatestEvents ()
-    |> Promise.bind (fun _ -> IdbKeyVal.getAllEvents ())
-    |> Promise.iter setEvents
+    IdbKeyVal.getAllEvents ()
+    |> Promise.bind (fun existingEvents ->
+        setEvents existingEvents
+        let newEvents = IdbKeyVal.syncLatestEvents ()
+        Promise.all [ Promise.lift existingEvents
+                      newEvents ])
+    |> Promise.iter (List.concat >> setEvents)
 
 let Events =
     React.functionComponent
