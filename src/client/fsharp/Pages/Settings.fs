@@ -87,7 +87,11 @@ let private addSubscription token =
                           requestHeaders [ HttpRequestHeaders.ContentType "application/json"
                                            Config.authHeader token
                                            Config.subscriptionHeader ] ])
-                |> Promise.map ignore
+                |> Promise.map (fun _ ->
+                    infoToast
+                        "Notificaties check!"
+                        [ ToastPosition ToastPosition.BottomRight
+                          HideProgressBar true ])
             | Some sub ->
                 printfn "unsubscribed"
                 sub.unsubscribe () |> Promise.map ignore)
@@ -115,8 +119,11 @@ let private removeSubscription token =
                           requestHeaders [ HttpRequestHeaders.ContentType "application/json"
                                            Config.authHeader token
                                            Config.subscriptionHeader ] ])
-                |> Promise.map ignore)
-
+                |> Promise.map (fun _ ->
+                    infoToast
+                        "Notificaties uitgezet!"
+                        [ ToastPosition ToastPosition.BottomRight
+                          HideProgressBar true ]))
     | None -> Promise.lift ()
 
 let private Settings =
