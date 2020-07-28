@@ -163,7 +163,8 @@ Target.create "PrepareRelease" ignore
 
 "Clean" ==> "BuildClient" ==> "DeployClient"
 
-"BuildClient" ==> "BuildServer" ==> "PrepareRelease"
+"PrepareRelease"
+    <== [ "BuildClient" ; "BuildServer" ]
 
 "Watch"
     <== [ "InstallClient" ]

@@ -42,4 +42,11 @@ jobs:
           PULUMI_ROOT: infrastructure
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
           SUBSCRIPTION_KEY: ${{ secrets.SUBSCRIPTION_KEY }}
+          Auth0Management_ClientId: ${{ secrets.AUTH0MANAGEMENT_CLIENTID }}
+          Auth0Management_ClientSecret: ${{ secrets.AUTH0MANAGEMENT_CLIENTSECRET }}
+          Auth0Management_Audience: ${{ secrets.AUTH0MANAGEMENT_AUDIENCE }}
+          Auth0Management_APIRoot: ${{ secrets.AUTH0MANAGEMENT_APIROOT }}
+          Vapid_Subject: ${{ secrets.VAPID_SUBJECT }}
+          Vapid_PublicKey: ${{ secrets.VAPID_PUBLICKEY }}
+          Vapid_PrivateKey: ${{ secrets.VAPID_PRIVATEKEY }}
           PULUMI_CI: up

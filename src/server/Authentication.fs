@@ -92,25 +92,29 @@ let getManagementAccessToken (log : ILogger) =
 type PushNotificationSubscription =
     { Endpoint : string
       Auth : string
-      P256DH : string }
+      P256DH : string
+      Origin: string }
 
-    static member FromBrowserDecoder =
+    static member FromBrowserDecoder (origin:string) =
         Decode.object (fun get ->
             { Endpoint = get.Required.Field "endpoint" Decode.string
               Auth = get.Required.At [ "keys"; "auth" ] Decode.string
-              P256DH = get.Required.At [ "keys"; "p256dh" ] Decode.string })
+              P256DH = get.Required.At [ "keys"; "p256dh" ] Decode.string
+              Origin = origin })
 
     static member FromAuth0Decoder =
         Decode.object (fun get ->
             { Endpoint = get.Required.Field "endpoint" Decode.string
               Auth = get.Required.Field "auth" Decode.string
-              P256DH = get.Required.Field "p256dh" Decode.string })
+              P256DH = get.Required.Field "p256dh" Decode.string
+              Origin = get.Required.Field "origin" Decode.string })
 
     static member Encoder : Encoder<PushNotificationSubscription> =
         fun (pns : PushNotificationSubscription) ->
             Encode.object [ "endpoint", Encode.string pns.Endpoint
                             "auth", Encode.string pns.Auth
-                            "p256dh", Encode.string pns.P256DH ]
+                            "p256dh", Encode.string pns.P256DH
+                            "origin", Encode.string pns.Origin ]
 
 type AppMetaData =
     { PushNotificationSubscriptions : PushNotificationSubscription list }
@@ -181,4 +185,37 @@ let updateUserPushNotificationSubscription managementToken userId subscriptions 
                  body = TextRequest json)
 
         ()
+    }
+
+let private allSubscriptionsDecoder =
+    Decode.list Auth0User.Decoder
+    |> Decode.map (fun users -> List.collect (fun (u: Auth0User) -> u.AppMetaData.PushNotificationSubscriptions) users)
+
+let getPushNotificationSubscriptions (log : ILogger) origin managementToken =
+    task {
+        let url = sprintf "%s/api/v2/users?per_page=100&fields=user_id,app_metadata" managementAPIRoot
+        let! users =
+            Http.AsyncRequestString(url, headers = [ "Authorization", (sprintf "Bearer %s" managementToken) ])
+        let subscriptions = Decode.fromString allSubscriptionsDecoder users
+        match subscriptions with
+        | Ok subs -> return (List.filter (fun s -> s.Origin = origin) subs)
+        | Error err ->
+            log.LogError( sprintf "Invalid response from Auth0 management token API, %A" err)
+            return []
+    }
+
+let getUserName (log : ILogger) managementToken userId =
+    task {
+        let url =
+            sprintf "%s/api/v2/users/%s" managementAPIRoot userId
+
+        let! response =
+            Http.AsyncRequestString(url, headers = [ "Authorization", (sprintf "Bearer %s" managementToken) ])
+
+        let decodeUserName = Decode.object (fun get -> get.Required.Field "nickname" Decode.string)
+        match Decode.fromString decodeUserName response with
+        | Ok userName -> return userName
+        | Error error ->
+            log.LogError(sprintf "Failed to decode username from auth0, %A" error)
+            return "???"
     }
