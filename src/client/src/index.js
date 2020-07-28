@@ -1,6 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import * as serviceWorker from "./serviceWorker";
 import { Router } from "@reach/router";
 import { Auth0Provider } from "@auth0/auth0-react";
 import { ToastContainer } from "react-toastify";
@@ -10,6 +9,7 @@ import "./style.css";
 import { Events } from "./bin/Components/EventContext";
 import Navigation from "./bin/Components/Navigation";
 import HomePage from "./bin/Pages/Home";
+import DetailPage from "./bin/Pages/Detail";
 
 const App = () => {
   return (
@@ -28,6 +28,7 @@ const App = () => {
               <HomePage path="/" />
               <AddLocationPage path="/add-location" />
               <Settings path="/settings" />
+              <DetailPage path="/detail/:id" />
             </Router>
             <ToastContainer />
           </main>

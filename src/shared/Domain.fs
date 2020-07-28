@@ -132,7 +132,7 @@ type Currency =
     private
     | Currency of decimal * ThreeLetterString
 
-    static member Read (Currency (v, t)) = v, t
+    static member Read (Currency (v, ThreeLetterString(t))) = v, t
 
     static member Parse (value : string) (currencyType : string) =
         match System.Decimal.TryParse(value.Replace(",", ".")) with

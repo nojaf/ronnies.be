@@ -2,6 +2,7 @@ module Auth0
 
 open Fable.Core
 open Fable.Core.JsInterop
+open Feliz
 
 type Auth0User =
     abstract picture : string
@@ -67,3 +68,21 @@ type Auth0Hook =
     abstract getIdTokenClaims : unit -> JS.Promise<IdToken>
 
 let useAuth0 () : Auth0Hook = import "useAuth0" "@auth0/auth0-react"
+
+type RolesHook =
+    { Roles : string array }
+
+    member this.IsEditor = Array.contains "editor" this.Roles
+    member this.IsAdmin = Array.contains "admin" this.Roles
+    member this.IsEditorOrAdmin = this.IsEditor || this.IsAdmin
+
+let useRoles () : RolesHook =
+    let (roles, setRoles) = React.useState ([||])
+    let auth0 = useAuth0 ()
+    React.useEffect
+        ((fun () ->
+            if not auth0.isLoading && auth0.isAuthenticated then
+                setRoles auth0.user.roles),
+         [| box auth0.user
+            box auth0.isLoading |])
+    { Roles = roles }

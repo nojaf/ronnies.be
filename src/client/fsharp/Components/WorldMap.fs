@@ -7,6 +7,7 @@ open Ronnies.Domain
 open Ronnies.Client.Styles
 open Ronnies.Client.Components.ReactMapGL
 open Ronnies.Client.Components.EventContext
+open Ronnies.Client.Components.Navigation
 
 type private RonnyLocation =
     { id : string
@@ -65,10 +66,12 @@ let WorldMap =
                               MarkerKey loc.id
                               OffsetLeft 0
                               OffsetTop 0 ] [
-                         img [ Src "/assets/ronny.png"
-                               HTMLAttr.Height "20"
-                               HTMLAttr.Width "20"
-                               ClassName Bootstrap.Pointer ]
+                         Link [ To(sprintf "/detail/%s" loc.id) ] [
+                             img [ Src "/assets/ronny.png"
+                                   HTMLAttr.Height "20"
+                                   HTMLAttr.Width "20"
+                                   ClassName Bootstrap.Pointer ]
+                         ]
                      ])
 
              let userIcon =

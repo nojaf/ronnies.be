@@ -306,18 +306,6 @@ let infra () =
                                                Type = input "integer",
                                                Description = input "Last event number the client already has")) ]))))
 
-    let addEventsOperation =
-        ApiOperation
-            ("add-events",
-             ApiOperationArgs
-                 (ResourceGroupName = io apimRgName,
-                  ApiManagementName = io apimServiceName,
-                  ApiName = io api.Name,
-                  UrlTemplate = input "api/add-events",
-                  Method = input "POST",
-                  DisplayName = input "Add events",
-                  OperationId = input "add-events"))
-
     let authenticatedPolicyContent = """
 <policies>
     <inbound>
@@ -342,60 +330,33 @@ let infra () =
         <base />
     </outbound>
 </policies>"""
-
-    let _addEventsPolicy =
+    
+    let authenticatedOperation functionName method urlTemplate displayName =
+        let operation =
+            ApiOperation
+                (functionName,
+                 ApiOperationArgs
+                     (ResourceGroupName = io apimRgName,
+                      ApiManagementName = io apimServiceName,
+                      ApiName = io api.Name,
+                      UrlTemplate = input urlTemplate,
+                      Method = input method,
+                      DisplayName = input displayName,
+                      OperationId = input functionName))
+            
         ApiOperationPolicy
-            ("add-events-policy",
+            (sprintf "%s-policy" functionName,
              ApiOperationPolicyArgs
                  (ResourceGroupName = io apimRgName,
                   ApiManagementName = io apimServiceName,
                   ApiName = io api.Name,
-                  OperationId = io addEventsOperation.OperationId,
+                  OperationId = io operation.OperationId,
                   XmlContent = input authenticatedPolicyContent))
-
-    let addSubscriptionOperation =
-        ApiOperation
-            ("add-subscription",
-             ApiOperationArgs
-                 (ResourceGroupName = io apimRgName,
-                  ApiManagementName = io apimServiceName,
-                  ApiName = io api.Name,
-                  UrlTemplate = input "api/add-subscription",
-                  Method = input "POST",
-                  DisplayName = input "Add subscription",
-                  OperationId = input "add-subscription"))
-
-    let _addSubscriptionPolicy =
-        ApiOperationPolicy
-            ("add-subscription-policy",
-             ApiOperationPolicyArgs
-                 (ResourceGroupName = io apimRgName,
-                  ApiManagementName = io apimServiceName,
-                  ApiName = io api.Name,
-                  OperationId = io addSubscriptionOperation.OperationId,
-                  XmlContent = input authenticatedPolicyContent))
-
-    let removeSubscriptionOperation =
-        ApiOperation
-            ("remove-subscription",
-             ApiOperationArgs
-                 (ResourceGroupName = io apimRgName,
-                  ApiManagementName = io apimServiceName,
-                  ApiName = io api.Name,
-                  UrlTemplate = input "api/remove-subscription",
-                  Method = input "POST",
-                  DisplayName = input "Remove subscription",
-                  OperationId = input "remove-subscription"))
-
-    let _removeSubscriptionPolicy =
-        ApiOperationPolicy
-            ("remove-subscription-policy",
-             ApiOperationPolicyArgs
-                 (ResourceGroupName = io apimRgName,
-                  ApiManagementName = io apimServiceName,
-                  ApiName = io api.Name,
-                  OperationId = io removeSubscriptionOperation.OperationId,
-                  XmlContent = input authenticatedPolicyContent))
+    
+    let _addEventsOperation = authenticatedOperation "add-events" "POST" "api/add-events"  "Add events"
+    let _addSubscriptionOperation = authenticatedOperation "add-subscription" "POST" "api/add-subscription" "Add subscription"
+    let _removeSubscriptionOperation = authenticatedOperation "remove-subscription" "POST" "api/remove-subscription" "Remove subscription"
+    let _getAllUsersOperation = authenticatedOperation "get-users" "GET" "api/get-users" "Get user information"
 
     dict []
 

@@ -18,17 +18,17 @@ open Ronnies.Client.Styles
 open Ronnies.Client.Components.Page
 
 [<Emit("'serviceWorker' in navigator")>]
-let hasServiceWorker : bool = jsNative
+let private hasServiceWorker : bool = jsNative
 
 [<Emit("'PushManager' in window")>]
-let hasPushManager : bool = jsNative
+let private hasPushManager : bool = jsNative
 
-let browserSupportsNotifications = hasPushManager && hasServiceWorker
+let private browserSupportsNotifications = hasPushManager && hasServiceWorker
 
-let urlB64ToUint8Array (value : string) : byte array =
+let private urlB64ToUint8Array (_value : string) : byte array =
     import "urlB64ToUint8Array" "../js/utils.js"
 
-type PushSubscription =
+type private PushSubscription =
     abstract endpoint : string
     abstract expirationTime : obj
     abstract options : obj
@@ -41,10 +41,14 @@ type PushSubscription =
 let private getSubscriptionFromSw sw : JS.Promise<PushSubscription option> = jsNative
 
 [<Emit("$0.pushManager.subscribe({userVisibleOnly: true, applicationServerKey: $1})")>]
-let subscriptWithPushManager (sw : ServiceWorkerRegistration) (appServerKey : byte array) : JS.Promise<PushSubscription> =
+let private subscriptWithPushManager
+    (sw : ServiceWorkerRegistration)
+    (appServerKey : byte array)
+    : JS.Promise<PushSubscription>
+    =
     jsNative
 
-let hasSubscription () =
+let private hasSubscription () =
     match navigator.serviceWorker with
     | Some sw ->
         sw.ready
@@ -131,6 +135,7 @@ let private Settings =
 
              let auth0 = useAuth0 ()
              let (token, setToken) = React.useState ("")
+             let roles = useRoles ()
 
              React.useEffect
                  ((fun () ->
@@ -162,7 +167,8 @@ let private Settings =
                      str "Reset cache"
                  ]
                  h4 [] [ str "Notificaties?" ]
-                 if browserSupportsNotifications then
+                 if browserSupportsNotifications
+                    && roles.IsEditorOrAdmin then
                      Switch
                          { TrueLabel = "Aan"
                            FalseLabel = "Uit"

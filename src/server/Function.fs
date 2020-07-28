@@ -1,6 +1,7 @@
 module Ronnies.Server.Function
 
 open System
+open System.Net.Http.Headers
 open System.Threading.Tasks
 open FSharp.Control.Tasks
 open Microsoft.AspNetCore.Http
@@ -50,42 +51,54 @@ let private afterEventWasAdded log origin event =
         task {
             let! managementToken = Authentication.getManagementAccessToken log
             let! allSubscriptions = Authentication.getPushNotificationSubscriptions log origin managementToken
-            let subject = Environment.GetEnvironmentVariable("Vapid_Subject")
-            let privateKey = Environment.GetEnvironmentVariable("Vapid_PublicKey")
-            let publicKey = Environment.GetEnvironmentVariable("Vapid_PrivateKey")
-            let vapidDetails = VapidDetails(subject, privateKey, publicKey)
+
+            let subject =
+                Environment.GetEnvironmentVariable("Vapid_Subject")
+
+            let privateKey =
+                Environment.GetEnvironmentVariable("Vapid_PublicKey")
+
+            let publicKey =
+                Environment.GetEnvironmentVariable("Vapid_PrivateKey")
+
+            let vapidDetails =
+                VapidDetails(subject, privateKey, publicKey)
+
             let! creatorName =
                 NonEmptyString.Read locationAdded.Creator
                 |> Authentication.getUserName log managementToken
 
             let payload =
-                Encode.object [
-                    "id", Identifier.Read locationAdded.Id |> Encode.guid
-                    "creator", Encode.string creatorName
-                    "name", NonEmptyString.Read locationAdded.Name |> Encode.string
-                    "type", Encode.string "locationAdded"
-                ]
+                Encode.object [ "id", Identifier.Read locationAdded.Id |> Encode.guid
+                                "creator", Encode.string creatorName
+                                "name",
+                                NonEmptyString.Read locationAdded.Name
+                                |> Encode.string
+                                "type", Encode.string "locationAdded" ]
                 |> Encode.toString 4
 
             let webPushClient = WebPushClient()
 
             let! _sendPushNotifications =
                 allSubscriptions
-                |> List.map(fun s ->
-                    let ps = PushSubscription(s.Endpoint, s.P256DH, s.Auth)
+                |> List.map (fun s ->
+                    let ps =
+                        PushSubscription(s.Endpoint, s.P256DH, s.Auth)
+
                     webPushClient.SendNotificationAsync(ps, payload, vapidDetails))
                 |> Task.WhenAll
 
             ()
-        }
-        :> Task
+        } :> Task
     | _ -> System.Threading.Tasks.Task.CompletedTask
 
 let persistEvents log origin userId events =
     task {
         let! addedEvents = EventStore.appendEvents userId events
 
-        let! _afterAddTasks = List.map (afterEventWasAdded log origin) events |> Task.WhenAll
+        let! _afterAddTasks =
+            List.map (afterEventWasAdded log origin) events
+            |> Task.WhenAll
 
         let json =
             addedEvents
@@ -126,7 +139,7 @@ let GetEvents ([<HttpTrigger(AuthorizationLevel.Function, "get", Route = null)>]
 
     task {
         let origin = req.Headers.["Origin"].ToString()
-        log.LogInformation (sprintf "Origin: %s" origin)
+        log.LogInformation(sprintf "Origin: %s" origin)
 
         let lastEvent =
             match req.Query.TryGetValue "lastEvent" with
@@ -170,7 +183,8 @@ let AddSubscription ([<HttpTrigger(AuthorizationLevel.Function, "post", Route = 
 
 [<FunctionName("remove-subscription")>]
 let RemoveSubscription ([<HttpTrigger(AuthorizationLevel.Function, "post", Route = null)>] req : HttpRequest,
-                        log : ILogger) =
+                        log : ILogger)
+    =
     log.LogInformation("Start remove-subscription")
     task {
         let origin = req.Headers.["Origin"].ToString()
@@ -183,5 +197,15 @@ let RemoveSubscription ([<HttpTrigger(AuthorizationLevel.Function, "post", Route
             List.filter (fun s -> not (s.Endpoint = endpoint && s.Origin = origin)) existingSubscriptions
 
         do! Authentication.updateUserPushNotificationSubscription managementToken user.Id updatedSubscriptions
+
         return sendText "Subscription removed"
+    }
+
+[<FunctionName("get-users")>]
+let GetUsers ([<HttpTrigger(AuthorizationLevel.Function, "get", Route = null)>] req : HttpRequest, log : ILogger) =
+    log.LogInformation("Start get-users")
+    task {
+        let! managementToken = Authentication.getManagementAccessToken log
+        let! users = Authentication.getAllUserInfo log managementToken
+        return sendJson users
     }

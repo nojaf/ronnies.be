@@ -20,8 +20,8 @@ let private Navigation =
         ("Navigation",
          (fun () ->
              let (mobileOpen, setMobileOpen) = React.useState (false)
-             let (roles, setRoles) = React.useState ([||])
              let auth0 = useAuth0 ()
+             let roles = useRoles ()
 
              let onLoginClick (ev : MouseEvent) =
                  ev.preventDefault ()
@@ -70,13 +70,6 @@ let private Navigation =
                          yield! [ logoutLink; userElement auth0.user ]
                  ]
 
-             React.useEffect
-                 ((fun () ->
-                     if not auth0.isLoading && auth0.isAuthenticated then
-                         setRoles auth0.user.roles),
-                  [| box auth0.user
-                     box auth0.isLoading |])
-
              let menuLink path label =
                  li [ classNames [ Bootstrap.NavItem ]
                       Key(sprintf "menu-%s" path) ] [
@@ -93,7 +86,7 @@ let private Navigation =
                      |> Promise.iter (fun token -> Fable.Core.JS.console.log token)
 
              let adminItems =
-                 if Array.contains "admin" roles then
+                 if roles.IsAdmin then
                      [ li [ classNames [ Bootstrap.NavItem ]
                             Key "bearerButton"
                             OnClick(fun ev ->
@@ -108,8 +101,7 @@ let private Navigation =
                      []
 
              let editorItems =
-                 if Array.contains "admin" roles
-                    || Array.contains "editor" roles then
+                 if roles.IsEditorOrAdmin then
                      [ menuLink "/add-location" "E nieuwen toevoegen" ]
                  else
                      []
@@ -121,7 +113,7 @@ let private Navigation =
                  Link [ To "/"
                         ClassName Bootstrap.NavbarBrand
                         OnClick(fun _ -> setMobileOpen (not mobileOpen)) ] [
-                     img [ Src "assets/r-white.png"
+                     img [ Src "/assets/r-white.png"
                            Alt "logo ronnies.be" ]
                  ]
                  button [ ClassName Bootstrap.NavbarToggler

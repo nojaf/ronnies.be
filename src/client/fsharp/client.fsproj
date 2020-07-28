@@ -24,7 +24,7 @@
     <Compile Include="Pages\AddLocation.fs" />
     <Compile Include="Pages\Home.fs" />
     <Compile Include="Pages\Settings.fs" />
-    <Compile Include="App.fs" />
+    <Compile Include="Pages\Detail.fs" />
   </ItemGroup>
   <Import Project="..\..\..\.paket\Paket.Restore.targets" />
 

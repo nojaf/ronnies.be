@@ -1,8 +1,6 @@
 module Ronnies.Server.Authentication
 
 open System
-open System.Net.Http
-open System.Text
 open FSharp.Data
 open FSharp.Data.HttpRequestHeaders
 open Microsoft.AspNetCore.Http
@@ -93,9 +91,9 @@ type PushNotificationSubscription =
     { Endpoint : string
       Auth : string
       P256DH : string
-      Origin: string }
+      Origin : string }
 
-    static member FromBrowserDecoder (origin:string) =
+    static member FromBrowserDecoder (origin : string) =
         Decode.object (fun get ->
             { Endpoint = get.Required.Field "endpoint" Decode.string
               Auth = get.Required.At [ "keys"; "auth" ] Decode.string
@@ -189,20 +187,35 @@ let updateUserPushNotificationSubscription managementToken userId subscriptions 
 
 let private allSubscriptionsDecoder =
     Decode.list Auth0User.Decoder
-    |> Decode.map (fun users -> List.collect (fun (u: Auth0User) -> u.AppMetaData.PushNotificationSubscriptions) users)
+    |> Decode.map (fun users -> List.collect (fun (u : Auth0User) -> u.AppMetaData.PushNotificationSubscriptions) users)
 
 let getPushNotificationSubscriptions (log : ILogger) origin managementToken =
     task {
-        let url = sprintf "%s/api/v2/users?per_page=100&fields=user_id,app_metadata" managementAPIRoot
-        let! users =
-            Http.AsyncRequestString(url, headers = [ "Authorization", (sprintf "Bearer %s" managementToken) ])
-        let subscriptions = Decode.fromString allSubscriptionsDecoder users
+        let url =
+            sprintf "%s/api/v2/users?per_page=100&fields=user_id,app_metadata" managementAPIRoot
+
+        let! users = Http.AsyncRequestString(url, headers = [ "Authorization", (sprintf "Bearer %s" managementToken) ])
+
+        let subscriptions =
+            Decode.fromString allSubscriptionsDecoder users
+
         match subscriptions with
         | Ok subs -> return (List.filter (fun s -> s.Origin = origin) subs)
         | Error err ->
-            log.LogError( sprintf "Invalid response from Auth0 management token API, %A" err)
+            log.LogError(sprintf "Invalid response from Auth0 management token API, %A" err)
             return []
     }
+
+let private userNameDecoder (get : Decode.IGetters) =
+    let givenName =
+        get.Optional.Field "given_name" Decode.string
+
+    let familyName =
+        get.Optional.Field "family_name" Decode.string
+
+    match givenName, familyName with
+    | Some g, Some f -> sprintf "%s %c" g f.[0]
+    | _ -> get.Required.Field "nickname" Decode.string
 
 let getUserName (log : ILogger) managementToken userId =
     task {
@@ -212,10 +225,49 @@ let getUserName (log : ILogger) managementToken userId =
         let! response =
             Http.AsyncRequestString(url, headers = [ "Authorization", (sprintf "Bearer %s" managementToken) ])
 
-        let decodeUserName = Decode.object (fun get -> get.Required.Field "nickname" Decode.string)
+        let decodeUserName = Decode.object userNameDecoder
+
         match Decode.fromString decodeUserName response with
         | Ok userName -> return userName
         | Error error ->
             log.LogError(sprintf "Failed to decode username from auth0, %A" error)
             return "???"
+    }
+
+type private UserInfo =
+    { Name : string
+      Id : string
+      Picture : string }
+
+let private userInfoDecoder =
+    Decode.object (fun get ->
+        { Name = userNameDecoder get
+          Id = get.Required.Field "user_id" Decode.string
+          Picture = get.Required.Field "picture" Decode.string })
+
+let getAllUserInfo (log : ILogger) managementToken =
+    task {
+        let url =
+            sprintf "%s/api/v2/users" managementAPIRoot
+
+        let! response =
+            Http.AsyncRequestString(url, headers = [ "Authorization", (sprintf "Bearer %s" managementToken) ])
+
+        let userResult =
+            match Decode.fromString (Decode.list userInfoDecoder) response with
+            | Ok users ->
+                let keys = List.map (fun u -> u.Id) users
+                List.zip keys users
+                |> List.map (fun (k, u) ->
+                    k,
+                    Encode.object [ "name", Encode.string u.Name
+                                    "picture", Encode.string u.Picture ])
+                |> Encode.object
+                |> Encode.toString 4
+
+            | Error err ->
+                log.LogError(sprintf "Failed to decode users from auth0, %A" err)
+                String.Empty
+
+        return userResult
     }
