@@ -45,7 +45,8 @@ let private Navigation =
                  li [ classNames [ Bootstrap.NavItem ] ] [
                      Link [ classNames [ Bootstrap.NavLink
                                          Bootstrap.Active ]
-                            To "/settings" ] [
+                            To "/settings"
+                            OnClick(fun _ -> setMobileOpen (false)) ] [
                          img [ Src user.picture
                                Style [ MarginTop "-2px" ]
                                classNames [ Bootstrap.Avatar ]
