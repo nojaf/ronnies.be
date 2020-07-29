@@ -70,17 +70,17 @@ let syncLatestEvents () =
     |> Promise.bind (fun lastEvent ->
         let url =
             match lastEvent with
-            | Some id -> sprintf "%s/events?lastEvent=%i" Config.backendUrl id
-            | None -> sprintf "%s/events" Config.backendUrl
+            | Some id -> sprintf "%s/events?lastEvent=%i" Common.backendUrl id
+            | None -> sprintf "%s/events" Common.backendUrl
 
         Fetch.fetch
             url
             [ requestHeaders [ HttpRequestHeaders.ContentType "application/json"
-                               Config.subscriptionHeader ] ])
+                               Common.subscriptionHeader ] ])
     |> Promise.bind addEventsToIdb
 
 let persistEvents (events : Event list) authToken =
-    let url = sprintf "%s/events" Config.backendUrl
+    let url = sprintf "%s/events" Common.backendUrl
 
     let json =
         events
@@ -93,8 +93,8 @@ let persistEvents (events : Event list) authToken =
         [ RequestProperties.Method HttpMethod.POST
           RequestProperties.Body(!^json)
           requestHeaders [ HttpRequestHeaders.ContentType "application/json"
-                           Config.authHeader authToken
-                           Config.subscriptionHeader ] ]
+                           Common.authHeader authToken
+                           Common.subscriptionHeader ] ]
     |> Promise.bind addEventsToIdb
 
 let removeAllEvents () = clear ronniesStore

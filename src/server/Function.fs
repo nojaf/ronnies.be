@@ -45,13 +45,14 @@ let private sendUnAuthorizedRequest err =
     new HttpResponseMessage(HttpStatusCode.Unauthorized,
                             Content = new StringContent(err, System.Text.Encoding.UTF8, "application/text"))
 
-let private afterEventWasAdded log origin event =
+let private afterEventWasAdded
+    (allSubscriptions : PushNotificationSubscription list)
+    (allUsers : Map<string, UserInfo>)
+    event
+    =
     match event with
     | LocationAdded locationAdded ->
         task {
-            let! managementToken = Authentication.getManagementAccessToken log
-            let! allSubscriptions = Authentication.getPushNotificationSubscriptions log origin managementToken
-
             let subject =
                 Environment.GetEnvironmentVariable("Vapid_Subject")
 
@@ -64,9 +65,10 @@ let private afterEventWasAdded log origin event =
             let vapidDetails =
                 VapidDetails(subject, privateKey, publicKey)
 
-            let! creatorName =
+            let creatorName =
                 NonEmptyString.Read locationAdded.Creator
-                |> Authentication.getUserName log managementToken
+                |> fun creator -> Map.find creator allUsers
+                |> fun u -> u.Name
 
             let payload =
                 Encode.object [ "id", Identifier.Read locationAdded.Id |> Encode.guid
@@ -94,9 +96,12 @@ let private afterEventWasAdded log origin event =
 let persistEvents log origin userId events =
     task {
         let! addedEvents = EventStore.appendEvents userId events
+        let! managementToken = Authentication.getManagementAccessToken log
+        let! allSubscriptions = Authentication.getPushNotificationSubscriptions log origin managementToken
+        let! allUsers = Authentication.getAllUserInfo log managementToken
 
         let! _afterAddTasks =
-            List.map (afterEventWasAdded log origin) events
+            List.map (afterEventWasAdded allSubscriptions allUsers) events
             |> Task.WhenAll
 
         let json =
@@ -154,7 +159,9 @@ let GetEvents ([<HttpTrigger(AuthorizationLevel.Function, "get", Route = "events
     }
 
 [<FunctionName("add-subscription")>]
-let AddSubscription ([<HttpTrigger(AuthorizationLevel.Function, "post", Route = "subscriptions")>] req : HttpRequest, log : ILogger) =
+let AddSubscription ([<HttpTrigger(AuthorizationLevel.Function, "post", Route = "subscriptions")>] req : HttpRequest,
+                     log : ILogger)
+    =
     log.LogInformation("Start add-subscription")
 
     task {
@@ -206,11 +213,24 @@ let GetUsers ([<HttpTrigger(AuthorizationLevel.Function, "get", Route = "users")
     task {
         let! managementToken = Authentication.getManagementAccessToken log
         let! users = Authentication.getAllUserInfo log managementToken
-        return sendJson users
+
+        let json =
+            Map.toList users
+            |> List.map (fun (k, u) ->
+                k,
+                Encode.object [ "name", Encode.string u.Name
+                                "picture", Encode.string u.Picture ])
+            |> Encode.object
+            |> Encode.toString 4
+
+        return sendJson json
     }
 
 [<FunctionName("get-user")>]
-let GetUser ([<HttpTrigger(AuthorizationLevel.Function, "get", Route = "users/{id}")>] req : HttpRequest, log : ILogger, id: string) =
+let GetUser ([<HttpTrigger(AuthorizationLevel.Function, "get", Route = "users/{id}")>] req : HttpRequest,
+             log : ILogger,
+             id : string)
+    =
     log.LogInformation(sprintf "Start get-user {%s}" id)
     task {
         let! managementToken = Authentication.getManagementAccessToken log

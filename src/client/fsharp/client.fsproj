@@ -8,7 +8,7 @@
   <ItemGroup>
     <Content Include="paket.references" />
     <Compile Include="../../shared/Domain.fs" />
-    <Compile Include="Config.fs" />
+    <Compile Include="Common.fs" />
     <Compile Include="IdbKeyVal.fs" />
     <Compile Include="Auth0.fs" />
     <Compile Include="ReactToastify.fs" />
@@ -25,6 +25,7 @@
     <Compile Include="Pages\Home.fs" />
     <Compile Include="Pages\Settings.fs" />
     <Compile Include="Pages\Detail.fs" />
+    <Compile Include="Pages\OverviewPage.fs" />
   </ItemGroup>
   <Import Project="..\..\..\.paket\Paket.Restore.targets" />
 

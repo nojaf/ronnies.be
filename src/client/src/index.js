@@ -10,6 +10,7 @@ import { Events } from "./bin/Components/EventContext";
 import Navigation from "./bin/Components/Navigation";
 import HomePage from "./bin/Pages/Home";
 import DetailPage from "./bin/Pages/Detail";
+import OverviewPage from "./bin/Pages/OverviewPage";
 
 const AddLocation = withAuthenticationRequired(AddLocationPage);
 
@@ -31,6 +32,7 @@ const App = () => {
               <AddLocation path="/add-location" />
               <Settings path="/settings" />
               <DetailPage path="/detail/:id" />
+              <OverviewPage path="/overview" />
             </Router>
             <ToastContainer />
           </main>

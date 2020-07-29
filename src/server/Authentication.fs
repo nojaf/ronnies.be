@@ -234,7 +234,7 @@ let getUserName (log : ILogger) managementToken userId =
             return "???"
     }
 
-type private UserInfo =
+type UserInfo =
     { Name : string
       Id : string
       Picture : string }
@@ -255,24 +255,16 @@ let getAllUserInfo (log : ILogger) managementToken =
 
         let userResult =
             match Decode.fromString (Decode.list userInfoDecoder) response with
-            | Ok users ->
-                let keys = List.map (fun u -> u.Id) users
-                List.zip keys users
-                |> List.map (fun (k, u) ->
-                    k,
-                    Encode.object [ "name", Encode.string u.Name
-                                    "picture", Encode.string u.Picture ])
-                |> Encode.object
-                |> Encode.toString 4
+            | Ok users -> users |> List.map (fun u -> u.Id, u) |> Map.ofList
 
             | Error err ->
                 log.LogError(sprintf "Failed to decode users from auth0, %A" err)
-                String.Empty
+                Map.empty
 
         return userResult
     }
 
-let getUserInfo (log: ILogger) managementToken id =
+let getUserInfo (log : ILogger) managementToken id =
     task {
         let url =
             sprintf "%s/api/v2/users/%s" managementAPIRoot id

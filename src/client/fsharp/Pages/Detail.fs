@@ -33,14 +33,6 @@ type private LocationDetail =
           IsDraft = false
           Remark = None }
 
-let readCurrency price =
-    let (value, currency) = Currency.Read price
-    match currency with
-    | "EUR" -> sprintf "€%.2f" value
-    | "USD" -> sprintf "$%.2f" value
-    | "GBP" -> sprintf "£%.2f" value
-    | _ -> sprintf "%.2f %s" value currency
-
 let private getLocation events id =
     List.fold (fun acc event ->
         match event with
@@ -50,7 +42,7 @@ let private getLocation events id =
                   Name = NonEmptyString.Read loc.Name
                   Creator = NonEmptyString.Read loc.Creator
                   Created = loc.Created.ToString("dd/MM/yy")
-                  Price = readCurrency loc.Price
+                  Price = Common.readCurrency loc.Price
                   IsDraft = loc.IsDraft
                   Remark = loc.Remark } : LocationDetail
 
@@ -77,13 +69,13 @@ let private useLocationDetail id =
                 auth0.getAccessTokenSilently ()
                 |> Promise.bind (fun authToken ->
                     let url =
-                        sprintf "%s/users/%s" Config.backendUrl (location.Creator)
+                        sprintf "%s/users/%s" Common.backendUrl (location.Creator)
 
                     fetch
                         url
                         [ requestHeaders [ HttpRequestHeaders.ContentType "application/json"
-                                           Config.authHeader authToken
-                                           Config.subscriptionHeader ] ])
+                                           Common.authHeader authToken
+                                           Common.subscriptionHeader ] ])
                 |> Promise.bind (fun res -> res.text ())
                 |> Promise.iter (fun json ->
                     let usersResult = Decode.fromString nameDecoder json
@@ -130,7 +122,9 @@ let private DetailPage =
                                                Bootstrap.P2
                                                Bootstrap.Mt4 ] ] [
                          p [ classNames [ Bootstrap.Mb0 ] ] [
-                             str remark
+                             pre [] [
+                                 str (remark.Replace("\\n", "\n"))
+                             ]
                          ]
                          footer [ ClassName Bootstrap.BlockquoteFooter ] [
                              cite [] [ str name ]

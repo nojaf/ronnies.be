@@ -128,6 +128,7 @@ let private Navigation =
                                         Bootstrap.Show ] ] [
                      ul [ classNames [ Bootstrap.NavbarNav
                                        Bootstrap.MrAuto ] ] [
+                         menuLink "/overview" "Overzicht"
                          ofList editorItems
                          ofList adminItems
                      ]

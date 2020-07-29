@@ -69,7 +69,7 @@ let private addSubscription token =
         |> Promise.bind (fun (sw, sub) ->
             match sub with
             | None ->
-                let key = urlB64ToUint8Array Config.vapidKey
+                let key = urlB64ToUint8Array Common.vapidKey
                 subscriptWithPushManager sw key
                 |> Promise.bind (fun subscription ->
                     let json =
@@ -79,15 +79,15 @@ let private addSubscription token =
                     JS.console.log (json)
 
                     let url =
-                        sprintf "%s/subscriptions" Config.backendUrl
+                        sprintf "%s/subscriptions" Common.backendUrl
 
                     fetch
                         url
                         [ RequestProperties.Method HttpMethod.POST
                           RequestProperties.Body !^json
                           requestHeaders [ HttpRequestHeaders.ContentType "application/json"
-                                           Config.authHeader token
-                                           Config.subscriptionHeader ] ])
+                                           Common.authHeader token
+                                           Common.subscriptionHeader ] ])
                 |> Promise.map (fun _ -> infoToast "Notificaties check!")
             | Some sub ->
                 printfn "unsubscribed"
@@ -110,15 +110,15 @@ let private removeSubscription token =
                 subscription.unsubscribe ()
                 |> Promise.bind (fun _ ->
                     let url =
-                        sprintf "%s/subscriptions" Config.backendUrl
+                        sprintf "%s/subscriptions" Common.backendUrl
 
                     fetch
                         url
                         [ RequestProperties.Method HttpMethod.DELETE
                           RequestProperties.Body !^subscription.endpoint
                           requestHeaders [ HttpRequestHeaders.ContentType "application/json"
-                                           Config.authHeader token
-                                           Config.subscriptionHeader ] ])
+                                           Common.authHeader token
+                                           Common.subscriptionHeader ] ])
                 |> Promise.map (fun _ -> infoToast "Notificaties uitgezet!"))
         |> Promise.catchEnd (fun err ->
             JS.console.error err
