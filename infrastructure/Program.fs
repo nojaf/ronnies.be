@@ -87,21 +87,24 @@ let infra () =
                   StorageAccountName = io storageAccount.Name,
                   StorageAccountAccessKey = io storageAccount.PrimaryAccessKey,
                   AppSettings =
-                      inputMap [
-                          "AzureWebJobsSecretStorageType", input "Files"
-                          "FUNCTIONS_WORKER_RUNTIME", input "DotNet"
-                          "APPINSIGHTS_INSTRUMENTATIONKEY", io applicationsInsight.InstrumentationKey
-                          "WEBSITE_RUN_FROM_PACKAGE", io codeBlobUrl
-                          "StorageAccountKey", io storageAccount.PrimaryAccessKey
-                          "StorageAccountName", io storageAccount.Name
-                          "Auth0Management_ClientId", input (System.Environment.GetEnvironmentVariable("Auth0Management_ClientId"))
-                          "Auth0Management_ClientSecret", input (System.Environment.GetEnvironmentVariable("Auth0Management_ClientSecret"))
-                          "Auth0Management_Audience", input (System.Environment.GetEnvironmentVariable("Auth0Management_Audience"))
-                          "Auth0Management_APIRoot", input (System.Environment.GetEnvironmentVariable("Auth0Management_APIRoot"))
-                          "Vapid_Subject", input (System.Environment.GetEnvironmentVariable("Vapid_Subject"))
-                          "Vapid_PublicKey", input (System.Environment.GetEnvironmentVariable("Vapid_PublicKey"))
-                          "Vapid_PrivateKey", input (System.Environment.GetEnvironmentVariable("Vapid_PrivateKey"))
-                      ],
+                      inputMap [ "AzureWebJobsSecretStorageType", input "Files"
+                                 "FUNCTIONS_WORKER_RUNTIME", input "DotNet"
+                                 "APPINSIGHTS_INSTRUMENTATIONKEY", io applicationsInsight.InstrumentationKey
+                                 "WEBSITE_RUN_FROM_PACKAGE", io codeBlobUrl
+                                 "StorageAccountKey", io storageAccount.PrimaryAccessKey
+                                 "StorageAccountName", io storageAccount.Name
+                                 "Auth0Management_ClientId",
+                                 input (System.Environment.GetEnvironmentVariable("Auth0Management_ClientId"))
+                                 "Auth0Management_ClientSecret",
+                                 input (System.Environment.GetEnvironmentVariable("Auth0Management_ClientSecret"))
+                                 "Auth0Management_Audience",
+                                 input (System.Environment.GetEnvironmentVariable("Auth0Management_Audience"))
+                                 "Auth0Management_APIRoot",
+                                 input (System.Environment.GetEnvironmentVariable("Auth0Management_APIRoot"))
+                                 "Vapid_Subject", input (System.Environment.GetEnvironmentVariable("Vapid_Subject"))
+                                 "Vapid_PublicKey", input (System.Environment.GetEnvironmentVariable("Vapid_PublicKey"))
+                                 "Vapid_PrivateKey",
+                                 input (System.Environment.GetEnvironmentVariable("Vapid_PrivateKey")) ],
                   SiteConfig =
                       input
                           (FunctionAppSiteConfigArgs
@@ -110,10 +113,8 @@ let infra () =
                                    input
                                        (FunctionAppSiteConfigCorsArgs
                                            (AllowedOrigins =
-                                               inputList [
-                                                   input "https://ronnies.be"
-                                                   input "http://localhost:8080"
-                                               ])))),
+                                               inputList [ input "https://ronnies.be"
+                                                           input "http://localhost:8080" ])))),
                   HttpsOnly = input true,
                   Version = input "~3"))
 
@@ -276,11 +277,9 @@ let infra () =
                  (ResourceGroupName = io apimRgName,
                   TemplateBody = input subscriptionArm,
                   Parameters =
-                      inputMap [
-                          "apim", io apimServiceName
-                          "productId", io product.ProductId
-                          "primaryKey", input (System.Environment.GetEnvironmentVariable("SUBSCRIPTION_KEY"))
-                      ],
+                      inputMap [ "apim", io apimServiceName
+                                 "productId", io product.ProductId
+                                 "primaryKey", input (System.Environment.GetEnvironmentVariable("SUBSCRIPTION_KEY")) ],
                   DeploymentMode = input "Incremental"))
 
     let _getEventsOperation =
@@ -330,7 +329,17 @@ let infra () =
         <base />
     </outbound>
 </policies>"""
-    
+
+    let authenticatedPolicy functionName (operation : ApiOperation) =
+        ApiOperationPolicy
+            (sprintf "%s-policy" functionName,
+             ApiOperationPolicyArgs
+                 (ResourceGroupName = io apimRgName,
+                  ApiManagementName = io apimServiceName,
+                  ApiName = io api.Name,
+                  OperationId = io operation.OperationId,
+                  XmlContent = input authenticatedPolicyContent))
+
     let authenticatedOperation functionName method urlTemplate displayName =
         let operation =
             ApiOperation
@@ -343,21 +352,45 @@ let infra () =
                       Method = input method,
                       DisplayName = input displayName,
                       OperationId = input functionName))
-            
-        ApiOperationPolicy
-            (sprintf "%s-policy" functionName,
-             ApiOperationPolicyArgs
-                 (ResourceGroupName = io apimRgName,
-                  ApiManagementName = io apimServiceName,
-                  ApiName = io api.Name,
-                  OperationId = io operation.OperationId,
-                  XmlContent = input authenticatedPolicyContent))
-    
-    let _addEventsOperation = authenticatedOperation "add-events" "POST" "events"  "Add events"
-    let _addSubscriptionOperation = authenticatedOperation "add-subscription" "POST" "subscription" "Add subscription"
-    let _removeSubscriptionOperation = authenticatedOperation "remove-subscription" "DELETE" "subscription" "Remove subscription"
-    let _getAllUsersOperation = authenticatedOperation "get-users" "GET" "users" "Get all user information"
-    let _getUserByIdOperation = authenticatedOperation "get-user" "GET" "users/{id}" "Get user information"
+
+        authenticatedPolicy functionName operation
+
+    let _addEventsOperation =
+        authenticatedOperation "add-events" "POST" "events" "Add events"
+
+    let _addSubscriptionOperation =
+        authenticatedOperation "add-subscription" "POST" "subscription" "Add subscription"
+
+    let _removeSubscriptionOperation =
+        authenticatedOperation "remove-subscription" "DELETE" "subscription" "Remove subscription"
+
+    let _getAllUsersOperation =
+        authenticatedOperation "get-users" "GET" "users" "Get all user information"
+
+    let _getUserByIdOperation =
+        let functionName = "get-user"
+
+        let operation =
+            ApiOperation
+                (functionName,
+                 ApiOperationArgs
+                     (ResourceGroupName = io apimRgName,
+                      ApiManagementName = io apimServiceName,
+                      ApiName = io api.Name,
+                      UrlTemplate = input "users/{id}",
+                      Method = input "GET",
+                      DisplayName = input "Get user information",
+                      OperationId = input functionName,
+                      TemplateParameters =
+                          inputList
+                              [ input
+                                  (ApiOperationTemplateParameterArgs
+                                      (Name = input "id",
+                                       Required = input true,
+                                       Type = input "string",
+                                       Description = input "Auth0 user_id")) ]))
+
+        authenticatedPolicy functionName operation
 
     dict []
 
