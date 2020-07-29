@@ -271,3 +271,25 @@ let getAllUserInfo (log : ILogger) managementToken =
 
         return userResult
     }
+
+let getUserInfo (log: ILogger) managementToken id =
+    task {
+        let url =
+            sprintf "%s/api/v2/users/%s" managementAPIRoot id
+
+        let! response =
+            Http.AsyncRequestString(url, headers = [ "Authorization", (sprintf "Bearer %s" managementToken) ])
+
+        let userResult =
+            match Decode.fromString userInfoDecoder response with
+            | Ok user ->
+                Encode.object [ "name", Encode.string user.Name
+                                "picture", Encode.string user.Picture ]
+                |> Encode.toString 4
+
+            | Error err ->
+                log.LogError(sprintf "Failed to decode users from auth0, %A" err)
+                String.Empty
+
+        return userResult
+    }

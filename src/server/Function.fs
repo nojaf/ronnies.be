@@ -90,7 +90,6 @@ let private afterEventWasAdded log origin event =
 
             ()
         } :> Task
-    | _ -> System.Threading.Tasks.Task.CompletedTask
 
 let persistEvents log origin userId events =
     task {
@@ -110,7 +109,7 @@ let persistEvents log origin userId events =
     }
 
 [<FunctionName("add-events")>]
-let AddEvents ([<HttpTrigger(AuthorizationLevel.Function, "post", Route = null)>] req : HttpRequest, log : ILogger) =
+let AddEvents ([<HttpTrigger(AuthorizationLevel.Function, "post", Route = "events")>] req : HttpRequest, log : ILogger) =
     log.LogInformation("Start add-events")
     task {
         let user = req.GetUser log
@@ -134,7 +133,7 @@ let AddEvents ([<HttpTrigger(AuthorizationLevel.Function, "post", Route = null)>
     }
 
 [<FunctionName("get-events")>]
-let GetEvents ([<HttpTrigger(AuthorizationLevel.Function, "get", Route = null)>] req : HttpRequest, log : ILogger) =
+let GetEvents ([<HttpTrigger(AuthorizationLevel.Function, "get", Route = "events")>] req : HttpRequest, log : ILogger) =
     log.LogInformation("Start get-events")
 
     task {
@@ -155,7 +154,7 @@ let GetEvents ([<HttpTrigger(AuthorizationLevel.Function, "get", Route = null)>]
     }
 
 [<FunctionName("add-subscription")>]
-let AddSubscription ([<HttpTrigger(AuthorizationLevel.Function, "post", Route = null)>] req : HttpRequest, log : ILogger) =
+let AddSubscription ([<HttpTrigger(AuthorizationLevel.Function, "post", Route = "subscriptions")>] req : HttpRequest, log : ILogger) =
     log.LogInformation("Start add-subscription")
 
     task {
@@ -182,7 +181,7 @@ let AddSubscription ([<HttpTrigger(AuthorizationLevel.Function, "post", Route = 
     }
 
 [<FunctionName("remove-subscription")>]
-let RemoveSubscription ([<HttpTrigger(AuthorizationLevel.Function, "post", Route = null)>] req : HttpRequest,
+let RemoveSubscription ([<HttpTrigger(AuthorizationLevel.Function, "delete", Route = "subscription")>] req : HttpRequest,
                         log : ILogger)
     =
     log.LogInformation("Start remove-subscription")
@@ -202,10 +201,19 @@ let RemoveSubscription ([<HttpTrigger(AuthorizationLevel.Function, "post", Route
     }
 
 [<FunctionName("get-users")>]
-let GetUsers ([<HttpTrigger(AuthorizationLevel.Function, "get", Route = null)>] req : HttpRequest, log : ILogger) =
+let GetUsers ([<HttpTrigger(AuthorizationLevel.Function, "get", Route = "users")>] req : HttpRequest, log : ILogger) =
     log.LogInformation("Start get-users")
     task {
         let! managementToken = Authentication.getManagementAccessToken log
         let! users = Authentication.getAllUserInfo log managementToken
         return sendJson users
+    }
+
+[<FunctionName("get-user")>]
+let GetUser ([<HttpTrigger(AuthorizationLevel.Function, "get", Route = "users/{id}")>] req : HttpRequest, log : ILogger, id: string) =
+    log.LogInformation(sprintf "Start get-user {%s}" id)
+    task {
+        let! managementToken = Authentication.getManagementAccessToken log
+        let! user = Authentication.getUserInfo log managementToken id
+        return sendJson user
     }

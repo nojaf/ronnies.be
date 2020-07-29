@@ -290,7 +290,7 @@ let infra () =
                  (ResourceGroupName = io apimRgName,
                   ApiManagementName = io apimServiceName,
                   ApiName = io api.Name,
-                  UrlTemplate = input "api/get-events",
+                  UrlTemplate = input "events",
                   Method = input "GET",
                   DisplayName = input "Get events",
                   OperationId = input "get-events",
@@ -353,10 +353,11 @@ let infra () =
                   OperationId = io operation.OperationId,
                   XmlContent = input authenticatedPolicyContent))
     
-    let _addEventsOperation = authenticatedOperation "add-events" "POST" "api/add-events"  "Add events"
-    let _addSubscriptionOperation = authenticatedOperation "add-subscription" "POST" "api/add-subscription" "Add subscription"
-    let _removeSubscriptionOperation = authenticatedOperation "remove-subscription" "POST" "api/remove-subscription" "Remove subscription"
-    let _getAllUsersOperation = authenticatedOperation "get-users" "GET" "api/get-users" "Get user information"
+    let _addEventsOperation = authenticatedOperation "add-events" "POST" "events"  "Add events"
+    let _addSubscriptionOperation = authenticatedOperation "add-subscription" "POST" "subscription" "Add subscription"
+    let _removeSubscriptionOperation = authenticatedOperation "remove-subscription" "DELETE" "subscription" "Remove subscription"
+    let _getAllUsersOperation = authenticatedOperation "get-users" "GET" "users" "Get all user information"
+    let _getUserByIdOperation = authenticatedOperation "get-user" "GET" "users/{id}" "Get user information"
 
     dict []
 

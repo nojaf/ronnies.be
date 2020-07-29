@@ -72,11 +72,11 @@ let private useLocationDetail id =
 
     React.useEffect
         ((fun () ->
-            if roles.IsEditorOrAdmin then
+            if roles.IsEditorOrAdmin && not (String.IsNullOrWhiteSpace(location.Creator)) then
                 auth0.getAccessTokenSilently ()
                 |> Promise.bind (fun authToken ->
                     let url =
-                        sprintf "%s/api/get-users" Config.backendUrl
+                        sprintf "%s/users/%s" Config.backendUrl (location.Creator)
 
                     fetch
                         url
@@ -86,13 +86,10 @@ let private useLocationDetail id =
                 |> Promise.bind (fun res -> res.text ())
                 |> Promise.iter (fun json ->
                     let usersResult =
-                        Decode.fromString (Decode.keyValuePairs nameDecoder) json
+                        Decode.fromString nameDecoder json
 
                     match usersResult with
-                    | Ok users ->
-                        Map.ofList users
-                        |> Map.tryFind location.Creator
-                        |> setCreatorName
+                    | Ok name -> setCreatorName (Some name)
                     | Error err -> JS.console.log err)),
          [| box roles.Roles
             box location.Creator |])

@@ -70,8 +70,8 @@ let syncLatestEvents () =
     |> Promise.bind (fun lastEvent ->
         let url =
             match lastEvent with
-            | Some id -> sprintf "%s/api/get-events?lastEvent=%i" Config.backendUrl id
-            | None -> sprintf "%s/api/get-events" Config.backendUrl
+            | Some id -> sprintf "%s/events?lastEvent=%i" Config.backendUrl id
+            | None -> sprintf "%s/events" Config.backendUrl
 
         Fetch.fetch
             url
@@ -81,7 +81,7 @@ let syncLatestEvents () =
 
 let persistEvents (events : Event list) authToken =
     let url =
-        sprintf "%s/api/add-events" Config.backendUrl
+        sprintf "%s/events" Config.backendUrl
 
     let json =
         events

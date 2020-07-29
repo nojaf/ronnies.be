@@ -78,7 +78,7 @@ let private addSubscription token =
                     JS.console.log (json)
 
                     let url =
-                        sprintf "%s/api/add-subscription" Config.backendUrl
+                        sprintf "%s/subscriptions" Config.backendUrl
 
                     fetch
                         url
@@ -110,11 +110,11 @@ let private removeSubscription token =
                 subscription.unsubscribe ()
                 |> Promise.bind (fun _ ->
                     let url =
-                        sprintf "%s/api/remove-subscription" Config.backendUrl
+                        sprintf "%s/subscriptions" Config.backendUrl
 
                     fetch
                         url
-                        [ RequestProperties.Method HttpMethod.POST
+                        [ RequestProperties.Method HttpMethod.DELETE
                           RequestProperties.Body !^subscription.endpoint
                           requestHeaders [ HttpRequestHeaders.ContentType "application/json"
                                            Config.authHeader token
