@@ -181,7 +181,7 @@ let AddSubscription ([<HttpTrigger(AuthorizationLevel.Function, "post", Route = 
     }
 
 [<FunctionName("remove-subscription")>]
-let RemoveSubscription ([<HttpTrigger(AuthorizationLevel.Function, "delete", Route = "subscription")>] req : HttpRequest,
+let RemoveSubscription ([<HttpTrigger(AuthorizationLevel.Function, "delete", Route = "subscriptions")>] req : HttpRequest,
                         log : ILogger)
     =
     log.LogInformation("Start remove-subscription")

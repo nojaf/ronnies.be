@@ -430,7 +430,8 @@ let private AddLocationPage =
                                  ({ TrueLabel = "Joat"
                                     FalseLabel = "Nint"
                                     OnChange = (UpdateIsDraft >> dispatch)
-                                    Value = model.IsDraft })
+                                    Value = model.IsDraft
+                                    Disabled = false })
                          ]
                          div [ ClassName Bootstrap.FormGroup ] [
                              label [] [ str "Opmerking" ]

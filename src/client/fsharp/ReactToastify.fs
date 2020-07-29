@@ -19,17 +19,17 @@ type ToastOptions =
 type private Toast =
     abstract info : string -> obj -> unit
     abstract success : string -> obj -> unit
+    abstract error : string -> obj -> unit
 
 let private toast : Toast = import "toast" "react-toastify"
 
-let successToast title (options : ToastOptions seq) =
-    let opt =
-        keyValueList Fable.Core.CaseRules.LowerFirst options
+let private defaultToastOptions =
+    [ ToastOptions.ToastPosition ToastPosition.BottomRight
+      ToastOptions.HideProgressBar true ]
+    |> keyValueList Fable.Core.CaseRules.LowerFirst
 
-    toast.success title opt
+let successToast title = toast.success title defaultToastOptions
 
-let infoToast title (options : ToastOptions seq) =
-    let opt =
-        keyValueList Fable.Core.CaseRules.LowerFirst options
+let infoToast title = toast.info title defaultToastOptions
 
-    toast.info title opt
+let errorToast title = toast.error title defaultToastOptions

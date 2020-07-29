@@ -80,8 +80,7 @@ let syncLatestEvents () =
     |> Promise.bind addEventsToIdb
 
 let persistEvents (events : Event list) authToken =
-    let url =
-        sprintf "%s/events" Config.backendUrl
+    let url = sprintf "%s/events" Config.backendUrl
 
     let json =
         events

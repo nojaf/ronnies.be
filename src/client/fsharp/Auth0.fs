@@ -57,8 +57,7 @@ type IdToken =
     [<Emit "$0[$1]{{=$2}}">]
     abstract Item : key:string -> obj option with get, set
 
-type LogoutOptions =
-    { returnTo: string }
+type LogoutOptions = { returnTo : string }
 
 type Auth0Hook =
     abstract isLoading : bool

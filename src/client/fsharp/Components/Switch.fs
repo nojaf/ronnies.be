@@ -11,7 +11,8 @@ type SwitchProps =
     { TrueLabel : string
       FalseLabel : string
       OnChange : bool -> unit
-      Value : bool }
+      Value : bool
+      Disabled : bool }
 
 let Switch =
     React.functionComponent
@@ -24,6 +25,7 @@ let Switch =
                                            Bootstrap.BtnPrimary
                                        else
                                            Bootstrap.BtnOutlinePrimary ]
+                          Disabled props.Disabled
                           OnClick(fun ev ->
                               ev.preventDefault ()
                               props.OnChange true) ] [
@@ -34,6 +36,7 @@ let Switch =
                                            Bootstrap.BtnPrimary
                                        else
                                            Bootstrap.BtnOutlinePrimary ]
+                          Disabled props.Disabled
                           OnClick(fun ev ->
                               ev.preventDefault ()
                               props.OnChange false) ] [

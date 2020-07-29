@@ -72,7 +72,8 @@ let private useLocationDetail id =
 
     React.useEffect
         ((fun () ->
-            if roles.IsEditorOrAdmin && not (String.IsNullOrWhiteSpace(location.Creator)) then
+            if roles.IsEditorOrAdmin
+               && not (String.IsNullOrWhiteSpace(location.Creator)) then
                 auth0.getAccessTokenSilently ()
                 |> Promise.bind (fun authToken ->
                     let url =
@@ -85,8 +86,7 @@ let private useLocationDetail id =
                                            Config.subscriptionHeader ] ])
                 |> Promise.bind (fun res -> res.text ())
                 |> Promise.iter (fun json ->
-                    let usersResult =
-                        Decode.fromString nameDecoder json
+                    let usersResult = Decode.fromString nameDecoder json
 
                     match usersResult with
                     | Ok name -> setCreatorName (Some name)
