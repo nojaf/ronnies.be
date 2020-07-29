@@ -359,10 +359,10 @@ let infra () =
         authenticatedOperation "add-events" "POST" "events" "Add events"
 
     let _addSubscriptionOperation =
-        authenticatedOperation "add-subscription" "POST" "subscription" "Add subscription"
+        authenticatedOperation "add-subscription" "POST" "subscriptions" "Add subscription"
 
     let _removeSubscriptionOperation =
-        authenticatedOperation "remove-subscription" "DELETE" "subscription" "Remove subscription"
+        authenticatedOperation "remove-subscription" "DELETE" "subscriptions" "Remove subscription"
 
     let _getAllUsersOperation =
         authenticatedOperation "get-users" "GET" "users" "Get all user information"
