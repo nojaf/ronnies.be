@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Router } from "@reach/router";
-import { Auth0Provider } from "@auth0/auth0-react";
+import { Auth0Provider, withAuthenticationRequired } from "@auth0/auth0-react";
 import { ToastContainer } from "react-toastify";
 import AddLocationPage from "./bin/Pages/AddLocation";
 import Settings from "./bin/Pages/Settings";
@@ -10,6 +10,8 @@ import { Events } from "./bin/Components/EventContext";
 import Navigation from "./bin/Components/Navigation";
 import HomePage from "./bin/Pages/Home";
 import DetailPage from "./bin/Pages/Detail";
+
+const AddLocation = withAuthenticationRequired(AddLocationPage);
 
 const App = () => {
   return (
@@ -26,7 +28,7 @@ const App = () => {
             <Navigation />
             <Router>
               <HomePage path="/" />
-              <AddLocationPage path="/add-location" />
+              <AddLocation path="/add-location" />
               <Settings path="/settings" />
               <DetailPage path="/detail/:id" />
             </Router>
@@ -50,11 +52,8 @@ ReactDOM.render(
 // Learn more about service workers: https://bit.ly/CRA-PWA
 // serviceWorker.register();
 
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker
-        .register('/sw.js', { scope: './' })
-        .then(swr => {
-            console.log(`Service worker registered`);
-        })
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/sw.js", { scope: "./" }).then((swr) => {
+    console.log(`Service worker registered`);
+  });
 }
-

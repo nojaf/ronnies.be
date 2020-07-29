@@ -30,7 +30,7 @@ let private Navigation =
              let onLogoutClick (ev : MouseEvent) =
                  ev.preventDefault ()
                  auth0.logout { returnTo = Browser.Dom.window.location.origin }
-                 |> Promise.start
+                 |> ignore
 
              let loginLink =
                  li [ classNames [ Bootstrap.NavItem ] ] [

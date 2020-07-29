@@ -323,6 +323,7 @@ let private AddLocationPage =
              let (isSubmitting, setIsSubmitting) = React.useState (false)
              let auth0 = useAuth0 ()
              let (userId, setUserId) = React.useState ("")
+             let roles = useRoles ()
 
              React.useEffect
                  ((fun () ->
@@ -372,6 +373,8 @@ let private AddLocationPage =
                  h1 [] [ str "E nieuwen toevoegen" ]
                  if isSubmitting then
                      Ronnies.Client.Components.Loading.loading "ant opslaan..."
+                 elif not roles.IsEditorOrAdmin then
+                     str "Sorry, je bent geen patron"
                  else
                      form [ classNames [ Bootstrap.ColMd6
                                          Bootstrap.P0 ]
