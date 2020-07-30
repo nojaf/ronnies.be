@@ -44,6 +44,13 @@ let private sendUnAuthorizedRequest err =
     new HttpResponseMessage(HttpStatusCode.Unauthorized,
                             Content = new StringContent(err, System.Text.Encoding.UTF8, "application/text"))
 
+let private notFound () =
+    let json =
+        Encode.string "Not found" |> Encode.toString 4
+
+    new HttpResponseMessage(HttpStatusCode.NotFound,
+                            Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json"))
+
 let private afterEventWasAdded
     (allSubscriptions : PushNotificationSubscription list)
     (allUsers : Map<string, UserInfo>)
@@ -92,7 +99,7 @@ let private afterEventWasAdded
             ()
         } :> Task
 
-let persistEvents log origin userId events =
+let private persistEvents log origin userId events =
     task {
         let! addedEvents = EventStore.appendEvents userId events
         let! managementToken = Authentication.getManagementAccessToken log
@@ -112,8 +119,8 @@ let persistEvents log origin userId events =
         return sendJson json
     }
 
-[<FunctionName("add-events")>]
-let AddEvents ([<HttpTrigger(AuthorizationLevel.Function, "post", Route = "events")>] req : HttpRequest, log : ILogger) =
+
+let private addEvents (log : ILogger) (req : HttpRequest) =
     log.LogInformation("Start add-events")
     task {
         let user = req.GetUser log
@@ -136,8 +143,7 @@ let AddEvents ([<HttpTrigger(AuthorizationLevel.Function, "post", Route = "event
             return (sendBadRequest "Invalid event json")
     }
 
-[<FunctionName("get-events")>]
-let GetEvents ([<HttpTrigger(AuthorizationLevel.Function, "get", Route = "events")>] req : HttpRequest, log : ILogger) =
+let private getEvents (log : ILogger) (req : HttpRequest) =
     log.LogInformation("Start get-events")
 
     task {
@@ -157,10 +163,7 @@ let GetEvents ([<HttpTrigger(AuthorizationLevel.Function, "get", Route = "events
         return sendJson json
     }
 
-[<FunctionName("add-subscription")>]
-let AddSubscription ([<HttpTrigger(AuthorizationLevel.Function, "post", Route = "subscriptions")>] req : HttpRequest,
-                     log : ILogger)
-    =
+let private addSubscription (log : ILogger) (req : HttpRequest) =
     log.LogInformation("Start add-subscription")
 
     task {
@@ -186,10 +189,7 @@ let AddSubscription ([<HttpTrigger(AuthorizationLevel.Function, "post", Route = 
         | Error err -> return sendBadRequest (err.ToString())
     }
 
-[<FunctionName("remove-subscription")>]
-let RemoveSubscription ([<HttpTrigger(AuthorizationLevel.Function, "delete", Route = "subscriptions")>] req : HttpRequest,
-                        log : ILogger)
-    =
+let private removeSubscription (log : ILogger) (req : HttpRequest) =
     log.LogInformation("Start remove-subscription")
     task {
         let origin = req.Headers.["Origin"].ToString()
@@ -206,8 +206,7 @@ let RemoveSubscription ([<HttpTrigger(AuthorizationLevel.Function, "delete", Rou
         return sendText "Subscription removed"
     }
 
-[<FunctionName("get-users")>]
-let GetUsers ([<HttpTrigger(AuthorizationLevel.Function, "get", Route = "users")>] req : HttpRequest, log : ILogger) =
+let private getUsers (log : ILogger) (req : HttpRequest) =
     log.LogInformation("Start get-users")
     task {
         let! managementToken = Authentication.getManagementAccessToken log
@@ -225,11 +224,7 @@ let GetUsers ([<HttpTrigger(AuthorizationLevel.Function, "get", Route = "users")
         return sendJson json
     }
 
-[<FunctionName("get-user")>]
-let GetUser ([<HttpTrigger(AuthorizationLevel.Function, "get", Route = "users/{id}")>] req : HttpRequest,
-             log : ILogger,
-             id : string)
-    =
+let private getUser (log : ILogger) (id : string) =
     log.LogInformation(sprintf "Start get-user {%s}" id)
     task {
         let! managementToken = Authentication.getManagementAccessToken log
@@ -237,10 +232,38 @@ let GetUser ([<HttpTrigger(AuthorizationLevel.Function, "get", Route = "users/{i
         return sendJson user
     }
 
-[<FunctionName("ping")>]
-let Ping ([<HttpTrigger(AuthorizationLevel.Function, "get", Route = "ping")>] req : HttpRequest, log : ILogger) =
+let ping (log : ILogger) =
     log.LogInformation "pinged"
     Encode.object [ "value", Encode.string "pong"
                     "createdUTC", Encode.datetimeOffset (DateTimeOffset.UtcNow) ]
     |> Encode.toString 4
     |> sendJson
+
+let private (|GetUserRoute|_|) (path : string) =
+    if System.Text.RegularExpressions.Regex.IsMatch(path, "\\/users\\/(\\S)+") then
+        let id = path.Replace("/users/", String.Empty)
+        Some id
+    else
+        None
+
+[<FunctionName("ronnies")>]
+let Ronnies ([<HttpTrigger(AuthorizationLevel.Function, "get", "post", "delete", Route = "{*any}")>] req : HttpRequest,
+             log : ILogger)
+    =
+    log.LogInformation("Entering Ronnies backend")
+
+    task {
+        let path = req.Path.Value.ToLower()
+        let method = req.Method.ToUpper()
+        log.LogInformation (sprintf "%s %s" method path)
+
+        match method, path with
+        | "GET", "/events" -> return! getEvents log req
+        | "POST", "/events" -> return! addEvents log req
+        | "POST", "/subscriptions" -> return! addSubscription log req
+        | "DELETE", "/subscriptions" -> return! removeSubscription log req
+        | "GET", "/users" -> return! getUsers log req
+        | "GET", GetUserRoute (id) -> return! getUser log id
+        | "GET", "/ping" -> return ping log
+        | _ -> return notFound ()
+    }

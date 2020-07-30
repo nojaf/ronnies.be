@@ -15,8 +15,8 @@ function syncIndexDB(isLocalhost) {
         ? "http://localhost:9090"
         : "https://nojaf-apim.azure-api.net/ronnies";
       const api = lastEventId
-        ? `/api/get-events?lastEvent=${lastEventId}`
-        : "/api/get-events";
+        ? `/events?lastEvent=${lastEventId}`
+        : "/events";
       const url = root + api;
       const headers = isLocalhost
         ? {}
