@@ -239,7 +239,7 @@ let ping (log : ILogger) =
     |> Encode.toString 4
     |> sendJson
 
-let private (|GetUserRoute|_|) (path : string) =
+let private (|UserRoute|_|) (path : string) =
     if System.Text.RegularExpressions.Regex.IsMatch(path, "\\/users\\/(\\S)+") then
         let id = path.Replace("/users/", String.Empty)
         Some id
@@ -263,7 +263,7 @@ let Ronnies ([<HttpTrigger(AuthorizationLevel.Function, "get", "post", "delete",
         | "POST", "/subscriptions" -> return! addSubscription log req
         | "DELETE", "/subscriptions" -> return! removeSubscription log req
         | "GET", "/users" -> return! getUsers log req
-        | "GET", GetUserRoute (id) -> return! getUser log id
+        | "GET", UserRoute (id) -> return! getUser log id
         | "GET", "/ping" -> return ping log
         | _ -> return notFound ()
     }

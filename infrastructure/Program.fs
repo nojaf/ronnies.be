@@ -137,7 +137,7 @@ let infra () =
             return apim.Name
         }
 
-    let _logger =
+    let logger =
         Logger
             ("ronny-logger",
              LoggerArgs
@@ -160,6 +160,13 @@ let infra () =
                   ServiceUrl = io (app.DefaultHostname.Apply(sprintf "https://%s")),
                   Protocols = inputList [ input "https" ],
                   SubscriptionRequired = input true))
+
+    let _diagnostics =
+        Diagnostic("ronnyDiagnostics", DiagnosticArgs(Identifier = input "applicationinsights",
+                                                      ResourceGroupName = io apimRgName,
+                                                      ApiManagementName = io apimServiceName,
+                                                      ApiManagementLoggerId = io logger.Id,
+                                                      Enabled = input true))
 
     let apiPolicyContent () =
         output {
