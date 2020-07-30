@@ -237,3 +237,11 @@ let GetUser ([<HttpTrigger(AuthorizationLevel.Function, "get", Route = "users/{i
         let! user = Authentication.getUserInfo log managementToken id
         return sendJson user
     }
+
+[<FunctionName("ping")>]
+let Ping ([<HttpTrigger(AuthorizationLevel.Function, "get", Route = "users/{id}")>] req : HttpRequest, log : ILogger) =
+    log.LogInformation "pinged"
+    Encode.object [ "value", Encode.string "pong"
+                    "createdUTC", Encode.datetimeOffset (DateTimeOffset.UtcNow) ]
+    |> Encode.toString 4
+    |> sendJson

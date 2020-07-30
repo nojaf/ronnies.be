@@ -22,7 +22,7 @@ module HeatMiser =
         log.LogInformation msg
 
         task {
-            let url = sprintf "%s/events" backend
+            let url = sprintf "%s/ping" backend
             let! response = Http.AsyncRequest(url, headers = [ "Ocp-Apim-Subscription-Key", subscriptionKey ])
             log.LogDebug(sprintf "response was %i" response.StatusCode)
             ()

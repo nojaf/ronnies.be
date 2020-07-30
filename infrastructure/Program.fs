@@ -395,6 +395,18 @@ let infra () =
 
         authenticatedPolicy functionName operation
 
+    let _getPingOperation =
+        ApiOperation
+            ("ping",
+             ApiOperationArgs
+                 (ResourceGroupName = io apimRgName,
+                  ApiManagementName = io apimServiceName,
+                  ApiName = io api.Name,
+                  UrlTemplate = input "ping",
+                  Method = input "GET",
+                  DisplayName = input "Ping",
+                  OperationId = input "ping"))
+
     dict []
 
 [<EntryPoint>]
