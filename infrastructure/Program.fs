@@ -104,7 +104,10 @@ let infra () =
                                  "Vapid_Subject", input (System.Environment.GetEnvironmentVariable("Vapid_Subject"))
                                  "Vapid_PublicKey", input (System.Environment.GetEnvironmentVariable("Vapid_PublicKey"))
                                  "Vapid_PrivateKey",
-                                 input (System.Environment.GetEnvironmentVariable("Vapid_PrivateKey")) ],
+                                 input (System.Environment.GetEnvironmentVariable("Vapid_PrivateKey"))
+                                 "BACKEND", input (System.Environment.GetEnvironmentVariable("BACKEND"))
+                                 "SUBSCRIPTION_KEY",
+                                 input (System.Environment.GetEnvironmentVariable("SUBSCRIPTION_KEY")) ],
                   SiteConfig =
                       input
                           (FunctionAppSiteConfigArgs

@@ -10,14 +10,17 @@
     <Compile Include="Authentication.fs" />
     <Compile Include="EventStore.fs" />
     <Compile Include="Function.fs" />
+    <Compile Include="HeatMiser.fs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="host.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Update="local.settings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+  </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+    <None Include="local.settings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
     </None>
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />

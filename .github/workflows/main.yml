@@ -49,4 +49,5 @@ jobs:
           Vapid_Subject: ${{ secrets.VAPID_SUBJECT }}
           Vapid_PublicKey: ${{ secrets.VAPID_PUBLICKEY }}
           Vapid_PrivateKey: ${{ secrets.VAPID_PRIVATEKEY }}
+          BACKEND: ${{ secrets.BACKEND }}
           PULUMI_CI: up
