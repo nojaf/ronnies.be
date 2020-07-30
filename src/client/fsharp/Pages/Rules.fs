@@ -7,7 +7,7 @@ open Feliz
 open Ronnies.Client.Styles
 open Ronnies.Client.Components.Page
 
-let RulesPage =
+let private RulesPage =
     React.functionComponent
         ("RulesPage",
          (fun () ->
