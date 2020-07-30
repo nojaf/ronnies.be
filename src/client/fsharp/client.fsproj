@@ -25,7 +25,9 @@
     <Compile Include="Pages\Home.fs" />
     <Compile Include="Pages\Settings.fs" />
     <Compile Include="Pages\Detail.fs" />
-    <Compile Include="Pages\OverviewPage.fs" />
+    <Compile Include="Pages\Overview.fs" />
+    <Compile Include="Pages\Rules.fs" />
+    <Compile Include="Pages\Leaderboard.fs" />
   </ItemGroup>
   <Import Project="..\..\..\.paket\Paket.Restore.targets" />
 

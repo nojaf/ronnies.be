@@ -10,9 +10,13 @@ import { Events } from "./bin/Components/EventContext";
 import Navigation from "./bin/Components/Navigation";
 import HomePage from "./bin/Pages/Home";
 import DetailPage from "./bin/Pages/Detail";
-import OverviewPage from "./bin/Pages/OverviewPage";
+import OverviewPage from "./bin/Pages/Overview";
+import RulesPage from "./bin/Pages/Rules";
+import LeaderboardPage from "./bin/Pages/Leaderboard";
 
 const AddLocation = withAuthenticationRequired(AddLocationPage);
+const Rules = withAuthenticationRequired(RulesPage);
+const Leaderbord = withAuthenticationRequired(LeaderboardPage);
 
 const App = () => {
   return (
@@ -33,6 +37,8 @@ const App = () => {
               <Settings path="/settings" />
               <DetailPage path="/detail/:id" />
               <OverviewPage path="/overview" />
+              <Rules path="/rules" />
+              <Leaderbord path="/leaderboard" />
             </Router>
             <ToastContainer />
           </main>

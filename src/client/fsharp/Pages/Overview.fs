@@ -1,4 +1,4 @@
-module Ronnies.Client.Pages.OverviewPage
+module Ronnies.Client.Pages.Overview
 
 open Fable.Core
 open Fable.Core.JsInterop
@@ -146,7 +146,9 @@ let private OverviewPage =
                                  th [] [ str "Door" ]
                          ]
                      ]
-                     tbody [] [ ofList locationRows ]
+                     tbody [ ClassName Bootstrap.OverviewTbody ] [
+                         ofList locationRows
+                     ]
                  ]
              ]))
 

@@ -104,7 +104,9 @@ let private Navigation =
 
              let editorItems =
                  if roles.IsEditorOrAdmin then
-                     [ menuLink "/add-location" "E nieuwen toevoegen" ]
+                     [ menuLink "/add-location" "E nieuwen toevoegen"
+                       menuLink "/leaderboard" "Klassement"
+                       menuLink "/rules" "Manifesto" ]
                  else
                      []
 
@@ -114,7 +116,7 @@ let private Navigation =
                                 Bootstrap.BgPrimary ] ] [
                  Link [ To "/"
                         ClassName Bootstrap.NavbarBrand
-                        OnClick(fun _ -> setMobileOpen (not mobileOpen)) ] [
+                        OnClick(fun _ -> setMobileOpen false) ] [
                      img [ Src "/assets/r-white.png"
                            Alt "logo ronnies.be" ]
                  ]
