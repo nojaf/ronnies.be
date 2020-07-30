@@ -239,7 +239,7 @@ let GetUser ([<HttpTrigger(AuthorizationLevel.Function, "get", Route = "users/{i
     }
 
 [<FunctionName("ping")>]
-let Ping ([<HttpTrigger(AuthorizationLevel.Function, "get", Route = "users/{id}")>] req : HttpRequest, log : ILogger) =
+let Ping ([<HttpTrigger(AuthorizationLevel.Function, "get", Route = "ping")>] req : HttpRequest, log : ILogger) =
     log.LogInformation "pinged"
     Encode.object [ "value", Encode.string "pong"
                     "createdUTC", Encode.datetimeOffset (DateTimeOffset.UtcNow) ]

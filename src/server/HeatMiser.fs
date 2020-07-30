@@ -24,6 +24,6 @@ module HeatMiser =
         task {
             let url = sprintf "%s/ping" backend
             let! response = Http.AsyncRequest(url, headers = [ "Ocp-Apim-Subscription-Key", subscriptionKey ])
-            log.LogDebug(sprintf "response was %i" response.StatusCode)
+            log.LogInformation(sprintf "response was %i" response.StatusCode)
             ()
         }
