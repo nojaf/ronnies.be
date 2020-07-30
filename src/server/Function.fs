@@ -1,7 +1,6 @@
 module Ronnies.Server.Function
 
 open System
-open System.Net.Http.Headers
 open System.Threading.Tasks
 open FSharp.Control.Tasks
 open Microsoft.AspNetCore.Http

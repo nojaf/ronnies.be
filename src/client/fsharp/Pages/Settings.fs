@@ -39,12 +39,12 @@ type private PushSubscription =
     abstract unsubscribe : unit -> JS.Promise<bool>
 
 [<Emit("$0.pushManager.getSubscription()")>]
-let private getSubscriptionFromSw sw : JS.Promise<PushSubscription option> = jsNative
+let private getSubscriptionFromSw _sw : JS.Promise<PushSubscription option> = jsNative
 
 [<Emit("$0.pushManager.subscribe({userVisibleOnly: true, applicationServerKey: $1})")>]
 let private subscriptWithPushManager
-    (sw : ServiceWorkerRegistration)
-    (appServerKey : byte array)
+    (_sw : ServiceWorkerRegistration)
+    (_appServerKey : byte array)
     : JS.Promise<PushSubscription>
     =
     jsNative
