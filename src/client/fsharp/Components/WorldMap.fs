@@ -30,9 +30,9 @@ let private getLocations (events : Event list) =
             :: acc
 
         | LocationCancelled id
-        | LocationNoLongerSellsRonnies (id, _) ->
-            let id = id.ToString()
-            List.filter (fun rl -> rl.id <> id) acc) [] events
+        | LocationNoLongerSellsRonnies id ->
+            let idAsString = (Identifier.Read id).ToString()
+            List.filter (fun rl -> rl.id <> idAsString) acc) [] events
 
 let WorldMap =
     React.functionComponent

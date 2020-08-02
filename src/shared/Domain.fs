@@ -249,7 +249,7 @@ type LocationAddedNotification = unit
 type Event =
     | LocationAdded of AddLocation
     | LocationCancelled of Identifier
-    | LocationNoLongerSellsRonnies of Identifier * reason : string option
+    | LocationNoLongerSellsRonnies of Identifier
 
     static member Encoder : Encoder<Event> =
         fun event ->
@@ -260,10 +260,9 @@ type Event =
             | LocationCancelled id ->
                 Encode.array [| Encode.string "locationCancelled"
                                 (Identifier.Read >> Encode.guid) id |]
-            | LocationNoLongerSellsRonnies (id, reason) ->
+            | LocationNoLongerSellsRonnies id ->
                 Encode.array [| Encode.string "locationNoLongerSellsRonnies"
-                                Encode.object [ "id", (Identifier.Read >> Encode.guid) id
-                                                "reason", Encode.option Encode.string reason ] |]
+                                (Identifier.Read >> Encode.guid) id |]
 
     static member Decoder : Decoder<Event> =
         Decode.index 0 Decode.string
@@ -276,13 +275,8 @@ type Event =
                 Decode.index 1 Decode.guid
                 |> Decode.map (fun id -> Identifier.Parse id |> LocationCancelled)
             | "locationNoLongerSellsRonnies" ->
-                Decode.index
-                    1
-                    (Decode.object (fun get ->
-                        get.Required.Field "id" Decode.guid, get.Optional.Field "reason" Decode.string))
-                |> Decode.map (fun (id, remark) ->
-                    (Identifier.Parse id, remark)
-                    |> LocationNoLongerSellsRonnies)
+               Decode.index 1 Decode.guid
+                |> Decode.map (fun id -> Identifier.Parse id |> LocationNoLongerSellsRonnies)
             | _ ->
                 sprintf "`%s` is not a valid case for Event" caseName
                 |> Decode.fail)

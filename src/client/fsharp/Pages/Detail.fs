@@ -9,15 +9,14 @@ open Fable.React.Props
 open Feliz
 open Thoth.Json
 open Auth0
+open ReactToastify
 open Ronnies.Client
 open Ronnies.Client.Components.EventContext
 open Ronnies.Client.Styles
 open Ronnies.Client.Components.Page
+open Ronnies.Client.Components.Loading
+open Ronnies.Client.Components.Navigation
 open Ronnies.Domain
-
-type private SellsRonnies =
-    | StillSells
-    | NoLongerSells of string option
 
 type private LocationDetail =
     { Id : Guid
@@ -28,7 +27,7 @@ type private LocationDetail =
       IsDraft : bool
       Remark : string option
       IsCancelled : bool
-      NoLongerSellsRonnies : SellsRonnies }
+      NoLongerSellsRonnies : bool }
 
     static member Empty =
         { Id = Guid.Empty
@@ -39,7 +38,7 @@ type private LocationDetail =
           IsDraft = false
           Remark = None
           IsCancelled = false
-          NoLongerSellsRonnies = SellsRonnies.StillSells }
+          NoLongerSellsRonnies = false }
 
 let equalsId id value = Identifier.Read id |> (=) value
 
@@ -57,9 +56,7 @@ let private getLocation events id =
                   Remark = loc.Remark } : LocationDetail
 
         | LocationCancelled cid when (equalsId cid id) -> { acc with IsCancelled = true }
-        | LocationNoLongerSellsRonnies (nid, remark) when (equalsId nid id) ->
-            { acc with
-                  NoLongerSellsRonnies = (SellsRonnies.NoLongerSells remark) }
+        | LocationNoLongerSellsRonnies nid when (equalsId nid id) -> { acc with NoLongerSellsRonnies = true }
         | LocationAdded _
         | LocationCancelled _
         | LocationNoLongerSellsRonnies _ -> acc) LocationDetail.Empty events
@@ -112,7 +109,9 @@ let private fact label value =
 type ActionModal =
     { Title : string
       Description : string
-      Event : Event }
+      Event : Event
+      SuccessToastMessage : string
+      FailureToastMessage : string }
 
 let private DetailPage =
     React.functionComponent
@@ -120,18 +119,11 @@ let private DetailPage =
          (fun (props : {| id : string |}) ->
              let roles = useRoles ()
              let auth0 = useAuth0 ()
+             let navigate = useNavigate ()
              let (locationDetail, creatorName) = useLocationDetail auth0 roles props.id
-
-             let meh =
-                 match Identifier.Parse props.id with
-                 | Success id ->
-                     { Title = "Cancel location"
-                       Description = "Wil je deze plekke uitschakelen? Dit is echt vo aj je met een misse zit.\nToedoen aj kei zit."
-                       Event = Ronnies.Domain.LocationCancelled id }
-                     |> Some
-                 | Failure _ -> None
-
-             let (actionModal, setActionModal) = React.useState (meh)
+             let eventCtx = React.useContext (eventContext)
+             let isLoading, setIsLoading = React.useState (false)
+             let (actionModal, setActionModal) = React.useState (None)
 
              let isDraftValue =
                  if locationDetail.IsDraft then
@@ -143,6 +135,18 @@ let private DetailPage =
                  match creatorName with
                  | Some name -> fact "Patron" name
                  | None -> []
+
+             let addEvent modalInfo =
+                 setActionModal None
+                 setIsLoading true
+                 eventCtx.AddEvents [ modalInfo.Event ]
+                 |> Promise.map (fun _ ->
+                     successToast modalInfo.SuccessToastMessage
+                     setIsLoading false
+                     navigate "/")
+                 |> Promise.catchEnd (fun err ->
+                     JS.console.error err
+                     setIsLoading false)
 
              let remark =
                  match creatorName, locationDetail.Remark with
@@ -164,44 +168,57 @@ let private DetailPage =
              let modalWindow =
                  actionModal
                  |> Option.map (fun modalInfo ->
-                     div [ Class "modal"
+                     div [ Class "modal fade show d-block"
                            TabIndex -1
                            Role "dialog" ] [
                          div [ Class "modal-dialog" ] [
                              div [ Class "modal-content" ] [
                                  div [ Class "modal-header" ] [
                                      h5 [ Class "modal-title" ] [
-                                         str "Modal title"
+                                         str modalInfo.Title
                                      ]
                                      button [ Type "button"
                                               Class "close"
-                                              HTMLAttr.Data("dismiss", "modal")
-                                              HTMLAttr.Custom("aria-label", "Close") ] [
-                                         span [ HTMLAttr.Custom("aria-hidden", "true") ] [
-                                             str "&times;"
-                                         ]
+                                              OnClick(fun _ -> setActionModal None) ] [
+                                         span [ DangerouslySetInnerHTML { __html = "&times;" } ] []
                                      ]
                                  ]
                                  div [ Class "modal-body" ] [
-                                     p [] [
-                                         str "Modal body text goes here."
-                                     ]
+                                     p [] [ str modalInfo.Description ]
                                  ]
                                  div [ Class "modal-footer" ] [
                                      button [ Type "button"
                                               Class "btn btn-secondary"
-                                              HTMLAttr.Data("dismiss", "modal") ] [
-                                         str "Close"
+                                              OnClick(fun _ -> setActionModal None) ] [
+                                         str "Toe doen"
                                      ]
                                      button [ Type "button"
-                                              Class "btn btn-primary" ] [
-                                         str "Save changes"
+                                              Class "btn btn-primary"
+                                              OnClick(fun _ -> addEvent modalInfo) ] [
+                                         str "Bevestig"
                                      ]
                                  ]
                              ]
                          ]
                      ])
 
+             let showCancelModal _ =
+                 { Title = "Cancel location"
+                   Description = "Wil je deze plekke uitschakelen? Dit is echt vo aj je met een misse zit.\nToedoen aj kei zit."
+                   Event = Ronnies.Domain.LocationCancelled(Identifier.Parse locationDetail.Id)
+                   SuccessToastMessage = sprintf "%s werd geannuleerd!" locationDetail.Name
+                   FailureToastMessage = sprintf "Kon %s niet annuleren!" locationDetail.Name }
+                 |> Some
+                 |> setActionModal
+
+             let showNoLongerSellsModal _ =
+                 { Title = sprintf "%s verkoopt gin ronnies meer." locationDetail.Name
+                   Description = "Ben je zeker dat ze hier gin ronnies meer verkopen?\nToedoen aj kei zit."
+                   Event = Ronnies.Domain.LocationNoLongerSellsRonnies(Identifier.Parse locationDetail.Id)
+                   SuccessToastMessage = sprintf "%s werd gemarkt als ronnies plekke no more!" locationDetail.Name
+                   FailureToastMessage = sprintf "Kon %s niet updaten!" locationDetail.Name }
+                 |> Some
+                 |> setActionModal
 
              page [] [
                  ofOption modalWindow
@@ -215,20 +232,27 @@ let private DetailPage =
                      yield! creator
                  ]
                  remark
-                 if roles.IsEditorOrAdmin then
+                 if roles.IsEditorOrAdmin && not isLoading then
                      div [] [
                          hr []
                          if roles.IsAdmin then
                              button [ classNames [ Bootstrap.Btn
-                                                   Bootstrap.BtnDanger ] ] [
+                                                   Bootstrap.BtnDanger ]
+                                      OnClick showCancelModal ] [
                                  str "Cancel location"
                              ]
+                         if roles.IsAdmin then
+                             br []
                          button [ classNames [ Bootstrap.Btn
                                                Bootstrap.BtnWarning
-                                               Bootstrap.Ml2 ] ] [
+                                               Bootstrap.Mt2 ]
+                                  OnClick showNoLongerSellsModal ] [
                              str "Verkoopt gin ronnies nie meer"
                          ]
                      ]
+                 elif isLoading then
+                     loading "Syncen met de server..."
+
              ]))
 
 exportDefault DetailPage

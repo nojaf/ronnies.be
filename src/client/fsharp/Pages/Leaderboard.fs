@@ -1,9 +1,7 @@
 module Ronnies.Client.Pages.Leaderboard
 
-open Browser.Types
 open Fable.Core
 open Fable.Core.JsInterop
-open Browser.Navigator
 open Fable.Import
 open Fable.React
 open Fable.React.Props
@@ -14,8 +12,6 @@ open Fetch
 open Thoth.Json
 open Ronnies.Domain
 open Ronnies.Client
-open Ronnies.Client.Components.Loading
-open Ronnies.Client.Components.Switch
 open Ronnies.Client.Components.EventContext
 open Ronnies.Client.Styles
 open Ronnies.Client.Components.Page
@@ -42,8 +38,8 @@ let getScores events =
             else
                 Map.add creator [ la.Id ] acc
         | LocationCancelled id
-        | LocationNoLongerSellsRonnies (id, _) -> Map.map (fun creator locations -> List.filter ((<>) id) locations) acc)
-        Map.empty events
+        | LocationNoLongerSellsRonnies id -> Map.map (fun _ locations -> List.filter ((<>) id) locations) acc) Map.empty
+        events
     |> Map.map (fun _ v -> List.length v)
 
 let private useUserScore () =

@@ -42,7 +42,7 @@ let private getLocations events =
         | LocationCancelled id ->
             let id = (Identifier.Read id).ToString()
             List.filter (fun l -> l.Id <> id) acc
-        | LocationNoLongerSellsRonnies (id, _) ->
+        | LocationNoLongerSellsRonnies id ->
             let id = (Identifier.Read id).ToString()
             List.map (fun l ->
                 if l.Id = id then
