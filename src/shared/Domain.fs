@@ -132,7 +132,7 @@ type Currency =
     private
     | Currency of decimal * ThreeLetterString
 
-    static member Read (Currency (v, ThreeLetterString(t))) = v, t
+    static member Read (Currency (v, ThreeLetterString (t))) = v, t
 
     static member Parse (value : string) (currencyType : string) =
         match System.Decimal.TryParse(value.Replace(",", ".")) with
@@ -144,9 +144,11 @@ type Currency =
                 ThreeLetterString.Parse currencyType
                 |> ValidationResult.map (fun currencyType -> Currency(value, currencyType))
 
-let private mapValidationError propertyName
-                               (v : ValidationResult<'a, ValidationErrorType>)
-                               : ValidationResult<'a, ValidationError> =
+let private mapValidationError
+    propertyName
+    (v : ValidationResult<'a, ValidationErrorType>)
+    : ValidationResult<'a, ValidationError>
+    =
     match v with
     | Success s -> Success s
     | Failure errors ->
@@ -246,6 +248,8 @@ type LocationAddedNotification = unit
 
 type Event =
     | LocationAdded of AddLocation
+    | LocationCancelled of Identifier
+    | LocationNoLongerSellsRonnies of Identifier * reason : string option
 
     static member Encoder : Encoder<Event> =
         fun event ->
@@ -253,6 +257,13 @@ type Event =
             | LocationAdded addLocation ->
                 Encode.array [| Encode.string "locationAdded"
                                 AddLocation.Encoder addLocation |]
+            | LocationCancelled id ->
+                Encode.array [| Encode.string "locationCancelled"
+                                (Identifier.Read >> Encode.guid) id |]
+            | LocationNoLongerSellsRonnies (id, reason) ->
+                Encode.array [| Encode.string "locationNoLongerSellsRonnies"
+                                Encode.object [ "id", (Identifier.Read >> Encode.guid) id
+                                                "reason", Encode.option Encode.string reason ] |]
 
     static member Decoder : Decoder<Event> =
         Decode.index 0 Decode.string
@@ -261,38 +272,17 @@ type Event =
             | "locationAdded" ->
                 Decode.index 1 AddLocation.Decoder
                 |> Decode.map LocationAdded
+            | "locationCancelled" ->
+                Decode.index 1 Decode.guid
+                |> Decode.map (fun id -> Identifier.Parse id |> LocationCancelled)
+            | "locationNoLongerSellsRonnies" ->
+                Decode.index
+                    1
+                    (Decode.object (fun get ->
+                        get.Required.Field "id" Decode.guid, get.Optional.Field "reason" Decode.string))
+                |> Decode.map (fun (id, remark) ->
+                    (Identifier.Parse id, remark)
+                    |> LocationNoLongerSellsRonnies)
             | _ ->
                 sprintf "`%s` is not a valid case for Event" caseName
                 |> Decode.fail)
-
-//    | NameUpdated of id: Identifier * name: string
-//    | PriceUpdated of id: Identifier * price: Price
-//    | LocationUpdated of id: Identifier * location: Location
-//    | RemarkUpdated of id: Identifier * description: string
-//    | IsDraftUpdated of id: Identifier * isDraft: bool
-//    | NewLeaderInHighScores of user: EventSource * score: int
-//    | LocationAddedNotificationSent of LocationAddedNotification
-//    | LocationMarkedAsDuplicate of id: Identifier
-
-//let newId (): Identifier = System.Guid.NewGuid()
-
-//[<RequireQualifiedAccess>]
-//module Projections =
-//    let getTotal events =
-//        events
-//        |> List.filter (function
-//            | LocationAdded _ -> true
-//            | _ -> false)
-//        |> List.length
-//
-//    let getRonniesWithLocation events =
-//        events
-//        |> List.choose (function
-//            | LocationAdded ({ Location = location; Name = name }) -> Some(name, location)
-//            | _ -> None)
-//
-//    let getRonnies projection events =
-//        events
-//        |> List.choose (function
-//            | LocationAdded la -> Some(projection la)
-//            | _ -> None)

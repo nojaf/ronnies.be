@@ -27,7 +27,12 @@ let private getLocations (events : Event list) =
               name = name
               latitude = lat
               longitude = lng }
-            :: acc) [] events
+            :: acc
+
+        | LocationCancelled id
+        | LocationNoLongerSellsRonnies (id, _) ->
+            let id = id.ToString()
+            List.filter (fun rl -> rl.id <> id) acc) [] events
 
 let WorldMap =
     React.functionComponent

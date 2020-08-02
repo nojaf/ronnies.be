@@ -48,6 +48,8 @@ type HttpRequest with
 let mayWriteEvent permissions event =
     match event with
     | LocationAdded _ -> Seq.contains "write:location" permissions
+    | LocationCancelled _ -> Seq.contains "delete:location" permissions
+    | LocationNoLongerSellsRonnies _ -> Seq.contains "write:location" permissions
 
 let private clientId =
     Environment.GetEnvironmentVariable("Auth0Management_ClientId")

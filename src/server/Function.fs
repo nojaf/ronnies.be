@@ -98,6 +98,8 @@ let private afterEventWasAdded
 
             ()
         } :> Task
+    | LocationCancelled _
+    | LocationNoLongerSellsRonnies _ -> Task.CompletedTask
 
 let private persistEvents log origin userId events =
     task {
@@ -255,7 +257,7 @@ let Ronnies ([<HttpTrigger(AuthorizationLevel.Function, "get", "post", "delete",
     task {
         let path = req.Path.Value.ToLower()
         let method = req.Method.ToUpper()
-        log.LogInformation (sprintf "%s %s" method path)
+        log.LogInformation(sprintf "%s %s" method path)
 
         match method, path with
         | "GET", "/events" -> return! getEvents log req

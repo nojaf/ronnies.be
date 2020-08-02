@@ -23,7 +23,8 @@ type private Location =
       PriceValue : decimal
       Creator : string
       Date : string
-      Ticks : int64 }
+      Ticks : int64
+      NoLongerSellsRonnies : bool }
 
 let private getLocations events =
     List.fold (fun acc event ->
@@ -35,8 +36,19 @@ let private getLocations events =
               PriceValue = Currency.Read la.Price |> fst
               Creator = NonEmptyString.Read la.Creator
               Date = la.Created.ToString("dd/MM/yy")
-              Ticks = la.Created.Ticks }
-            :: acc) [] events
+              Ticks = la.Created.Ticks
+              NoLongerSellsRonnies = false }
+            :: acc
+        | LocationCancelled id ->
+            let id = (Identifier.Read id).ToString()
+            List.filter (fun l -> l.Id <> id) acc
+        | LocationNoLongerSellsRonnies (id, _) ->
+            let id = (Identifier.Read id).ToString()
+            List.map (fun l ->
+                if l.Id = id then
+                    { l with NoLongerSellsRonnies = true }
+                else
+                    l) acc) [] events
 
 let private useLocations () =
     let eventCtx = React.useContext (eventContext)

@@ -162,11 +162,14 @@ let infra () =
                   SubscriptionRequired = input true))
 
     let _diagnostics =
-        Diagnostic("ronnyDiagnostics", DiagnosticArgs(Identifier = input "applicationinsights",
-                                                      ResourceGroupName = io apimRgName,
-                                                      ApiManagementName = io apimServiceName,
-                                                      ApiManagementLoggerId = io logger.Id,
-                                                      Enabled = input true))
+        Diagnostic
+            ("ronnyDiagnostics",
+             DiagnosticArgs
+                 (Identifier = input "applicationinsights",
+                  ResourceGroupName = io apimRgName,
+                  ApiManagementName = io apimServiceName,
+                  ApiManagementLoggerId = io logger.Id,
+                  Enabled = input true))
 
     let apiPolicyContent () =
         output {
