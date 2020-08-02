@@ -223,7 +223,12 @@ let private DetailPage =
              page [] [
                  ofOption modalWindow
                  h1 [ classNames [ Bootstrap.Pb4 ] ] [
-                     str locationDetail.Name
+                     if locationDetail.NoLongerSellsRonnies then
+                         yield! [ span [ DangerouslySetInnerHTML { __html = "&#10014;" } ] []
+                                  strong [] [ str "RIP " ]
+                                  str locationDetail.Name ]
+                     else
+                         str locationDetail.Name
                  ]
                  div [ classNames [ Bootstrap.Row ] ] [
                      yield! (fact "Prijs" locationDetail.Price)
@@ -232,7 +237,9 @@ let private DetailPage =
                      yield! creator
                  ]
                  remark
-                 if roles.IsEditorOrAdmin && not isLoading then
+                 if not locationDetail.NoLongerSellsRonnies
+                    && roles.IsEditorOrAdmin
+                    && not isLoading then
                      div [] [
                          hr []
                          if roles.IsAdmin then
