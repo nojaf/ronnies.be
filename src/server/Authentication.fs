@@ -11,35 +11,34 @@ open Thoth.Json.Net
 open Ronnies.Domain
 open Ronnies.Server.Types
 
-let getUser (logger : ILogger) (req:HttpRequest) : User =
-        let authorizationHeader =
-            req.Headers.["Authorization"].ToString()
+let getUser (logger : ILogger) (req : HttpRequest) : User =
+    let authorizationHeader = req.Headers.["Authorization"].ToString()
 
-        let token =
-            authorizationHeader.Replace("Bearer ", String.Empty).Replace("bearer ", String.Empty)
+    let token =
+        authorizationHeader.Replace("Bearer ", String.Empty).Replace("bearer ", String.Empty)
 
-        let handler =
-            System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler()
+    let handler =
+        System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler()
 
-        let tokenContent = handler.ReadJwtToken(token)
-        let id = tokenContent.Subject
+    let tokenContent = handler.ReadJwtToken(token)
+    let id = tokenContent.Subject
 
-        let permissions =
-            tokenContent.Claims
-            |> Seq.choose (fun claim ->
-                if claim.Type = "permissions" then
-                    Some claim.Value
-                else
-                    None)
-            |> Seq.toList
+    let permissions =
+        tokenContent.Claims
+        |> Seq.choose (fun claim ->
+            if claim.Type = "permissions" then
+                Some claim.Value
+            else
+                None)
+        |> Seq.toList
 
-        let user = { Id = id; Permissions = permissions }
+    let user = { Id = id; Permissions = permissions }
 
 #if DEBUG
-        logger.LogDebug(sprintf "User: %A" user)
+    logger.LogDebug(sprintf "User: %A" user)
 #endif
 
-        user
+    user
 
 let mayWriteEvent permissions event =
     match event with

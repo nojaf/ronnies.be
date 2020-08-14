@@ -275,8 +275,10 @@ type Event =
                 Decode.index 1 Decode.guid
                 |> Decode.map (fun id -> Identifier.Parse id |> LocationCancelled)
             | "locationNoLongerSellsRonnies" ->
-               Decode.index 1 Decode.guid
-                |> Decode.map (fun id -> Identifier.Parse id |> LocationNoLongerSellsRonnies)
+                Decode.index 1 Decode.guid
+                |> Decode.map (fun id ->
+                    Identifier.Parse id
+                    |> LocationNoLongerSellsRonnies)
             | _ ->
                 sprintf "`%s` is not a valid case for Event" caseName
                 |> Decode.fail)

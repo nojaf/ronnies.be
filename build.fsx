@@ -51,7 +51,7 @@ Target.create "Clean"
 
 Target.create "Format" (fun _ ->
     fsharpFiles
-    |> FakeHelpers.formatCode
+    |> Fantomas.Extras.FakeHelpers.formatCode
     |> Async.RunSynchronously
     |> printfn "Formatted F# files: %A"
 
@@ -61,7 +61,7 @@ Target.create "Format" (fun _ ->
 Target.create "CheckCodeFormat" (fun _ ->
     let result =
         fsharpFiles
-        |> FakeHelpers.checkCode
+        |> Fantomas.Extras.FakeHelpers.checkCode
         |> Async.RunSynchronously
 
     if result.IsValid then
