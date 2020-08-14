@@ -12,8 +12,8 @@ open System.Net
 open System.Net.Http
 open Thoth.Json.Net
 open Ronnies.Domain
-open Ronnies.Server.Authentication
-open Ronnies.Server.EventStore
+open Ronnies.Server
+open Ronnies.Server.Types
 open WebPush
 
 type HttpRequest with
@@ -125,7 +125,7 @@ let private persistEvents log origin userId events =
 let private addEvents (log : ILogger) (req : HttpRequest) =
     log.LogInformation("Start add-events")
     task {
-        let user = req.GetUser log
+        let user = Authentication.getUser log req
         let! json = req.ReadAsStringAsync()
         let origin = req.Headers.["Origin"].ToString()
 
@@ -137,7 +137,7 @@ let private addEvents (log : ILogger) (req : HttpRequest) =
             return! persistEvents log origin user.Id events
         | Ok event ->
             let msg =
-                sprintf "Unauthorized to persist event %s" (getUnionCaseName event)
+                sprintf "Unauthorized to persist event %s" (EventStore.getUnionCaseName event)
 
             return sendUnAuthorizedRequest msg
         | Error err ->
@@ -170,7 +170,7 @@ let private addSubscription (log : ILogger) (req : HttpRequest) =
 
     task {
         let origin = req.Headers.["Origin"].ToString()
-        let userFromToken = req.GetUser log
+        let userFromToken = Authentication.getUser log req
         let! json = req.ReadAsStringAsync()
         log.LogInformation json
         let! managementToken = Authentication.getManagementAccessToken log
@@ -195,7 +195,7 @@ let private removeSubscription (log : ILogger) (req : HttpRequest) =
     log.LogInformation("Start remove-subscription")
     task {
         let origin = req.Headers.["Origin"].ToString()
-        let user = req.GetUser log
+        let user = Authentication.getUser log req
         let! endpoint = req.ReadAsStringAsync()
         let! managementToken = Authentication.getManagementAccessToken log
         let! existingSubscriptions = Authentication.getUserPushNotificationSubscriptions log managementToken user.Id
@@ -208,7 +208,7 @@ let private removeSubscription (log : ILogger) (req : HttpRequest) =
         return sendText "Subscription removed"
     }
 
-let private getUsers (log : ILogger) (req : HttpRequest) =
+let private getUsers (log : ILogger) =
     log.LogInformation("Start get-users")
     task {
         let! managementToken = Authentication.getManagementAccessToken log
@@ -264,7 +264,7 @@ let Ronnies ([<HttpTrigger(AuthorizationLevel.Function, "get", "post", "delete",
         | "POST", "/events" -> return! addEvents log req
         | "POST", "/subscriptions" -> return! addSubscription log req
         | "DELETE", "/subscriptions" -> return! removeSubscription log req
-        | "GET", "/users" -> return! getUsers log req
+        | "GET", "/users" -> return! getUsers log
         | "GET", UserRoute (id) -> return! getUser log id
         | "GET", "/ping" -> return ping log
         | _ -> return notFound ()

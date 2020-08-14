@@ -26,7 +26,7 @@ let private toast : Toast = import "toast" "react-toastify"
 let private defaultToastOptions =
     [ ToastOptions.ToastPosition ToastPosition.BottomRight
       ToastOptions.HideProgressBar true ]
-    |> keyValueList Fable.Core.CaseRules.LowerFirst
+    |> keyValueList CaseRules.LowerFirst
 
 let successToast title = toast.success title defaultToastOptions
 

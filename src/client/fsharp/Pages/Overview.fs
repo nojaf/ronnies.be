@@ -82,7 +82,7 @@ let private useGetUsers () =
                 auth0.getAccessTokenSilently ()
                 |> Promise.bind (fun token ->
                     let url = sprintf "%s/users" Common.backendUrl
-                    Fetch.fetch
+                    fetch
                         url
                         [ requestHeaders [ HttpRequestHeaders.ContentType "application/json"
                                            Common.subscriptionHeader

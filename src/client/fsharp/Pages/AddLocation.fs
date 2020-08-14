@@ -1,7 +1,6 @@
 module Ronnies.Client.Views.AddLocationPage.View
 
 open System
-open Fable.Core
 open Fable.Core.JsInterop
 open Fable.Import
 open Fable.React
@@ -327,7 +326,7 @@ let private AddLocationPage =
 
              React.useEffect
                  ((fun () ->
-                     if not (JsInterop.isNullOrUndefined auth0.user) then
+                     if not (isNullOrUndefined auth0.user) then
                          setUserId auth0.user.sub),
                   [| box auth0.user |])
 

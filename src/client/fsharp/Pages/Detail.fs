@@ -205,7 +205,7 @@ let private DetailPage =
              let showCancelModal _ =
                  { Title = "Cancel location"
                    Description = "Wil je deze plekke uitschakelen? Dit is echt vo aj je met een misse zit.\nToedoen aj kei zit."
-                   Event = Ronnies.Domain.LocationCancelled(Identifier.Parse locationDetail.Id)
+                   Event = LocationCancelled(Identifier.Parse locationDetail.Id)
                    SuccessToastMessage = sprintf "%s werd geannuleerd!" locationDetail.Name
                    FailureToastMessage = sprintf "Kon %s niet annuleren!" locationDetail.Name }
                  |> Some
@@ -214,7 +214,7 @@ let private DetailPage =
              let showNoLongerSellsModal _ =
                  { Title = sprintf "%s verkoopt gin ronnies meer." locationDetail.Name
                    Description = "Ben je zeker dat ze hier gin ronnies meer verkopen?\nToedoen aj kei zit."
-                   Event = Ronnies.Domain.LocationNoLongerSellsRonnies(Identifier.Parse locationDetail.Id)
+                   Event = LocationNoLongerSellsRonnies(Identifier.Parse locationDetail.Id)
                    SuccessToastMessage = sprintf "%s werd gemarkt als ronnies plekke no more!" locationDetail.Name
                    FailureToastMessage = sprintf "Kon %s niet updaten!" locationDetail.Name }
                  |> Some

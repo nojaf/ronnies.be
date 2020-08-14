@@ -15,7 +15,7 @@ module HeatMiser =
         Environment.GetEnvironmentVariable("SUBSCRIPTION_KEY")
 
     [<FunctionName("HeatMiser")>]
-    let run ([<TimerTrigger("0 */10 * * * *")>] myTimer : TimerInfo, log : ILogger) =
+    let run ([<TimerTrigger("0 */10 * * * *")>] _myTimer : TimerInfo, log : ILogger) =
         let msg =
             sprintf "F# Time trigger function executed at: %A" DateTime.Now
 

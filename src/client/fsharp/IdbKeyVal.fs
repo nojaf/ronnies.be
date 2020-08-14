@@ -73,7 +73,7 @@ let syncLatestEvents () =
             | Some id -> sprintf "%s/events?lastEvent=%i" Common.backendUrl id
             | None -> sprintf "%s/events" Common.backendUrl
 
-        Fetch.fetch
+        fetch
             url
             [ requestHeaders [ HttpRequestHeaders.ContentType "application/json"
                                Common.subscriptionHeader ] ])

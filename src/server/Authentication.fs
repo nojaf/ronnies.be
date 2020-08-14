@@ -1,3 +1,4 @@
+[<RequireQualifiedAccess>]
 module Ronnies.Server.Authentication
 
 open System
@@ -8,19 +9,14 @@ open Microsoft.Extensions.Logging
 open FSharp.Control.Tasks
 open Thoth.Json.Net
 open Ronnies.Domain
+open Ronnies.Server.Types
 
-type User =
-    { Id : string
-      Permissions : string list }
-
-type HttpRequest with
-
-    member this.GetUser (logger : ILogger) : User =
+let getUser (logger : ILogger) (req:HttpRequest) : User =
         let authorizationHeader =
-            this.Headers.["Authorization"].ToString()
+            req.Headers.["Authorization"].ToString()
 
         let token =
-            authorizationHeader.Replace("Bearer ", System.String.Empty).Replace("bearer ", System.String.Empty)
+            authorizationHeader.Replace("Bearer ", String.Empty).Replace("bearer ", String.Empty)
 
         let handler =
             System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler()
@@ -86,69 +82,8 @@ let getManagementAccessToken (log : ILogger) =
         | Error err ->
             log.LogError("Invalid response from Auth0 management token API")
             failwithf "Error while decoding: %A" err
-            return System.String.Empty
+            return String.Empty
     }
-
-type PushNotificationSubscription =
-    { Endpoint : string
-      Auth : string
-      P256DH : string
-      Origin : string }
-
-    static member FromBrowserDecoder (origin : string) =
-        Decode.object (fun get ->
-            { Endpoint = get.Required.Field "endpoint" Decode.string
-              Auth = get.Required.At [ "keys"; "auth" ] Decode.string
-              P256DH = get.Required.At [ "keys"; "p256dh" ] Decode.string
-              Origin = origin })
-
-    static member FromAuth0Decoder =
-        Decode.object (fun get ->
-            { Endpoint = get.Required.Field "endpoint" Decode.string
-              Auth = get.Required.Field "auth" Decode.string
-              P256DH = get.Required.Field "p256dh" Decode.string
-              Origin = get.Required.Field "origin" Decode.string })
-
-    static member Encoder : Encoder<PushNotificationSubscription> =
-        fun (pns : PushNotificationSubscription) ->
-            Encode.object [ "endpoint", Encode.string pns.Endpoint
-                            "auth", Encode.string pns.Auth
-                            "p256dh", Encode.string pns.P256DH
-                            "origin", Encode.string pns.Origin ]
-
-type AppMetaData =
-    { PushNotificationSubscriptions : PushNotificationSubscription list }
-
-    static member Decoder : Decoder<AppMetaData> =
-        Decode.object (fun get ->
-            let subs =
-                get.Optional.Field
-                    "pushNotificationSubscriptions"
-                    (Decode.list PushNotificationSubscription.FromAuth0Decoder)
-                |> Option.defaultValue []
-
-            { PushNotificationSubscriptions = subs })
-
-    static member Encoder : Encoder<AppMetaData> =
-        fun amd ->
-            Encode.object
-                [ "pushNotificationSubscriptions",
-                  List.map PushNotificationSubscription.Encoder amd.PushNotificationSubscriptions
-                  |> Encode.list ]
-
-type Auth0User =
-    { AppMetaData : AppMetaData }
-
-    static member Decoder : Decoder<Auth0User> =
-        Decode.object (fun get ->
-            let metaData =
-                get.Optional.Field "app_metadata" AppMetaData.Decoder
-                |> Option.defaultValue ({ PushNotificationSubscriptions = [] })
-
-            { AppMetaData = metaData })
-
-    static member Encoder : Encoder<Auth0User> =
-        fun user -> Encode.object [ "app_metadata", AppMetaData.Encoder user.AppMetaData ]
 
 let getUserPushNotificationSubscriptions (log : ILogger) managementToken userId =
     task {
@@ -235,11 +170,6 @@ let getUserName (log : ILogger) managementToken userId =
             log.LogError(sprintf "Failed to decode username from auth0, %A" error)
             return "???"
     }
-
-type UserInfo =
-    { Name : string
-      Id : string
-      Picture : string }
 
 let private userInfoDecoder =
     Decode.object (fun get ->

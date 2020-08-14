@@ -43,7 +43,7 @@ let inline ReactMapGL (props : ReactMapGLProp list) (children : ReactElement seq
     let allProps =
         (MapboxApiAccessToken mapboxApiAccessToken)
         :: props
-        |> keyValueList Fable.Core.CaseRules.LowerFirst
+        |> keyValueList CaseRules.LowerFirst
 
     ofImport "default" "react-map-gl" allProps children
 
@@ -55,7 +55,7 @@ type MarkerProp =
     | OffsetTop of int
 
 let inline Marker (props : MarkerProp list) (children : ReactElement seq) : Fable.React.ReactElement =
-    ofImport "Marker" "react-map-gl" (keyValueList Fable.Core.CaseRules.LowerFirst props) children
+    ofImport "Marker" "react-map-gl" (keyValueList CaseRules.LowerFirst props) children
 
 let UserIcon =
     svg [ HTMLAttr.Custom("xmlns", "http://www.w3.org/2000/svg")

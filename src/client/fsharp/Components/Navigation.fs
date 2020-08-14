@@ -41,7 +41,7 @@ let private Navigation =
                      ]
                  ]
 
-             let userElement (user : Auth0.Auth0User) =
+             let userElement (user : Auth0User) =
                  li [ classNames [ Bootstrap.NavItem ] ] [
                      Link [ classNames [ Bootstrap.NavLink
                                          Bootstrap.Active ]

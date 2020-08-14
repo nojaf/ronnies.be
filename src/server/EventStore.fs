@@ -1,3 +1,4 @@
+[<RequireQualifiedAccess>]
 module Ronnies.Server.EventStore
 
 open CosmoStore

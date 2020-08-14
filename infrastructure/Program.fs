@@ -14,7 +14,7 @@ open Pulumi
 open System.IO
 
 let infra () =
-    let stackName = Pulumi.Deployment.Instance.StackName
+    let stackName = Deployment.Instance.StackName
 
     let resourceGroupName =
         output {

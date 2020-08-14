@@ -7,6 +7,7 @@
   <ItemGroup>
     <None Include="paket.references" />
     <Compile Include="../shared/Domain.fs" />
+    <Compile Include="Types.fs" />
     <Compile Include="Authentication.fs" />
     <Compile Include="EventStore.fs" />
     <Compile Include="Function.fs" />

@@ -135,7 +135,7 @@ type Currency =
     static member Read (Currency (v, ThreeLetterString (t))) = v, t
 
     static member Parse (value : string) (currencyType : string) =
-        match System.Decimal.TryParse(value.Replace(",", ".")) with
+        match Decimal.TryParse(value.Replace(",", ".")) with
         | false, _ -> Failure [ InvalidNumber ]
         | true, value ->
             if value <= 0m then
