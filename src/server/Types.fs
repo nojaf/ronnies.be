@@ -54,17 +54,23 @@ type AppMetaData =
                   |> Encode.list ]
 
 type Auth0User =
-    { AppMetaData : AppMetaData }
+    { UserId: string
+      AppMetaData : AppMetaData }
 
     static member Decoder : Decoder<Auth0User> =
         Decode.object (fun get ->
+            let userId = get.Required.Field "user_id" Decode.string
+
             let metaData =
                 get.Optional.Field "app_metadata" AppMetaData.Decoder
                 |> Option.defaultValue ({ PushNotificationSubscriptions = [] })
 
-            { AppMetaData = metaData })
+            { UserId = userId; AppMetaData = metaData })
 
-    static member Encoder : Encoder<Auth0User> =
+type PatchAuth0User =
+    { AppMetaData : AppMetaData }
+
+    static member Encoder : Encoder<PatchAuth0User> =
         fun user -> Encode.object [ "app_metadata", AppMetaData.Encoder user.AppMetaData ]
 
 type UserInfo =

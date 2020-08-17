@@ -51,8 +51,19 @@ let private notFound () =
     new HttpResponseMessage(HttpStatusCode.NotFound,
                             Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json"))
 
+let private filterSubscriptionsAndPersist managementToken userId existingSubscriptions origin endpoint =
+    task {
+        let updatedSubscriptions =
+            List.filter (fun s -> not (s.Endpoint = endpoint && s.Origin = origin)) existingSubscriptions
+
+        do! Authentication.updateUserPushNotificationSubscription managementToken userId updatedSubscriptions
+    }
+
 let private afterEventWasAdded
-    (allSubscriptions : PushNotificationSubscription list)
+    (log: ILogger)
+    (managementToken: string)
+    (origin: string)
+    (allSubscriptions : List<Auth0User * PushNotificationSubscription list>)
     (allUsers : Map<string, UserInfo>)
     event
     =
@@ -89,11 +100,21 @@ let private afterEventWasAdded
 
             let! _sendPushNotifications =
                 allSubscriptions
-                |> List.map (fun s ->
-                    let ps =
-                        PushSubscription(s.Endpoint, s.P256DH, s.Auth)
-
-                    webPushClient.SendNotificationAsync(ps, payload, vapidDetails))
+                |> List.map (fun (user, subscriptions) ->
+                    subscriptions
+                    |> List.filter (fun s -> s.Origin = origin)
+                    |> List.map (fun s ->
+                        task {
+                            try
+                                let ps = PushSubscription(s.Endpoint, s.P256DH, s.Auth)
+                                do! webPushClient.SendNotificationAsync(ps, payload, vapidDetails)
+                            with
+                            | :? WebPushException as wpex ->
+                                log.LogError(sprintf "Couldn't send notification to %s, %A" user.UserId wpex)
+                                do! filterSubscriptionsAndPersist managementToken user.UserId subscriptions s.Origin s.Endpoint
+                        } :> Task
+                    )
+                    |> Task.WhenAll)
                 |> Task.WhenAll
 
             ()
@@ -109,7 +130,7 @@ let private persistEvents log origin userId events =
         let! allUsers = Authentication.getAllUserInfo log managementToken
 
         let! _afterAddTasks =
-            List.map (afterEventWasAdded allSubscriptions allUsers) events
+            List.map (afterEventWasAdded log managementToken origin allSubscriptions allUsers) events
             |> Task.WhenAll
 
         let json =
@@ -191,6 +212,7 @@ let private addSubscription (log : ILogger) (req : HttpRequest) =
         | Error err -> return sendBadRequest (err.ToString())
     }
 
+
 let private removeSubscription (log : ILogger) (req : HttpRequest) =
     log.LogInformation("Start remove-subscription")
     task {
@@ -200,10 +222,7 @@ let private removeSubscription (log : ILogger) (req : HttpRequest) =
         let! managementToken = Authentication.getManagementAccessToken log
         let! existingSubscriptions = Authentication.getUserPushNotificationSubscriptions log managementToken user.Id
 
-        let updatedSubscriptions =
-            List.filter (fun s -> not (s.Endpoint = endpoint && s.Origin = origin)) existingSubscriptions
-
-        do! Authentication.updateUserPushNotificationSubscription managementToken user.Id updatedSubscriptions
+        do! filterSubscriptionsAndPersist managementToken user.Id existingSubscriptions origin endpoint
 
         return sendText "Subscription removed"
     }

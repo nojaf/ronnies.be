@@ -106,7 +106,7 @@ let updateUserPushNotificationSubscription managementToken userId subscriptions 
 
         let json =
             { AppMetaData = { PushNotificationSubscriptions = subscriptions } }
-            |> Auth0User.Encoder
+            |> PatchAuth0User.Encoder
             |> Encode.toString 4
 
         let! _response =
@@ -121,9 +121,19 @@ let updateUserPushNotificationSubscription managementToken userId subscriptions 
         ()
     }
 
-let private allSubscriptionsDecoder =
+let private allSubscriptionsDecoder origin =
     Decode.list Auth0User.Decoder
-    |> Decode.map (fun users -> List.collect (fun (u : Auth0User) -> u.AppMetaData.PushNotificationSubscriptions) users)
+    |> Decode.map (fun users ->
+        users
+        |> List.choose (fun (user: Auth0User) ->
+             let subs = user.AppMetaData.PushNotificationSubscriptions
+
+             if List.isEmpty subs then
+                 None
+             else
+                Some (user, subs)
+        )
+    )
 
 let getPushNotificationSubscriptions (log : ILogger) origin managementToken =
     task {
@@ -133,13 +143,13 @@ let getPushNotificationSubscriptions (log : ILogger) origin managementToken =
         let! users = Http.AsyncRequestString(url, headers = [ "Authorization", (sprintf "Bearer %s" managementToken) ])
 
         let subscriptions =
-            Decode.fromString allSubscriptionsDecoder users
+            Decode.fromString (allSubscriptionsDecoder origin) users
 
         match subscriptions with
-        | Ok subs -> return (List.filter (fun s -> s.Origin = origin) subs)
+        | Ok subs -> return subs
         | Error err ->
             log.LogError(sprintf "Invalid response from Auth0 management token API, %A" err)
-            return []
+            return List.empty
     }
 
 let private userNameDecoder (get : Decode.IGetters) =
