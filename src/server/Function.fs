@@ -60,9 +60,9 @@ let private filterSubscriptionsAndPersist managementToken userId existingSubscri
     }
 
 let private afterEventWasAdded
-    (log: ILogger)
-    (managementToken: string)
-    (origin: string)
+    (log : ILogger)
+    (managementToken : string)
+    (origin : string)
     (allSubscriptions : List<Auth0User * PushNotificationSubscription list>)
     (allUsers : Map<string, UserInfo>)
     event
@@ -106,14 +106,19 @@ let private afterEventWasAdded
                     |> List.map (fun s ->
                         task {
                             try
-                                let ps = PushSubscription(s.Endpoint, s.P256DH, s.Auth)
+                                let ps =
+                                    PushSubscription(s.Endpoint, s.P256DH, s.Auth)
+
                                 do! webPushClient.SendNotificationAsync(ps, payload, vapidDetails)
-                            with
-                            | :? WebPushException as wpex ->
+                            with :? WebPushException as wpex ->
                                 log.LogError(sprintf "Couldn't send notification to %s, %A" user.UserId wpex)
-                                do! filterSubscriptionsAndPersist managementToken user.UserId subscriptions s.Origin s.Endpoint
-                        } :> Task
-                    )
+                                do! filterSubscriptionsAndPersist
+                                        managementToken
+                                        user.UserId
+                                        subscriptions
+                                        s.Origin
+                                        s.Endpoint
+                        } :> Task)
                     |> Task.WhenAll)
                 |> Task.WhenAll
 

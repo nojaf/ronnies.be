@@ -125,15 +125,14 @@ let private allSubscriptionsDecoder origin =
     Decode.list Auth0User.Decoder
     |> Decode.map (fun users ->
         users
-        |> List.choose (fun (user: Auth0User) ->
-             let subs = user.AppMetaData.PushNotificationSubscriptions
+        |> List.choose (fun (user : Auth0User) ->
+            let subs =
+                user.AppMetaData.PushNotificationSubscriptions
 
-             if List.isEmpty subs then
-                 None
-             else
-                Some (user, subs)
-        )
-    )
+            if List.isEmpty subs then
+                None
+            else
+                Some(user, subs)))
 
 let getPushNotificationSubscriptions (log : ILogger) origin managementToken =
     task {
