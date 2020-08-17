@@ -203,6 +203,7 @@ let infra () =
                         <allowed-methods preflight-result-max-age="300">
                             <method>GET</method>
                             <method>POST</method>
+                            <method>DELETE</method>
                         </allowed-methods>
                         <allowed-headers>
                             <header>*</header>
