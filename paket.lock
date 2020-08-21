@@ -118,13 +118,13 @@ NUGET
       Fake.Core.Trace (>= 5.20.2) - restriction: >= netstandard2.0
       Fake.IO.FileSystem (>= 5.20.2) - restriction: >= netstandard2.0
       FSharp.Core (>= 4.7.2) - restriction: >= netstandard2.0
-    Fantomas (4.0.0-beta-002)
-      FSharp.Compiler.Service (>= 36.0.3) - restriction: >= netstandard2.0
-      FSharp.Core (>= 4.7.1) - restriction: >= netstandard2.0
-    Fantomas.Extras (4.0.0-beta-002)
+    Fantomas (4.0.0-beta-003)
+      FSharp.Compiler.Service (>= 37.0) - restriction: >= netstandard2.0
+      FSharp.Core (>= 4.7.2) - restriction: >= netstandard2.0
+    Fantomas.Extras (4.0.0-beta-003)
       editorconfig (>= 0.12.2) - restriction: >= netstandard2.0
-      Fantomas (>= 4.0.0-beta-002) - restriction: >= netstandard2.0
-      FSharp.Core (>= 4.7.1) - restriction: >= netstandard2.0
+      Fantomas (>= 4.0.0-beta-003) - restriction: >= netstandard2.0
+      FSharp.Core (>= 4.7.2) - restriction: >= netstandard2.0
     FParsec (1.1.1) - restriction: >= netstandard2.0
       FSharp.Core (>= 4.3.4) - restriction: || (>= net45) (>= netstandard2.0)
       System.ValueTuple (>= 4.4) - restriction: >= net45
