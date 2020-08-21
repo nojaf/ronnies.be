@@ -126,10 +126,10 @@ let private OverviewPage =
                      tr [ Key loc.Id ] [
                          td [] [
                              Link [ To(sprintf "/detail/%s" loc.Id)
-                                    classNames
-                                        [ if loc.NoLongerSellsRonnies then
-                                            yield! [ Bootstrap.Strike
-                                                     Bootstrap.TextMuted ] ] ] [
+                                    classNames [ if loc.NoLongerSellsRonnies then
+                                                     yield!
+                                                         [ Bootstrap.Strike
+                                                           Bootstrap.TextMuted ] ] ] [
                                  str loc.Name
                              ]
                          ]

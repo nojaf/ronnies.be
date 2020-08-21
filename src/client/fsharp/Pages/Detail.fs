@@ -224,9 +224,10 @@ let private DetailPage =
                  ofOption modalWindow
                  h1 [ classNames [ Bootstrap.Pb4 ] ] [
                      if locationDetail.NoLongerSellsRonnies then
-                         yield! [ span [ DangerouslySetInnerHTML { __html = "&#10014;" } ] []
-                                  strong [] [ str "RIP " ]
-                                  str locationDetail.Name ]
+                         yield!
+                             [ span [ DangerouslySetInnerHTML { __html = "&#10014;" } ] []
+                               strong [] [ str "RIP " ]
+                               str locationDetail.Name ]
                      else
                          str locationDetail.Name
                  ]

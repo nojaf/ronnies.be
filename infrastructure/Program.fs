@@ -311,13 +311,12 @@ let infra () =
                       input
                           (ApiOperationRequestArgs
                               (QueryParameters =
-                                  inputList
-                                      [ input
-                                          (ApiOperationRequestQueryParameterArgs
-                                              (Name = input "lastEvent",
-                                               Required = input false,
-                                               Type = input "integer",
-                                               Description = input "Last event number the client already has")) ]))))
+                                  inputList [ input
+                                                  (ApiOperationRequestQueryParameterArgs
+                                                      (Name = input "lastEvent",
+                                                       Required = input false,
+                                                       Type = input "integer",
+                                                       Description = input "Last event number the client already has")) ]))))
 
     let authenticatedPolicyContent = """
 <policies>
@@ -396,13 +395,12 @@ let infra () =
                       DisplayName = input "Get user information",
                       OperationId = input functionName,
                       TemplateParameters =
-                          inputList
-                              [ input
-                                  (ApiOperationTemplateParameterArgs
-                                      (Name = input "id",
-                                       Required = input true,
-                                       Type = input "string",
-                                       Description = input "Auth0 user_id")) ]))
+                          inputList [ input
+                                          (ApiOperationTemplateParameterArgs
+                                              (Name = input "id",
+                                               Required = input true,
+                                               Type = input "string",
+                                               Description = input "Auth0 user_id")) ]))
 
         authenticatedPolicy functionName operation
 

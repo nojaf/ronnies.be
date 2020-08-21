@@ -30,13 +30,15 @@ let private RulesPage =
                  h3 [ ClassName "mb-2" ] [ str "FAQ" ]
                  dl [] [
                      yield! faqItem "Kzitn met e misse?" "Een admin kan alles rechttrekken, ping nojaf."
-                     yield! faqItem
-                                "Me GPS zegt dak e bitje ernaast zitten."
-                                "Je kut bi het ingeven zelve nog op de koarte klikken, tis de R van Ronny die telt."
+                     yield!
+                         faqItem
+                             "Me GPS zegt dak e bitje ernaast zitten."
+                             "Je kut bi het ingeven zelve nog op de koarte klikken, tis de R van Ronny die telt."
                      yield! faqItem "Woarom de term 'Ronny'?" "Gin idee, Svenne zegt dat lik. Oe goat dat ol."
-                     yield! faqItem
-                                "Meug je een trouw toevoegen?"
-                                "Nej, je moet onder normale omstandigheden, de toegevoegde plekke de weke derop kunnen bezoeken."
+                     yield!
+                         faqItem
+                             "Meug je een trouw toevoegen?"
+                             "Nej, je moet onder normale omstandigheden, de toegevoegde plekke de weke derop kunnen bezoeken."
                      yield! faqItem "En meugen winkels?" "Nope, enkel permanente cafes/restaurants"
                  ]
              ]))

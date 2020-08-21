@@ -48,10 +48,9 @@ type AppMetaData =
 
     static member Encoder : Encoder<AppMetaData> =
         fun amd ->
-            Encode.object
-                [ "pushNotificationSubscriptions",
-                  List.map PushNotificationSubscription.Encoder amd.PushNotificationSubscriptions
-                  |> Encode.list ]
+            Encode.object [ "pushNotificationSubscriptions",
+                            List.map PushNotificationSubscription.Encoder amd.PushNotificationSubscriptions
+                            |> Encode.list ]
 
 type Auth0User =
     { UserId : string
