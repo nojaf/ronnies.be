@@ -1,4 +1,4 @@
-dotnet fantomas --config .\fantomas-config.json -r src\client\fsharp
-dotnet fantomas --config .\fantomas-config.json -r src\server
-dotnet fantomas --config .\fantomas-config.json -r src\shared
-dotnet fantomas --config .\fantomas-config.json -r infrastructure
+dotnet fantomas -r src\client\fsharp
+dotnet fantomas -r src\server
+dotnet fantomas -r src\shared
+dotnet fantomas -r infrastructure
