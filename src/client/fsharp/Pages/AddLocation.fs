@@ -332,6 +332,7 @@ let private AddLocationPage =
 
              let onSubmit (addEvent : AddLocation) =
                  setIsSubmitting (true)
+
                  eventCtx.AddEvents [ Event.LocationAdded addEvent ]
                  |> Promise.iter (fun _ -> navigate "/")
 

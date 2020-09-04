@@ -28,6 +28,7 @@ let private fetchLatestEvents setEvents =
     |> Promise.bind (fun existingEvents ->
         setEvents existingEvents
         let newEvents = IdbKeyVal.syncLatestEvents ()
+
         Promise.all [ Promise.lift existingEvents
                       newEvents ])
     |> Promise.iter (List.concat >> setEvents)
@@ -48,6 +49,7 @@ let Events =
 
              let clearCache () =
                  IdbKeyVal.removeAllEvents ()
+
                  IdbKeyVal.syncLatestEvents ()
                  |> Promise.map (setEvents)
 

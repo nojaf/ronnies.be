@@ -32,6 +32,7 @@ let getScores events =
         match ev with
         | LocationAdded la ->
             let creator = NonEmptyString.Read la.Creator
+
             if Map.containsKey creator acc then
                 Map.find creator acc
                 |> fun v -> Map.add creator (la.Id :: v) acc
@@ -56,6 +57,7 @@ let private useUserScore () =
                 auth0.getAccessTokenSilently ()
                 |> Promise.bind (fun token ->
                     let url = sprintf "%s/users" Common.backendUrl
+
                     fetch
                         url
                         [ requestHeaders [ HttpRequestHeaders.ContentType "application/json"

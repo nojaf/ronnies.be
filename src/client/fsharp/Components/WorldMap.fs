@@ -23,6 +23,7 @@ let private getLocations (events : Event list) =
                 (Identifier.Read locationAdded.Id).ToString(), NonEmptyString.Read locationAdded.Name
 
             let lat, lng = Location.Read locationAdded.Location
+
             { id = id
               name = name
               latitude = lat

@@ -112,6 +112,7 @@ let private afterEventWasAdded
                                 do! webPushClient.SendNotificationAsync(ps, payload, vapidDetails)
                             with :? WebPushException as wpex ->
                                 log.LogError(sprintf "Couldn't send notification to %s, %A" user.UserId wpex)
+
                                 do! filterSubscriptionsAndPersist
                                         managementToken
                                         user.UserId
@@ -150,6 +151,7 @@ let private persistEvents log origin userId events =
 
 let private addEvents (log : ILogger) (req : HttpRequest) =
     log.LogInformation("Start add-events")
+
     task {
         let user = Authentication.getUser log req
         let! json = req.ReadAsStringAsync()
@@ -220,6 +222,7 @@ let private addSubscription (log : ILogger) (req : HttpRequest) =
 
 let private removeSubscription (log : ILogger) (req : HttpRequest) =
     log.LogInformation("Start remove-subscription")
+
     task {
         let origin = req.Headers.["Origin"].ToString()
         let user = Authentication.getUser log req
@@ -234,6 +237,7 @@ let private removeSubscription (log : ILogger) (req : HttpRequest) =
 
 let private getUsers (log : ILogger) =
     log.LogInformation("Start get-users")
+
     task {
         let! managementToken = Authentication.getManagementAccessToken log
         let! users = Authentication.getAllUserInfo log managementToken
@@ -252,6 +256,7 @@ let private getUsers (log : ILogger) =
 
 let private getUser (log : ILogger) (id : string) =
     log.LogInformation(sprintf "Start get-user {%s}" id)
+
     task {
         let! managementToken = Authentication.getManagementAccessToken log
         let! user = Authentication.getUserInfo log managementToken id
@@ -260,6 +265,7 @@ let private getUser (log : ILogger) (id : string) =
 
 let ping (log : ILogger) =
     log.LogInformation "pinged"
+
     Encode.object [ "value", Encode.string "pong"
                     "createdUTC", Encode.datetimeOffset (DateTimeOffset.UtcNow) ]
     |> Encode.toString 4

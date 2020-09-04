@@ -139,6 +139,7 @@ let private DetailPage =
              let addEvent modalInfo =
                  setActionModal None
                  setIsLoading true
+
                  eventCtx.AddEvents [ modalInfo.Event ]
                  |> Promise.map (fun _ ->
                      successToast modalInfo.SuccessToastMessage

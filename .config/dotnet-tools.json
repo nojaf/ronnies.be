@@ -9,13 +9,13 @@
       ]
     },
     "fake-cli": {
-      "version": "5.20.2",
+      "version": "5.20.3",
       "commands": [
         "fake"
       ]
     },
     "fantomas-tool": {
-      "version": "4.0.0",
+      "version": "4.1.0-beta-003",
       "commands": [
         "fantomas"
       ]

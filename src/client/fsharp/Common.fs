@@ -21,6 +21,7 @@ let vapidKey =
 
 let readCurrency price =
     let (value, currency) = Currency.Read price
+
     match currency with
     | "EUR" -> sprintf "€%.2f" value
     | "USD" -> sprintf "$%.2f" value

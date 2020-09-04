@@ -44,6 +44,7 @@ let private getLocations events =
             List.filter (fun l -> l.Id <> id) acc
         | LocationNoLongerSellsRonnies id ->
             let id = (Identifier.Read id).ToString()
+
             List.map (fun l ->
                 if l.Id = id then
                     { l with NoLongerSellsRonnies = true }
@@ -82,6 +83,7 @@ let private useGetUsers () =
                 auth0.getAccessTokenSilently ()
                 |> Promise.bind (fun token ->
                     let url = sprintf "%s/users" Common.backendUrl
+
                     fetch
                         url
                         [ requestHeaders [ HttpRequestHeaders.ContentType "application/json"

@@ -81,10 +81,12 @@ type RolesHook =
 let useRoles () : RolesHook =
     let (roles, setRoles) = React.useState ([||])
     let auth0 = useAuth0 ()
+
     React.useEffect
         ((fun () ->
             if not auth0.isLoading && auth0.isAuthenticated then
                 setRoles auth0.user.roles),
          [| box auth0.user
             box auth0.isLoading |])
+
     { Roles = roles }

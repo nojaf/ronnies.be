@@ -70,6 +70,7 @@ let private addSubscription token =
             match sub with
             | None ->
                 let key = urlB64ToUint8Array Common.vapidKey
+
                 subscriptWithPushManager sw key
                 |> Promise.bind (fun subscription ->
                     let json =
@@ -134,6 +135,7 @@ let private Settings =
 
              let clearCacheHandler _ =
                  setIsLoading true
+
                  eventCtx.ClearCache()
                  |> Promise.iter (fun () ->
                      setIsLoading false
@@ -159,10 +161,12 @@ let private Settings =
              let updateNotifications value =
                  if value <> notifications then
                      setIsLoading true
+
                      if value then
                          addSubscription token
                      else
                          removeSubscription token
+
                      setIsLoading false
                      setNotifications value
 

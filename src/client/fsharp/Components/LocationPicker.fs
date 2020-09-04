@@ -37,14 +37,17 @@ let LocationPicker =
                      if not geolocation.loading then
                          setUserLatitude (geolocation.latitude)
                          setUserLongitude (geolocation.longitude)
+
                          setViewport
                              ({ width = "100%"
                                 height = "100%"
                                 latitude = geolocation.latitude
                                 longitude = geolocation.longitude
                                 zoom = 16 })
+
                          setRonnyLatitude (geolocation.latitude)
                          setRonnyLongitude (geolocation.longitude)
+
                          props.OnChange
                              (geolocation.latitude, geolocation.longitude)
                              (geolocation.latitude, geolocation.longitude)),
