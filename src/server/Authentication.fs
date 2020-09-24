@@ -15,7 +15,9 @@ let getUser (logger : ILogger) (req : HttpRequest) : User =
     let authorizationHeader = req.Headers.["Authorization"].ToString()
 
     let token =
-        authorizationHeader.Replace("Bearer ", String.Empty).Replace("bearer ", String.Empty)
+        authorizationHeader
+            .Replace("Bearer ", String.Empty)
+            .Replace("bearer ", String.Empty)
 
     let handler =
         System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler()
@@ -113,9 +115,8 @@ let updateUserPushNotificationSubscription managementToken userId subscriptions 
             Http.AsyncRequest
                 (url,
                  httpMethod = HttpMethod.Patch,
-                 headers =
-                     [ "Authorization", (sprintf "Bearer %s" managementToken)
-                       ContentType HttpContentTypes.Json ],
+                 headers = [ "Authorization", (sprintf "Bearer %s" managementToken)
+                             ContentType HttpContentTypes.Json ],
                  body = TextRequest json)
 
         ()

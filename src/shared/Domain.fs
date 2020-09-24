@@ -110,8 +110,7 @@ type Location =
     static member Read (Location (Latitude (lat), Longitude (lng))) = lat, lng
 
     static member Parse lat lng =
-        curry Location
-        <!> Latitude.Parse lat
+        curry Location <!> Latitude.Parse lat
         <*> Longitude.Parse lng
 
 type ThreeLetterString =
