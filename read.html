@@ -11,7 +11,7 @@
         const ronnyStore = new Store("ronnies.be", "events");
         keys(ronnyStore).then(keys => {
             const values = keys.map(k => get(k, ronnyStore));
-            return Prmomise.all(values);
+            return Promise.all(values);
         })
         .then(events => {
             const json = JSON.stringify(events);
