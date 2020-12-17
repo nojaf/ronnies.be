@@ -27,11 +27,12 @@ let getUser (logger : ILogger) (req : HttpRequest) : User =
 
     let permissions =
         tokenContent.Claims
-        |> Seq.choose (fun claim ->
-            if claim.Type = "permissions" then
-                Some claim.Value
-            else
-                None)
+        |> Seq.choose
+            (fun claim ->
+                if claim.Type = "permissions" then
+                    Some claim.Value
+                else
+                    None)
         |> Seq.toList
 
     let user = { Id = id; Permissions = permissions }
@@ -112,28 +113,32 @@ let updateUserPushNotificationSubscription managementToken userId subscriptions 
             |> Encode.toString 4
 
         let! _response =
-            Http.AsyncRequest
-                (url,
-                 httpMethod = HttpMethod.Patch,
-                 headers = [ "Authorization", (sprintf "Bearer %s" managementToken)
-                             ContentType HttpContentTypes.Json ],
-                 body = TextRequest json)
+            Http.AsyncRequest(
+                url,
+                httpMethod = HttpMethod.Patch,
+                headers =
+                    [ "Authorization", (sprintf "Bearer %s" managementToken)
+                      ContentType HttpContentTypes.Json ],
+                body = TextRequest json
+            )
 
         ()
     }
 
 let private allSubscriptionsDecoder origin =
     Decode.list Auth0User.Decoder
-    |> Decode.map (fun users ->
-        users
-        |> List.choose (fun (user : Auth0User) ->
-            let subs =
-                user.AppMetaData.PushNotificationSubscriptions
+    |> Decode.map
+        (fun users ->
+            users
+            |> List.choose
+                (fun (user : Auth0User) ->
+                    let subs =
+                        user.AppMetaData.PushNotificationSubscriptions
 
-            if List.isEmpty subs then
-                None
-            else
-                Some(user, subs)))
+                    if List.isEmpty subs then
+                        None
+                    else
+                        Some(user, subs)))
 
 let getPushNotificationSubscriptions (log : ILogger) origin managementToken =
     task {
@@ -181,10 +186,11 @@ let getUserName (log : ILogger) managementToken userId =
     }
 
 let private userInfoDecoder =
-    Decode.object (fun get ->
-        { Name = userNameDecoder get
-          Id = get.Required.Field "user_id" Decode.string
-          Picture = get.Required.Field "picture" Decode.string })
+    Decode.object
+        (fun get ->
+            { Name = userNameDecoder get
+              Id = get.Required.Field "user_id" Decode.string
+              Picture = get.Required.Field "picture" Decode.string })
 
 let getAllUserInfo (log : ILogger) managementToken =
     task {

@@ -25,31 +25,43 @@ type HttpRequest with
         json
 
 let private sendJson json =
-    new HttpResponseMessage(HttpStatusCode.OK,
-                            Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json"))
+    new HttpResponseMessage(
+        HttpStatusCode.OK,
+        Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json")
+    )
 
 let private sendText text =
-    new HttpResponseMessage(HttpStatusCode.OK,
-                            Content = new StringContent(text, System.Text.Encoding.UTF8, "application/text"))
+    new HttpResponseMessage(
+        HttpStatusCode.OK,
+        Content = new StringContent(text, System.Text.Encoding.UTF8, "application/text")
+    )
 
 let private sendInternalError err =
-    new HttpResponseMessage(HttpStatusCode.InternalServerError,
-                            Content = new StringContent(err, System.Text.Encoding.UTF8, "application/text"))
+    new HttpResponseMessage(
+        HttpStatusCode.InternalServerError,
+        Content = new StringContent(err, System.Text.Encoding.UTF8, "application/text")
+    )
 
 let private sendBadRequest err =
-    new HttpResponseMessage(HttpStatusCode.BadRequest,
-                            Content = new StringContent(err, System.Text.Encoding.UTF8, "application/text"))
+    new HttpResponseMessage(
+        HttpStatusCode.BadRequest,
+        Content = new StringContent(err, System.Text.Encoding.UTF8, "application/text")
+    )
 
 let private sendUnAuthorizedRequest err =
-    new HttpResponseMessage(HttpStatusCode.Unauthorized,
-                            Content = new StringContent(err, System.Text.Encoding.UTF8, "application/text"))
+    new HttpResponseMessage(
+        HttpStatusCode.Unauthorized,
+        Content = new StringContent(err, System.Text.Encoding.UTF8, "application/text")
+    )
 
 let private notFound () =
     let json =
         Encode.string "Not found" |> Encode.toString 4
 
-    new HttpResponseMessage(HttpStatusCode.NotFound,
-                            Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json"))
+    new HttpResponseMessage(
+        HttpStatusCode.NotFound,
+        Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json")
+    )
 
 let private filterSubscriptionsAndPersist managementToken userId existingSubscriptions origin endpoint =
     task {
@@ -100,31 +112,36 @@ let private afterEventWasAdded
 
             let! _sendPushNotifications =
                 allSubscriptions
-                |> List.map (fun (user, subscriptions) ->
-                    subscriptions
-                    |> List.filter (fun s -> s.Origin = origin)
-                    |> List.map (fun s ->
-                        task {
-                            try
-                                let ps =
-                                    PushSubscription(s.Endpoint, s.P256DH, s.Auth)
+                |> List.map
+                    (fun (user, subscriptions) ->
+                        subscriptions
+                        |> List.filter (fun s -> s.Origin = origin)
+                        |> List.map
+                            (fun s ->
+                                task {
+                                    try
+                                        let ps =
+                                            PushSubscription(s.Endpoint, s.P256DH, s.Auth)
 
-                                do! webPushClient.SendNotificationAsync(ps, payload, vapidDetails)
-                            with :? WebPushException as wpex ->
-                                log.LogError(sprintf "Couldn't send notification to %s, %A" user.UserId wpex)
+                                        do! webPushClient.SendNotificationAsync(ps, payload, vapidDetails)
+                                    with :? WebPushException as wpex ->
+                                        log.LogError(sprintf "Couldn't send notification to %s, %A" user.UserId wpex)
 
-                                do! filterSubscriptionsAndPersist
-                                        managementToken
-                                        user.UserId
-                                        subscriptions
-                                        s.Origin
-                                        s.Endpoint
-                        } :> Task)
-                    |> Task.WhenAll)
+                                        do!
+                                            filterSubscriptionsAndPersist
+                                                managementToken
+                                                user.UserId
+                                                subscriptions
+                                                s.Origin
+                                                s.Endpoint
+                                }
+                                :> Task)
+                        |> Task.WhenAll)
                 |> Task.WhenAll
 
             ()
-        } :> Task
+        }
+        :> Task
     | LocationCancelled _
     | LocationNoLongerSellsRonnies _ -> Task.CompletedTask
 
@@ -209,7 +226,8 @@ let private addSubscription (log : ILogger) (req : HttpRequest) =
                 Authentication.getUserPushNotificationSubscriptions log managementToken userFromToken.Id
 
             if List.forall (fun s -> s.Endpoint <> subscription.Endpoint) existingSubscriptions then
-                do! Authentication.updateUserPushNotificationSubscription
+                do!
+                    Authentication.updateUserPushNotificationSubscription
                         managementToken
                         userFromToken.Id
                         (subscription :: existingSubscriptions)
@@ -244,10 +262,11 @@ let private getUsers (log : ILogger) =
 
         let json =
             Map.toList users
-            |> List.map (fun (k, u) ->
-                k,
-                Encode.object [ "name", Encode.string u.Name
-                                "picture", Encode.string u.Picture ])
+            |> List.map
+                (fun (k, u) ->
+                    k,
+                    Encode.object [ "name", Encode.string u.Name
+                                    "picture", Encode.string u.Picture ])
             |> Encode.object
             |> Encode.toString 4
 
@@ -279,8 +298,9 @@ let private (|UserRoute|_|) (path : string) =
         None
 
 [<FunctionName("ronnies")>]
-let Ronnies ([<HttpTrigger(AuthorizationLevel.Function, "get", "post", "delete", Route = "{*any}")>] req : HttpRequest,
-             log : ILogger)
+let Ronnies
+    ([<HttpTrigger(AuthorizationLevel.Function, "get", "post", "delete", Route = "{*any}")>] req : HttpRequest,
+     log : ILogger)
     =
     log.LogInformation("Entering Ronnies backend")
 

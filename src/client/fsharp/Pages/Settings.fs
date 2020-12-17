@@ -61,41 +61,45 @@ let private addSubscription token =
     match navigator.serviceWorker with
     | Some sw ->
         sw.ready
-        |> Promise.bind (fun sw ->
-            promise {
-                let! sub = getSubscriptionFromSw sw
-                return (sw, sub)
-            })
-        |> Promise.bind (fun (sw, sub) ->
-            match sub with
-            | None ->
-                let key = urlB64ToUint8Array Common.vapidKey
+        |> Promise.bind
+            (fun sw ->
+                promise {
+                    let! sub = getSubscriptionFromSw sw
+                    return (sw, sub)
+                })
+        |> Promise.bind
+            (fun (sw, sub) ->
+                match sub with
+                | None ->
+                    let key = urlB64ToUint8Array Common.vapidKey
 
-                subscriptWithPushManager sw key
-                |> Promise.bind (fun subscription ->
-                    let json =
-                        subscription.toJSON () |> JS.JSON.stringify
+                    subscriptWithPushManager sw key
+                    |> Promise.bind
+                        (fun subscription ->
+                            let json =
+                                subscription.toJSON () |> JS.JSON.stringify
 
-                    JS.console.log subscription
-                    JS.console.log (json)
+                            JS.console.log subscription
+                            JS.console.log (json)
 
-                    let url =
-                        sprintf "%s/subscriptions" Common.backendUrl
+                            let url =
+                                sprintf "%s/subscriptions" Common.backendUrl
 
-                    fetch
-                        url
-                        [ RequestProperties.Method HttpMethod.POST
-                          RequestProperties.Body !^json
-                          requestHeaders [ HttpRequestHeaders.ContentType "application/json"
-                                           Common.authHeader token
-                                           Common.subscriptionHeader ] ])
-                |> Promise.map (fun _ -> infoToast "Notificaties check!")
-            | Some sub ->
-                printfn "unsubscribed"
-                sub.unsubscribe () |> Promise.map ignore)
-        |> Promise.catchEnd (fun err ->
-            JS.console.error err
-            errorToast "Notificaties aanzetten niet echt gelukt")
+                            fetch
+                                url
+                                [ RequestProperties.Method HttpMethod.POST
+                                  RequestProperties.Body !^json
+                                  requestHeaders [ HttpRequestHeaders.ContentType "application/json"
+                                                   Common.authHeader token
+                                                   Common.subscriptionHeader ] ])
+                    |> Promise.map (fun _ -> infoToast "Notificaties check!")
+                | Some sub ->
+                    printfn "unsubscribed"
+                    sub.unsubscribe () |> Promise.map ignore)
+        |> Promise.catchEnd
+            (fun err ->
+                JS.console.error err
+                errorToast "Notificaties aanzetten niet echt gelukt")
 
     | None -> ()
 
@@ -104,97 +108,104 @@ let private removeSubscription token =
     | Some sw ->
         sw.ready
         |> Promise.bind getSubscriptionFromSw
-        |> Promise.bind (fun sub ->
-            match sub with
-            | None -> Promise.lift ()
-            | Some subscription ->
-                subscription.unsubscribe ()
-                |> Promise.bind (fun _ ->
-                    let url =
-                        sprintf "%s/subscriptions" Common.backendUrl
+        |> Promise.bind
+            (fun sub ->
+                match sub with
+                | None -> Promise.lift ()
+                | Some subscription ->
+                    subscription.unsubscribe ()
+                    |> Promise.bind
+                        (fun _ ->
+                            let url =
+                                sprintf "%s/subscriptions" Common.backendUrl
 
-                    fetch
-                        url
-                        [ RequestProperties.Method HttpMethod.DELETE
-                          RequestProperties.Body !^subscription.endpoint
-                          requestHeaders [ HttpRequestHeaders.ContentType "application/json"
-                                           Common.authHeader token
-                                           Common.subscriptionHeader ] ])
-                |> Promise.map (fun _ -> infoToast "Notificaties uitgezet!"))
-        |> Promise.catchEnd (fun err ->
-            JS.console.error err
-            errorToast "Notificaties uitzetten niet echt gelukt")
+                            fetch
+                                url
+                                [ RequestProperties.Method HttpMethod.DELETE
+                                  RequestProperties.Body !^subscription.endpoint
+                                  requestHeaders [ HttpRequestHeaders.ContentType "application/json"
+                                                   Common.authHeader token
+                                                   Common.subscriptionHeader ] ])
+                    |> Promise.map (fun _ -> infoToast "Notificaties uitgezet!"))
+        |> Promise.catchEnd
+            (fun err ->
+                JS.console.error err
+                errorToast "Notificaties uitzetten niet echt gelukt")
     | None -> ()
 
 let private Settings =
-    React.functionComponent
-        ("SettingsPage",
-         (fun () ->
-             let (isLoading, setIsLoading) = React.useState (false)
-             let eventCtx = React.useContext (eventContext)
+    React.functionComponent (
+        "SettingsPage",
+        (fun () ->
+            let (isLoading, setIsLoading) = React.useState (false)
+            let eventCtx = React.useContext (eventContext)
 
-             let clearCacheHandler _ =
-                 setIsLoading true
+            let clearCacheHandler _ =
+                setIsLoading true
 
-                 eventCtx.ClearCache()
-                 |> Promise.iter (fun () ->
-                     setIsLoading false
-                     infoToast "Cache reset!")
+                eventCtx.ClearCache()
+                |> Promise.iter
+                    (fun () ->
+                        setIsLoading false
+                        infoToast "Cache reset!")
 
-             let auth0 = useAuth0 ()
-             let (token, setToken) = React.useState ("")
-             let roles = useRoles ()
+            let auth0 = useAuth0 ()
+            let (token, setToken) = React.useState ("")
+            let roles = useRoles ()
 
-             React.useEffect
-                 ((fun () ->
-                     if auth0.isAuthenticated then
-                         auth0.getAccessTokenSilently ()
-                         |> Promise.iter setToken),
-                  [| box auth0.isAuthenticated |])
+            React.useEffect (
+                (fun () ->
+                    if auth0.isAuthenticated then
+                        auth0.getAccessTokenSilently ()
+                        |> Promise.iter setToken),
+                [| box auth0.isAuthenticated |]
+            )
 
-             let (notifications, setNotifications) = React.useState (false)
+            let (notifications, setNotifications) = React.useState (false)
 
-             React.useEffectOnce (fun () ->
-                 hasSubscription ()
-                 |> Promise.iter setNotifications)
+            React.useEffectOnce
+                (fun () ->
+                    hasSubscription ()
+                    |> Promise.iter setNotifications)
 
-             let updateNotifications value =
-                 if value <> notifications then
-                     setIsLoading true
+            let updateNotifications value =
+                if value <> notifications then
+                    setIsLoading true
 
-                     if value then
-                         addSubscription token
-                     else
-                         removeSubscription token
+                    if value then
+                        addSubscription token
+                    else
+                        removeSubscription token
 
-                     setIsLoading false
-                     setNotifications value
+                    setIsLoading false
+                    setNotifications value
 
-             page [] [
-                 h1 [] [ str "Settings" ]
-                 button [ classNames [ Bootstrap.Btn
-                                       Bootstrap.BtnOutlinePrimary
-                                       Bootstrap.My4 ]
-                          OnClick clearCacheHandler
-                          Disabled isLoading ] [
-                     str "Reset cache"
-                 ]
-                 h4 [] [ str "Notificaties?" ]
-                 if browserSupportsNotifications
-                    && roles.IsEditorOrAdmin then
-                     Switch
-                         { TrueLabel = "Aan"
-                           FalseLabel = "Uit"
-                           OnChange = updateNotifications
-                           Disabled = isLoading
-                           Value = notifications }
-                 else
-                     div [ classNames [ Bootstrap.Alert
-                                        Bootstrap.AlertWarning ] ] [
-                         str "Je browser ondersteunt geen notificaties"
-                     ]
-                 if isLoading then
-                     loading "Syncen met de server..."
-             ]))
+            page [] [
+                h1 [] [ str "Settings" ]
+                button [ classNames [ Bootstrap.Btn
+                                      Bootstrap.BtnOutlinePrimary
+                                      Bootstrap.My4 ]
+                         OnClick clearCacheHandler
+                         Disabled isLoading ] [
+                    str "Reset cache"
+                ]
+                h4 [] [ str "Notificaties?" ]
+                if browserSupportsNotifications
+                   && roles.IsEditorOrAdmin then
+                    Switch
+                        { TrueLabel = "Aan"
+                          FalseLabel = "Uit"
+                          OnChange = updateNotifications
+                          Disabled = isLoading
+                          Value = notifications }
+                else
+                    div [ classNames [ Bootstrap.Alert
+                                       Bootstrap.AlertWarning ] ] [
+                        str "Je browser ondersteunt geen notificaties"
+                    ]
+                if isLoading then
+                    loading "Syncen met de server..."
+            ])
+    )
 
 exportDefault Settings

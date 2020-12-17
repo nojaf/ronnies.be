@@ -192,13 +192,17 @@ type AddLocation =
                 lng
         <*> (fun p c -> Currency.Parse p c |> mapValidationError "price") price currency
         <*> (ValidationResult.lift
-             >> mapValidationError "draft") isDraft
+             >> mapValidationError "draft")
+                isDraft
         <*> (ValidationResult.lift
-             >> mapValidationError "remark") remark
+             >> mapValidationError "remark")
+                remark
         <*> (ValidationResult.lift
-             >> mapValidationError "created") created
+             >> mapValidationError "created")
+                created
         <*> (NonEmptyString.Parse
-             >> mapValidationError "creator") creator
+             >> mapValidationError "creator")
+                creator
 
     static member Encoder : Encoder<AddLocation> =
         fun addLocation ->
@@ -217,31 +221,33 @@ type AddLocation =
                             "creator", Encode.string creator ]
 
     static member Decoder : Decoder<AddLocation> =
-        Decode.object (fun get ->
-            let lat, lng =
-                get.Required.Field "location" (Decode.tuple2 Decode.float Decode.float)
+        Decode.object
+            (fun get ->
+                let lat, lng =
+                    get.Required.Field "location" (Decode.tuple2 Decode.float Decode.float)
 
-            let price, currency =
-                get.Required.Field "price" (Decode.tuple2 Decode.string Decode.string)
+                let price, currency =
+                    get.Required.Field "price" (Decode.tuple2 Decode.string Decode.string)
 
-            (get.Required.Field "id" Decode.guid
-             |> Identifier.Parse),
-            get.Required.Field "name" Decode.string,
-            lat,
-            lng,
-            price,
-            currency,
-            (get.Required.Field "isDraft" Decode.bool),
-            (get.Optional.Field "remark" (Decode.string)),
-            (get.Required.Field "created" Decode.datetimeOffset),
-            (get.Required.Field "creator" Decode.string))
-        |> Decode.andThen (fun (id, name, lat, lng, price, currency, isDraft, remark, created, creator) ->
-            let result =
-                AddLocation.Parse id name lat lng price currency isDraft remark created creator
+                (get.Required.Field "id" Decode.guid
+                 |> Identifier.Parse),
+                get.Required.Field "name" Decode.string,
+                lat,
+                lng,
+                price,
+                currency,
+                (get.Required.Field "isDraft" Decode.bool),
+                (get.Optional.Field "remark" (Decode.string)),
+                (get.Required.Field "created" Decode.datetimeOffset),
+                (get.Required.Field "creator" Decode.string))
+        |> Decode.andThen
+            (fun (id, name, lat, lng, price, currency, isDraft, remark, created, creator) ->
+                let result =
+                    AddLocation.Parse id name lat lng price currency isDraft remark created creator
 
-            match result with
-            | Success addLocation -> Decode.succeed addLocation
-            | Failure errors -> Decode.failWithDomainErrors errors)
+                match result with
+                | Success addLocation -> Decode.succeed addLocation
+                | Failure errors -> Decode.failWithDomainErrors errors)
 
 type LocationAddedNotification = unit
 
@@ -265,19 +271,21 @@ type Event =
 
     static member Decoder : Decoder<Event> =
         Decode.index 0 Decode.string
-        |> Decode.andThen (fun caseName ->
-            match caseName with
-            | "locationAdded" ->
-                Decode.index 1 AddLocation.Decoder
-                |> Decode.map LocationAdded
-            | "locationCancelled" ->
-                Decode.index 1 Decode.guid
-                |> Decode.map (fun id -> Identifier.Parse id |> LocationCancelled)
-            | "locationNoLongerSellsRonnies" ->
-                Decode.index 1 Decode.guid
-                |> Decode.map (fun id ->
-                    Identifier.Parse id
-                    |> LocationNoLongerSellsRonnies)
-            | _ ->
-                sprintf "`%s` is not a valid case for Event" caseName
-                |> Decode.fail)
+        |> Decode.andThen
+            (fun caseName ->
+                match caseName with
+                | "locationAdded" ->
+                    Decode.index 1 AddLocation.Decoder
+                    |> Decode.map LocationAdded
+                | "locationCancelled" ->
+                    Decode.index 1 Decode.guid
+                    |> Decode.map (fun id -> Identifier.Parse id |> LocationCancelled)
+                | "locationNoLongerSellsRonnies" ->
+                    Decode.index 1 Decode.guid
+                    |> Decode.map
+                        (fun id ->
+                            Identifier.Parse id
+                            |> LocationNoLongerSellsRonnies)
+                | _ ->
+                    sprintf "`%s` is not a valid case for Event" caseName
+                    |> Decode.fail)

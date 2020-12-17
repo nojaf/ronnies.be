@@ -23,60 +23,68 @@ let private ronniesStore = createStore ("ronnies.be", "events")
 
 let private getLastEvent () =
     keys ronniesStore
-    |> Promise.map (fun keys ->
-        if Array.isEmpty keys then
-            None
-        else
-            keys |> Array.max |> Some)
+    |> Promise.map
+        (fun keys ->
+            if Array.isEmpty keys then
+                None
+            else
+                keys |> Array.max |> Some)
 
 let addEvent version event : JS.Promise<unit> = set version event ronniesStore
 
 let getAllEvents () : JS.Promise<Event list> =
     keys ronniesStore
-    |> Promise.bind (fun keys ->
-        keys
-        |> Array.map (fun key ->
-            get key ronniesStore
-            |> Promise.bind (fun evJson ->
-                match Decode.fromValue "$root" Event.Decoder evJson with
-                | Ok ev -> Promise.lift ev
-                | Error err -> Promise.reject err))
-        |> Promise.all
-        |> Promise.map (List.ofArray))
+    |> Promise.bind
+        (fun keys ->
+            keys
+            |> Array.map
+                (fun key ->
+                    get key ronniesStore
+                    |> Promise.bind
+                        (fun evJson ->
+                            match Decode.fromValue "$root" Event.Decoder evJson with
+                            | Ok ev -> Promise.lift ev
+                            | Error err -> Promise.reject err))
+            |> Promise.all
+            |> Promise.map (List.ofArray))
 
 let private addEventsToIdb (response : Response) =
     response.text ()
-    |> Promise.bind (fun json ->
-        let result =
-            Decode.fromString (Decode.keyValuePairs Event.Decoder) json
+    |> Promise.bind
+        (fun json ->
+            let result =
+                Decode.fromString (Decode.keyValuePairs Event.Decoder) json
 
-        match result with
-        | Ok events ->
-            let persistEventsPromise =
-                events
-                |> List.map (fun (k, v) -> addEvent ((int) k) (Event.Encoder v))
-                |> Promise.all
-                |> Promise.map (fun _ -> [])
+            match result with
+            | Ok events ->
+                let persistEventsPromise =
+                    events
+                    |> List.map (fun (k, v) -> addEvent ((int) k) (Event.Encoder v))
+                    |> Promise.all
+                    |> Promise.map (fun _ -> [])
 
-            let newEventsPromise = Promise.lift (List.map snd events)
+                let newEventsPromise = Promise.lift (List.map snd events)
 
-            Promise.all [ newEventsPromise
-                          persistEventsPromise ]
-            |> Promise.map (List.concat)
-        | Error err -> Promise.reject err)
+                Promise.all
+                    [ newEventsPromise
+                      persistEventsPromise ]
+                |> Promise.map (List.concat)
+            | Error err -> Promise.reject err)
 
 let syncLatestEvents () =
     getLastEvent ()
-    |> Promise.bind (fun lastEvent ->
-        let url =
-            match lastEvent with
-            | Some id -> sprintf "%s/events?lastEvent=%i" Common.backendUrl id
-            | None -> sprintf "%s/events" Common.backendUrl
+    |> Promise.bind
+        (fun lastEvent ->
+            let url =
+                match lastEvent with
+                | Some id -> sprintf "%s/events?lastEvent=%i" Common.backendUrl id
+                | None -> sprintf "%s/events" Common.backendUrl
 
-        fetch
-            url
-            [ requestHeaders [ HttpRequestHeaders.ContentType "application/json"
-                               Common.subscriptionHeader ] ])
+            fetch
+                url
+                [ requestHeaders
+                    [ HttpRequestHeaders.ContentType "application/json"
+                      Common.subscriptionHeader ] ])
     |> Promise.bind addEventsToIdb
 
 let persistEvents (events : Event list) authToken =
@@ -92,9 +100,10 @@ let persistEvents (events : Event list) authToken =
         url
         [ RequestProperties.Method HttpMethod.POST
           RequestProperties.Body(!^json)
-          requestHeaders [ HttpRequestHeaders.ContentType "application/json"
-                           Common.authHeader authToken
-                           Common.subscriptionHeader ] ]
+          requestHeaders
+              [ HttpRequestHeaders.ContentType "application/json"
+                Common.authHeader authToken
+                Common.subscriptionHeader ] ]
     |> Promise.bind addEventsToIdb
 
 let removeAllEvents () = clear ronniesStore

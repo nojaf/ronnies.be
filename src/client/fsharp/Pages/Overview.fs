@@ -27,29 +27,34 @@ type private Location =
       NoLongerSellsRonnies : bool }
 
 let private getLocations events =
-    List.fold (fun acc event ->
-        match event with
-        | LocationAdded la ->
-            { Id = (Identifier.Read la.Id).ToString()
-              Name = NonEmptyString.Read la.Name
-              Price = Common.readCurrency la.Price
-              PriceValue = Currency.Read la.Price |> fst
-              Creator = NonEmptyString.Read la.Creator
-              Date = la.Created.ToString("dd/MM/yy")
-              Ticks = la.Created.Ticks
-              NoLongerSellsRonnies = false }
-            :: acc
-        | LocationCancelled id ->
-            let id = (Identifier.Read id).ToString()
-            List.filter (fun l -> l.Id <> id) acc
-        | LocationNoLongerSellsRonnies id ->
-            let id = (Identifier.Read id).ToString()
+    List.fold
+        (fun acc event ->
+            match event with
+            | LocationAdded la ->
+                { Id = (Identifier.Read la.Id).ToString()
+                  Name = NonEmptyString.Read la.Name
+                  Price = Common.readCurrency la.Price
+                  PriceValue = Currency.Read la.Price |> fst
+                  Creator = NonEmptyString.Read la.Creator
+                  Date = la.Created.ToString("dd/MM/yy")
+                  Ticks = la.Created.Ticks
+                  NoLongerSellsRonnies = false }
+                :: acc
+            | LocationCancelled id ->
+                let id = (Identifier.Read id).ToString()
+                List.filter (fun l -> l.Id <> id) acc
+            | LocationNoLongerSellsRonnies id ->
+                let id = (Identifier.Read id).ToString()
 
-            List.map (fun l ->
-                if l.Id = id then
-                    { l with NoLongerSellsRonnies = true }
-                else
-                    l) acc) [] events
+                List.map
+                    (fun l ->
+                        if l.Id = id then
+                            { l with NoLongerSellsRonnies = true }
+                        else
+                            l)
+                    acc)
+        []
+        events
 
 let private useLocations () =
     let eventCtx = React.useContext (eventContext)
@@ -77,97 +82,104 @@ let private useGetUsers () =
     let users, setUsers = React.useState (Map.empty)
     let auth0 = useAuth0 ()
 
-    React.useEffect
-        ((fun () ->
+    React.useEffect (
+        (fun () ->
             if auth0.isAuthenticated then
                 auth0.getAccessTokenSilently ()
-                |> Promise.bind (fun token ->
-                    let url = sprintf "%s/users" Common.backendUrl
+                |> Promise.bind
+                    (fun token ->
+                        let url = sprintf "%s/users" Common.backendUrl
 
-                    fetch
-                        url
-                        [ requestHeaders [ HttpRequestHeaders.ContentType "application/json"
-                                           Common.subscriptionHeader
-                                           Common.authHeader token ] ])
+                        fetch
+                            url
+                            [ requestHeaders [ HttpRequestHeaders.ContentType "application/json"
+                                               Common.subscriptionHeader
+                                               Common.authHeader token ] ])
                 |> Promise.bind (fun res -> res.text ())
-                |> Promise.map (fun json ->
-                    let result =
-                        Decode.fromString (Decode.keyValuePairs nameDecoder) json
+                |> Promise.map
+                    (fun json ->
+                        let result =
+                            Decode.fromString (Decode.keyValuePairs nameDecoder) json
 
-                    match result with
-                    | Ok users -> Map.ofList users |> setUsers
-                    | Error err -> JS.console.error err)
-                |> Promise.catchEnd (fun err ->
-                    JS.console.error err
-                    errorToast "Kon de patrons niet ophalen")),
-         [| box auth0.isAuthenticated |])
+                        match result with
+                        | Ok users -> Map.ofList users |> setUsers
+                        | Error err -> JS.console.error err)
+                |> Promise.catchEnd
+                    (fun err ->
+                        JS.console.error err
+                        errorToast "Kon de patrons niet ophalen")),
+        [| box auth0.isAuthenticated |]
+    )
 
     users
 
 let private OverviewPage =
-    React.functionComponent
-        ("OverviewPage",
-         (fun () ->
-             let locations = useLocations ()
-             let sort, setSort = React.useState (SortBy.Name)
-             let roles = useRoles ()
-             let users = useGetUsers ()
+    React.functionComponent (
+        "OverviewPage",
+        (fun () ->
+            let locations = useLocations ()
+            let sort, setSort = React.useState (SortBy.Name)
+            let roles = useRoles ()
+            let users = useGetUsers ()
 
-             let locationRows =
-                 locations
-                 |> sortFn sort
-                 |> List.map (fun loc ->
-                     let creator =
-                         Map.tryFind loc.Creator users
-                         |> Option.map (fun creator ->
-                             td [ classNames [ Bootstrap.TextRight
-                                               Bootstrap.TextSmLeft ] ] [
-                                 str creator
-                             ])
+            let locationRows =
+                locations
+                |> sortFn sort
+                |> List.map
+                    (fun loc ->
+                        let creator =
+                            Map.tryFind loc.Creator users
+                            |> Option.map
+                                (fun creator ->
+                                    td [ classNames [ Bootstrap.TextRight
+                                                      Bootstrap.TextSmLeft ] ] [
+                                        str creator
+                                    ])
 
-                     tr [ Key loc.Id ] [
-                         td [] [
-                             Link [ To(sprintf "/detail/%s" loc.Id)
-                                    classNames [ if loc.NoLongerSellsRonnies then
-                                                     yield!
-                                                         [ Bootstrap.Strike
-                                                           Bootstrap.TextMuted ] ] ] [
-                                 str loc.Name
-                             ]
-                         ]
-                         td [] [ str loc.Price ]
-                         td [ classNames [ Bootstrap.TextCenter
-                                           Bootstrap.TextSmLeft ] ] [
-                             str loc.Date
-                         ]
-                         if roles.IsEditorOrAdmin then
-                             ofOption creator
-                     ])
+                        tr [ Key loc.Id ] [
+                            td [] [
+                                Link [ To(sprintf "/detail/%s" loc.Id)
+                                       classNames [ if loc.NoLongerSellsRonnies then
+                                                        yield!
+                                                            [ Bootstrap.Strike
+                                                              Bootstrap.TextMuted ] ] ] [
+                                    str loc.Name
+                                ]
+                            ]
+                            td [] [ str loc.Price ]
+                            td [ classNames [ Bootstrap.TextCenter
+                                              Bootstrap.TextSmLeft ] ] [
+                                str loc.Date
+                            ]
+                            if roles.IsEditorOrAdmin then
+                                ofOption creator
+                        ])
 
-             page [] [
-                 h1 [] [ str "Overzicht" ]
-                 table [ classNames [ Bootstrap.Table
-                                      Bootstrap.TableStriped ] ] [
-                     thead [] [
-                         tr [ classNames [ Bootstrap.TextPrimary
-                                           Bootstrap.Pointer ] ] [
-                             th [ OnClick(fun _ -> setSort (SortBy.Name)) ] [
-                                 str "Naam"
-                             ]
-                             th [ OnClick(fun _ -> setSort (SortBy.Price)) ] [
-                                 str "Prijs"
-                             ]
-                             th [ OnClick(fun _ -> setSort (SortBy.Date)) ] [
-                                 str "Datum toegevoegd"
-                             ]
-                             if roles.IsEditorOrAdmin then
-                                 th [] [ str "Door" ]
-                         ]
-                     ]
-                     tbody [ ClassName Bootstrap.OverviewTbody ] [
-                         ofList locationRows
-                     ]
-                 ]
-             ]))
+            page [] [
+                h1 [] [ str "Overzicht" ]
+                table [ classNames [ Bootstrap.Table
+                                     Bootstrap.TableStriped ] ] [
+                    thead [] [
+                        tr [ classNames [ Bootstrap.TextPrimary
+                                          Bootstrap.Pointer ] ] [
+                            th [ OnClick(fun _ -> setSort (SortBy.Name)) ] [
+                                str "Naam"
+                            ]
+                            th [ OnClick(fun _ -> setSort (SortBy.Price)) ] [
+                                str "Prijs"
+                            ]
+                            th [ OnClick(fun _ -> setSort (SortBy.Date)) ] [
+                                str "Datum toegevoegd"
+                            ]
+                            if roles.IsEditorOrAdmin then
+                                th [] [ str "Door" ]
+                        ]
+                    ]
+                    tbody [ ClassName Bootstrap.OverviewTbody ] [
+                        ofList locationRows
+                    ]
+                ]
+            ])
+    )
 
 exportDefault OverviewPage
