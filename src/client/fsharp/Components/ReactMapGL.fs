@@ -4,7 +4,6 @@ open Fable.Core
 open Fable.Core.JsInterop
 open Fable.React
 open Fable.React.Props
-open Feliz
 
 let useGeolocation : unit -> {| latitude : float
                                 longitude : float
@@ -37,7 +36,7 @@ type ReactMapGLProp =
     | MapStyle of string
     | MapboxApiAccessToken of string
 
-[<Emit("process.env.REACT_APP_MAPBOX")>]
+[<Emit("import.meta.env.SNOWPACK_PUBLIC_MAPBOX")>]
 let mapboxApiAccessToken : string = jsNative
 
 let inline ReactMapGL (props : ReactMapGLProp list) (children : ReactElement seq) : Fable.React.ReactElement =

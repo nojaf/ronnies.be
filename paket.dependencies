@@ -8,8 +8,9 @@ group client
     storage:none
     framework: netstandard2.0
 
-    nuget FSharp.Core
-    nuget Fable.React
+    nuget FSharp.Core 5.0.0
+    nuget Fable.Core 3.2.1
+    nuget Fable.React 7.2.0
     nuget Fable.Elmish
     nuget Fable.Promise
     nuget Fable.Fetch
@@ -19,6 +20,8 @@ group client
     nuget Thoth.Json
     nuget Feliz.UseElmish
     nuget Zanaptak.TypedCssClasses
+    nuget Feliz.CompilerPlugins
+    nuget Feliz 1.29.0
 
 group server
     source https://api.nuget.org/v3/index.json

@@ -5,7 +5,7 @@ import { Auth0Provider, withAuthenticationRequired } from "@auth0/auth0-react";
 import { ToastContainer } from "react-toastify";
 import AddLocationPage from "./bin/Pages/AddLocation";
 import Settings from "./bin/Pages/Settings";
-import "./style.css";
+import "./style.sass";
 import { Events } from "./bin/Components/EventContext";
 import Navigation from "./bin/Components/Navigation";
 import HomePage from "./bin/Pages/Home";
@@ -22,10 +22,10 @@ const App = () => {
   return (
     <React.StrictMode>
       <Auth0Provider
-        domain={process.env.REACT_APP_AUTH0_DOMAIN}
-        clientId={process.env.REACT_APP_AUTH0_CIENT_ID}
-        audience={process.env.REACT_APP_AUTH0_AUDIENCE}
-        scope={process.env.REACT_APP_AUTH0_SCOPE}
+        domain={import.meta.env.SNOWPACK_PUBLIC_AUTH0_DOMAIN}
+        clientId={import.meta.env.SNOWPACK_PUBLIC_AUTH0_CIENT_ID}
+        audience={import.meta.env.SNOWPACK_PUBLIC_AUTH0_AUDIENCE}
+        scope={import.meta.env.SNOWPACK_PUBLIC_AUTH0_SCOPE}
         redirectUri={window.location.origin}
       >
         <Events>
@@ -64,4 +64,10 @@ if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("/sw.js", { scope: "./" }).then((swr) => {
     console.log(`Service worker registered`);
   });
+}
+
+// Hot Module Replacement (HMR) - Remove this snippet to remove HMR.
+// Learn more: https://www.snowpack.dev/concepts/hot-module-replacement
+if (import.meta.hot) {
+  import.meta.hot.accept();
 }

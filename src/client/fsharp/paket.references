@@ -1,4 +1,5 @@
 group client
+Fable.Core
 Fable.React
 Fable.Elmish
 Fable.Promise

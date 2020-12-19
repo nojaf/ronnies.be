@@ -4,10 +4,10 @@ module Ronnies.Client.Common
 open Fable.Core
 open Ronnies.Domain
 
-[<Emit("process.env.REACT_APP_BACKEND")>]
+[<Emit("import.meta.env.SNOWPACK_PUBLIC_BACKEND")>]
 let backendUrl : string = jsNative
 
-[<Emit("process.env.REACT_APP_SUBSCRIPTION_KEY")>]
+[<Emit("import.meta.env.SNOWPACK_PUBLIC_SUBSCRIPTION_KEY")>]
 let private subscriptionKey : string = jsNative
 
 let subscriptionHeader =

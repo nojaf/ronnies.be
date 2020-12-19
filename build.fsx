@@ -103,30 +103,12 @@ Target.create "BuildServer"
         serverProjectPath
 )
 
-
 Target.create "Watch" (fun _ ->
-    let fableOutput output =
-        Trace.tracefn "%s" output
-        if output = "fable: Watching..." then Yarn.exec "start" yarnSetParams
+    Yarn.exec "prewatch" (fun o -> { o with WorkingDirectory = clientPath })
 
-    let fableError output =
-        Trace.traceErrorfn "\n%s\n" output
-
-    let compileFable =
-        CreateProcess.fromRawCommand Yarn.defaultYarnParams.YarnFilePath [ "fable"; "-d"; "--watch" ]
-        |> CreateProcess.withWorkingDirectory clientPath
-        |> CreateProcess.redirectOutput
-        |> CreateProcess.withOutputEventsNotNull fableOutput fableError
-        |> Proc.startAndAwait
-        |> Async.Ignore
-
-    Yarn.exec "sass" (fun o -> { o with WorkingDirectory =clientPath })
-
-    let compileSass =
-        CreateProcess.fromRawCommand Yarn.defaultYarnParams.YarnFilePath [ "sass"; "--watch" ]
-        |> CreateProcess.withWorkingDirectory clientPath
-        |> Proc.startAndAwait
-        |> Async.Ignore
+    let compileFable = async {
+        Yarn.exec "start" (fun o -> { o with WorkingDirectory = clientPath })
+    }
 
     let stopFunc() = System.Diagnostics.Process.GetProcessesByName("func") |> Seq.iter (fun p -> p.Kill())
 
@@ -144,11 +126,11 @@ Target.create "Watch" (fun _ ->
 
         dirtyWatcher := watcher
 
-        Azure.func ["start"]
+        Azure.func ["start"; "--cors"; "*"]
 
     let runAzureFunction = async { startFunc() }
 
-    Async.Parallel [ runAzureFunction; compileSass;  compileFable ]
+    Async.Parallel [ runAzureFunction;  compileFable ]
     |> Async.Ignore
     |> Async.RunSynchronously)
 
