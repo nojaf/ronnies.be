@@ -85,8 +85,6 @@ Target.create "InstallClient"
     )
 
 Target.create "BuildClient" (fun _ ->
-    Yarn.exec "sass" yarnSetParams
-    Yarn.exec "fable" yarnSetParams
     Yarn.exec "build" yarnSetParams
 )
 
@@ -104,10 +102,8 @@ Target.create "BuildServer"
 )
 
 Target.create "Watch" (fun _ ->
-    Yarn.exec "prewatch" (fun o -> { o with WorkingDirectory = clientPath })
-
     let compileFable = async {
-        Yarn.exec "start" (fun o -> { o with WorkingDirectory = clientPath })
+        Yarn.exec "start" yarnSetParams
     }
 
     let stopFunc() = System.Diagnostics.Process.GetProcessesByName("func") |> Seq.iter (fun p -> p.Kill())

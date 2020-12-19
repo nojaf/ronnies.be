@@ -24,6 +24,7 @@
   },
   "scripts": {
     "start": "snowpack dev",
-    "prewatch": "sass ./src/style.sass ./src/style.css && dotnet fable ./fsharp/client.fsproj --outDir ./src/bin"
+    "build": "snowpack build",
+    "prestart": "sass ./src/style.sass ./src/style.css && dotnet fable ./fsharp/client.fsproj --outDir ./src/bin"
   }
 }
