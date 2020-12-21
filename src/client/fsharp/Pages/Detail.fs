@@ -119,158 +119,154 @@ type ActionModal =
       SuccessToastMessage : string
       FailureToastMessage : string }
 
-let private DetailPage =
-    React.functionComponent (
-        "DetailPage",
-        (fun (props : {| id : string |}) ->
-            let roles = useRoles ()
-            let auth0 = useAuth0 ()
-            let navigate = useNavigate ()
-            let (locationDetail, creatorName) = useLocationDetail auth0 roles props.id
-            let eventCtx = React.useContext (eventContext)
-            let isLoading, setIsLoading = React.useState (false)
-            let (actionModal, setActionModal) = React.useState (None)
+let private DetailPage (props : {| id : string |}) =
+    let roles = useRoles ()
+    let auth0 = useAuth0 ()
+    let navigate = useNavigate ()
+    let (locationDetail, creatorName) = useLocationDetail auth0 roles props.id
+    let eventCtx = React.useContext (eventContext)
+    let isLoading, setIsLoading = React.useState (false)
+    let (actionModal, setActionModal) = React.useState (None)
 
-            let isDraftValue =
-                if locationDetail.IsDraft then
-                    "Joat"
-                else
-                    "Nint"
+    let isDraftValue =
+        if locationDetail.IsDraft then
+            "Joat"
+        else
+            "Nint"
 
-            let creator =
-                match creatorName with
-                | Some name -> fact "Patron" name
-                | None -> []
+    let creator =
+        match creatorName with
+        | Some name -> fact "Patron" name
+        | None -> []
 
-            let addEvent modalInfo =
-                setActionModal None
-                setIsLoading true
+    let addEvent modalInfo =
+        setActionModal None
+        setIsLoading true
 
-                eventCtx.AddEvents [ modalInfo.Event ]
-                |> Promise.map
-                    (fun _ ->
-                        successToast modalInfo.SuccessToastMessage
-                        setIsLoading false
-                        navigate "/")
-                |> Promise.catchEnd
-                    (fun err ->
-                        JS.console.error err
-                        setIsLoading false)
+        eventCtx.AddEvents [ modalInfo.Event ]
+        |> Promise.map
+            (fun _ ->
+                successToast modalInfo.SuccessToastMessage
+                setIsLoading false
+                navigate "/")
+        |> Promise.catchEnd
+            (fun err ->
+                JS.console.error err
+                setIsLoading false)
 
-            let remark =
-                match creatorName, locationDetail.Remark with
-                | Some name, Some remark ->
-                    blockquote [ classNames [ Bootstrap.Blockquote
-                                              Bootstrap.TextCenter
-                                              Bootstrap.BgLight
-                                              Bootstrap.P2
-                                              Bootstrap.Mt4 ] ] [
-                        p [ classNames [ Bootstrap.Mb0 ] ] [
-                            str (remark.Replace("\\n", "\n"))
-                        ]
-                        footer [ ClassName Bootstrap.BlockquoteFooter ] [
-                            cite [] [ str name ]
-                        ]
-                    ]
-                | _ -> ofOption None
+    let remark =
+        match creatorName, locationDetail.Remark with
+        | Some name, Some remark ->
+            blockquote [ classNames [ Bootstrap.Blockquote
+                                      Bootstrap.TextCenter
+                                      Bootstrap.BgLight
+                                      Bootstrap.P2
+                                      Bootstrap.Mt4 ] ] [
+                p [ classNames [ Bootstrap.Mb0 ] ] [
+                    str (remark.Replace("\\n", "\n"))
+                ]
+                footer [ ClassName Bootstrap.BlockquoteFooter ] [
+                    cite [] [ str name ]
+                ]
+            ]
+        | _ -> ofOption None
 
-            let modalWindow =
-                actionModal
-                |> Option.map
-                    (fun modalInfo ->
-                        div [ Class "modal fade show d-block"
-                              TabIndex -1
-                              Role "dialog" ] [
-                            div [ Class "modal-dialog" ] [
-                                div [ Class "modal-content" ] [
-                                    div [ Class "modal-header" ] [
-                                        h5 [ Class "modal-title" ] [
-                                            str modalInfo.Title
-                                        ]
-                                        button [ Type "button"
-                                                 Class "close"
-                                                 OnClick(fun _ -> setActionModal None) ] [
-                                            span [ DangerouslySetInnerHTML { __html = "&times;" } ] []
-                                        ]
-                                    ]
-                                    div [ Class "modal-body" ] [
-                                        p [] [ str modalInfo.Description ]
-                                    ]
-                                    div [ Class "modal-footer" ] [
-                                        button [ Type "button"
-                                                 Class "btn btn-secondary"
-                                                 OnClick(fun _ -> setActionModal None) ] [
-                                            str "Toe doen"
-                                        ]
-                                        button [ Type "button"
-                                                 Class "btn btn-primary"
-                                                 OnClick(fun _ -> addEvent modalInfo) ] [
-                                            str "Bevestig"
-                                        ]
-                                    ]
+    let modalWindow =
+        actionModal
+        |> Option.map
+            (fun modalInfo ->
+                div [ Class "modal fade show d-block"
+                      TabIndex -1
+                      Role "dialog" ] [
+                    div [ Class "modal-dialog" ] [
+                        div [ Class "modal-content" ] [
+                            div [ Class "modal-header" ] [
+                                h5 [ Class "modal-title" ] [
+                                    str modalInfo.Title
+                                ]
+                                button [ Type "button"
+                                         Class "close"
+                                         OnClick(fun _ -> setActionModal None) ] [
+                                    span [ DangerouslySetInnerHTML { __html = "&times;" } ] []
                                 ]
                             ]
-                        ])
-
-            let showCancelModal _ =
-                { Title = "Cancel location"
-                  Description = "Wil je deze plekke uitschakelen? Dit is echt vo aj je met een misse zit.\nToedoen aj kei zit."
-                  Event = LocationCancelled(Identifier.Parse locationDetail.Id)
-                  SuccessToastMessage = sprintf "%s werd geannuleerd!" locationDetail.Name
-                  FailureToastMessage = sprintf "Kon %s niet annuleren!" locationDetail.Name }
-                |> Some
-                |> setActionModal
-
-            let showNoLongerSellsModal _ =
-                { Title = sprintf "%s verkoopt gin ronnies meer." locationDetail.Name
-                  Description = "Ben je zeker dat ze hier gin ronnies meer verkopen?\nToedoen aj kei zit."
-                  Event = LocationNoLongerSellsRonnies(Identifier.Parse locationDetail.Id)
-                  SuccessToastMessage = sprintf "%s werd gemarkt als ronnies plekke no more!" locationDetail.Name
-                  FailureToastMessage = sprintf "Kon %s niet updaten!" locationDetail.Name }
-                |> Some
-                |> setActionModal
-
-            page [] [
-                ofOption modalWindow
-                h1 [ classNames [ Bootstrap.Pb4 ] ] [
-                    if locationDetail.NoLongerSellsRonnies then
-                        yield!
-                            [ span [ DangerouslySetInnerHTML { __html = "&#10014;" } ] []
-                              strong [] [ str "RIP " ]
-                              str locationDetail.Name ]
-                    else
-                        str locationDetail.Name
-                ]
-                div [ classNames [ Bootstrap.Row ] ] [
-                    yield! (fact "Prijs" locationDetail.Price)
-                    yield! (fact "Vant vat?" isDraftValue)
-                    yield! (fact "Toegevoegd op" locationDetail.Created)
-                    yield! creator
-                ]
-                remark
-                if not locationDetail.NoLongerSellsRonnies
-                   && roles.IsEditorOrAdmin
-                   && not isLoading then
-                    div [] [
-                        hr []
-                        if roles.IsAdmin then
-                            button [ classNames [ Bootstrap.Btn
-                                                  Bootstrap.BtnDanger ]
-                                     OnClick showCancelModal ] [
-                                str "Cancel location"
+                            div [ Class "modal-body" ] [
+                                p [] [ str modalInfo.Description ]
                             ]
-                        if roles.IsAdmin then
-                            br []
-                        button [ classNames [ Bootstrap.Btn
-                                              Bootstrap.BtnWarning
-                                              Bootstrap.Mt2 ]
-                                 OnClick showNoLongerSellsModal ] [
-                            str "Verkoopt gin ronnies nie meer"
+                            div [ Class "modal-footer" ] [
+                                button [ Type "button"
+                                         Class "btn btn-secondary"
+                                         OnClick(fun _ -> setActionModal None) ] [
+                                    str "Toe doen"
+                                ]
+                                button [ Type "button"
+                                         Class "btn btn-primary"
+                                         OnClick(fun _ -> addEvent modalInfo) ] [
+                                    str "Bevestig"
+                                ]
+                            ]
                         ]
                     ]
-                elif isLoading then
-                    loading "Syncen met de server..."
-            ])
-    )
+                ])
+
+    let showCancelModal _ =
+        { Title = "Cancel location"
+          Description = "Wil je deze plekke uitschakelen? Dit is echt vo aj je met een misse zit.\nToedoen aj kei zit."
+          Event = LocationCancelled(Identifier.Parse locationDetail.Id)
+          SuccessToastMessage = sprintf "%s werd geannuleerd!" locationDetail.Name
+          FailureToastMessage = sprintf "Kon %s niet annuleren!" locationDetail.Name }
+        |> Some
+        |> setActionModal
+
+    let showNoLongerSellsModal _ =
+        { Title = sprintf "%s verkoopt gin ronnies meer." locationDetail.Name
+          Description = "Ben je zeker dat ze hier gin ronnies meer verkopen?\nToedoen aj kei zit."
+          Event = LocationNoLongerSellsRonnies(Identifier.Parse locationDetail.Id)
+          SuccessToastMessage = sprintf "%s werd gemarkt als ronnies plekke no more!" locationDetail.Name
+          FailureToastMessage = sprintf "Kon %s niet updaten!" locationDetail.Name }
+        |> Some
+        |> setActionModal
+
+    page [] [
+        ofOption modalWindow
+        h1 [ classNames [ Bootstrap.Pb4 ] ] [
+            if locationDetail.NoLongerSellsRonnies then
+                yield!
+                    [ span [ DangerouslySetInnerHTML { __html = "&#10014;" } ] []
+                      strong [] [ str "RIP " ]
+                      str locationDetail.Name ]
+            else
+                str locationDetail.Name
+        ]
+        div [ classNames [ Bootstrap.Row ] ] [
+            yield! (fact "Prijs" locationDetail.Price)
+            yield! (fact "Vant vat?" isDraftValue)
+            yield! (fact "Toegevoegd op" locationDetail.Created)
+            yield! creator
+        ]
+        remark
+        if not locationDetail.NoLongerSellsRonnies
+           && roles.IsEditorOrAdmin
+           && not isLoading then
+            div [] [
+                hr []
+                if roles.IsAdmin then
+                    button [ classNames [ Bootstrap.Btn
+                                          Bootstrap.BtnDanger ]
+                             OnClick showCancelModal ] [
+                        str "Cancel location"
+                    ]
+                if roles.IsAdmin then
+                    br []
+                button [ classNames [ Bootstrap.Btn
+                                      Bootstrap.BtnWarning
+                                      Bootstrap.Mt2 ]
+                         OnClick showNoLongerSellsModal ] [
+                    str "Verkoopt gin ronnies nie meer"
+                ]
+            ]
+        elif isLoading then
+            loading "Syncen met de server..."
+    ]
 
 exportDefault DetailPage

@@ -1,1 +1,6 @@
 image: nojaf/fable-azure-functions:1.0
+ports:
+  - port: 8080
+    onOpen: ignore
+  - port: 9090
+    onOpen: ignore

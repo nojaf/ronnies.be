@@ -313,147 +313,144 @@ let private distanceBetweenTwoPoints (latA, lngA) (latB, lngB) =
 
         dist
 
-let private AddLocationPage =
-    React.functionComponent (
-        "AddLocationPage",
+[<ReactComponent>]
+let private AddLocationPage () =
+    let eventCtx = React.useContext (eventContext)
+    let navigate = useNavigate ()
+    let (isSubmitting, setIsSubmitting) = React.useState (false)
+    let auth0 = useAuth0 ()
+    let (userId, setUserId) = React.useState ("")
+    let roles = useRoles ()
+
+    React.useEffect (
         (fun () ->
-            let eventCtx = React.useContext (eventContext)
-            let navigate = useNavigate ()
-            let (isSubmitting, setIsSubmitting) = React.useState (false)
-            let auth0 = useAuth0 ()
-            let (userId, setUserId) = React.useState ("")
-            let roles = useRoles ()
-
-            React.useEffect (
-                (fun () ->
-                    if not (isNullOrUndefined auth0.user) then
-                        setUserId auth0.user.sub),
-                [| box auth0.user |]
-            )
-
-            let onSubmit (addEvent : AddLocation) =
-                setIsSubmitting (true)
-
-                eventCtx.AddEvents [ Event.LocationAdded addEvent ]
-                |> Promise.iter (fun _ -> navigate "/")
-
-            let model, dispatch =
-                React.useElmish (init, update onSubmit, Array.empty)
-
-            let updateOnChange msg =
-                fun (ev : Browser.Types.Event) -> ev.Value |> msg |> dispatch
-                |> OnChange
-
-            let onLocationChanges userLocation ronnyLocation =
-                dispatch (UpdateLocation ronnyLocation)
-
-                let isTooFar =
-                    distanceBetweenTwoPoints userLocation ronnyLocation > 0.25
-
-                dispatch (UpdateLocationError isTooFar)
-
-            let locationError =
-                Map.tryFind "distance" model.Errors
-                |> Option.map
-                    (fun errors ->
-                        div [ classNames [ Bootstrap.Alert
-                                           Bootstrap.AlertDanger ] ] [
-                            str (String.concat "\n" errors)
-                        ])
-
-            let hasErrors key = Map.containsKey key model.Errors
-
-            let inputErrors key =
-                Map.tryFind key model.Errors
-                |> Option.map
-                    (fun errors ->
-                        div [ ClassName Bootstrap.InvalidFeedback ] [
-                            String.concat "\n" errors |> str
-                        ])
-                |> ofOption
-
-            page [] [
-                h1 [] [ str "E nieuwen toevoegen" ]
-                if isSubmitting then
-                    Ronnies.Client.Components.Loading.loading "ant opslaan..."
-                elif not roles.IsEditorOrAdmin then
-                    str "Sorry, je bent geen patron"
-                else
-                    form [ classNames [ Bootstrap.ColMd6
-                                        Bootstrap.P0 ]
-                           OnSubmit
-                               (fun ev ->
-                                   ev.preventDefault ()
-                                   dispatch (Submit userId)) ] [
-                        div [ ClassName Bootstrap.FormGroup ] [
-                            label [] [ str "Naam*" ]
-                            input [ classNames [ Bootstrap.FormControl
-                                                 if hasErrors "name" then
-                                                     Bootstrap.IsInvalid ]
-                                    DefaultValue model.Name
-                                    updateOnChange UpdateName ]
-                            inputErrors "name"
-                        ]
-                        div [ ClassName Bootstrap.FormGroup ] [
-                            label [] [ str "Prijs*" ]
-                            div [ ClassName Bootstrap.InputGroup ] [
-                                input [ classNames [ Bootstrap.FormControl
-                                                     if hasErrors "price" then
-                                                         Bootstrap.IsInvalid ]
-                                        Type "number"
-                                        Step "0.01"
-                                        DefaultValue model.Price
-                                        updateOnChange UpdatePrice ]
-
-                                div [ ClassName Bootstrap.InputGroupAppend ] [
-                                    select [ classNames [ Bootstrap.CustomSelect ]
-                                             updateOnChange UpdateCurrency
-                                             Style [ Background "none"
-                                                     BorderTopLeftRadius "0"
-                                                     BorderBottomLeftRadius "0" ] ] [
-                                        ofList (List.map mapToCurrencyItem currencies)
-                                    ]
-                                ]
-                                inputErrors "price"
-                            ]
-                        ]
-                        div [] [
-                            label [] [ str "Locatie*" ]
-                            br []
-                            div [ Id "locationPickerContainer" ] [
-                                LocationPicker(
-                                    { OnChange = onLocationChanges
-                                      ExistingLocations = [] }
-                                )
-                            ]
-                            ofOption locationError
-                        ]
-                        div [ ClassName Bootstrap.FormGroup ] [
-                            label [] [ str "Ist van vat?" ]
-                            br []
-                            Switch(
-                                { TrueLabel = "Joat"
-                                  FalseLabel = "Nint"
-                                  OnChange = (UpdateIsDraft >> dispatch)
-                                  Value = model.IsDraft
-                                  Disabled = false }
-                            )
-                        ]
-                        div [ ClassName Bootstrap.FormGroup ] [
-                            label [] [ str "Opmerking" ]
-                            textarea [ ClassName Bootstrap.FormControl
-                                       DefaultValue model.Remark
-                                       updateOnChange UpdateRemark ] []
-                        ]
-                        div [ classNames [ Bootstrap.TextRight
-                                           Bootstrap.Pb2 ] ] [
-                            button [ classNames [ Bootstrap.Btn
-                                                  Bootstrap.BtnPrimary ] ] [
-                                str "Save!"
-                            ]
-                        ]
-                    ]
-            ])
+            if not (isNullOrUndefined auth0.user) then
+                setUserId auth0.user.sub),
+        [| box auth0.user |]
     )
+
+    let onSubmit (addEvent : AddLocation) =
+        setIsSubmitting (true)
+
+        eventCtx.AddEvents [ Event.LocationAdded addEvent ]
+        |> Promise.iter (fun _ -> navigate "/")
+
+    let model, dispatch =
+        React.useElmish (init, update onSubmit, Array.empty)
+
+    let updateOnChange msg =
+        fun (ev : Browser.Types.Event) -> ev.Value |> msg |> dispatch
+        |> OnChange
+
+    let onLocationChanges userLocation ronnyLocation =
+        dispatch (UpdateLocation ronnyLocation)
+
+        let isTooFar =
+            distanceBetweenTwoPoints userLocation ronnyLocation > 0.25
+
+        dispatch (UpdateLocationError isTooFar)
+
+    let locationError =
+        Map.tryFind "distance" model.Errors
+        |> Option.map
+            (fun errors ->
+                div [ classNames [ Bootstrap.Alert
+                                   Bootstrap.AlertDanger ] ] [
+                    str (String.concat "\n" errors)
+                ])
+
+    let hasErrors key = Map.containsKey key model.Errors
+
+    let inputErrors key =
+        Map.tryFind key model.Errors
+        |> Option.map
+            (fun errors ->
+                div [ ClassName Bootstrap.InvalidFeedback ] [
+                    String.concat "\n" errors |> str
+                ])
+        |> ofOption
+
+    page [] [
+        h1 [] [ str "E nieuwen toevoegen" ]
+        if isSubmitting then
+            Ronnies.Client.Components.Loading.loading "ant opslaan..."
+        elif not roles.IsEditorOrAdmin then
+            str "Sorry, je bent geen patron"
+        else
+            form [ classNames [ Bootstrap.ColMd6
+                                Bootstrap.P0 ]
+                   OnSubmit
+                       (fun ev ->
+                           ev.preventDefault ()
+                           dispatch (Submit userId)) ] [
+                div [ ClassName Bootstrap.FormGroup ] [
+                    label [] [ str "Naam*" ]
+                    input [ classNames [ Bootstrap.FormControl
+                                         if hasErrors "name" then
+                                             Bootstrap.IsInvalid ]
+                            DefaultValue model.Name
+                            updateOnChange UpdateName ]
+                    inputErrors "name"
+                ]
+                div [ ClassName Bootstrap.FormGroup ] [
+                    label [] [ str "Prijs*" ]
+                    div [ ClassName Bootstrap.InputGroup ] [
+                        input [ classNames [ Bootstrap.FormControl
+                                             if hasErrors "price" then
+                                                 Bootstrap.IsInvalid ]
+                                Type "number"
+                                Step "0.01"
+                                DefaultValue model.Price
+                                updateOnChange UpdatePrice ]
+
+                        div [ ClassName Bootstrap.InputGroupAppend ] [
+                            select [ classNames [ Bootstrap.CustomSelect ]
+                                     updateOnChange UpdateCurrency
+                                     Style [ Background "none"
+                                             BorderTopLeftRadius "0"
+                                             BorderBottomLeftRadius "0" ] ] [
+                                ofList (List.map mapToCurrencyItem currencies)
+                            ]
+                        ]
+                        inputErrors "price"
+                    ]
+                ]
+                div [] [
+                    label [] [ str "Locatie*" ]
+                    br []
+                    div [ Id "locationPickerContainer" ] [
+                        LocationPicker(
+                            { OnChange = onLocationChanges
+                              ExistingLocations = [] }
+                        )
+                    ]
+                    ofOption locationError
+                ]
+                div [ ClassName Bootstrap.FormGroup ] [
+                    label [] [ str "Ist van vat?" ]
+                    br []
+                    Switch(
+                        { TrueLabel = "Joat"
+                          FalseLabel = "Nint"
+                          OnChange = (UpdateIsDraft >> dispatch)
+                          Value = model.IsDraft
+                          Disabled = false }
+                    )
+                ]
+                div [ ClassName Bootstrap.FormGroup ] [
+                    label [] [ str "Opmerking" ]
+                    textarea [ ClassName Bootstrap.FormControl
+                               DefaultValue model.Remark
+                               updateOnChange UpdateRemark ] []
+                ]
+                div [ classNames [ Bootstrap.TextRight
+                                   Bootstrap.Pb2 ] ] [
+                    button [ classNames [ Bootstrap.Btn
+                                          Bootstrap.BtnPrimary ] ] [
+                        str "Save!"
+                    ]
+                ]
+            ]
+    ]
 
 exportDefault AddLocationPage

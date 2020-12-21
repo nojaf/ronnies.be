@@ -8,8 +8,11 @@ module.exports = {
         "@snowpack/plugin-sass",
         ["@snowpack/plugin-run-script", {
             "cmd": "dotnet fable ./fsharp/client.fsproj --outDir ./src/bin",
-            "watch": "dotnet fable watch ./fsharp/client.fsproj --outDir ./src/bin"
+            "watch": "dotnet fable watch ./fsharp/client.fsproj --outDir ./src/bin",
+            "output": "stream"
         }]
     ],
-    devOptions: {}
+    devOptions: {
+        output: "stream"
+    }
 }

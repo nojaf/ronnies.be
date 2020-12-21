@@ -97,41 +97,38 @@ let private useUserScore () =
 
     userScores
 
-let private LeaderboardPage =
-    React.functionComponent (
-        "LeaderboardPage",
-        (fun () ->
-            let scores = useUserScore ()
+[<ReactComponent>]
+let private LeaderboardPage () =
+    let scores = useUserScore ()
 
-            let userRows =
-                scores
-                |> List.map
-                    (fun us ->
-                        tr [ Key us.Name ] [
-                            td [] [
-                                img [ Src us.Picture
-                                      HTMLAttr.Height "30px"
-                                      HTMLAttr.Width "30x" ]
-                            ]
-                            td [] [ str us.Name ]
-                            td [] [ strong [] [ ofInt us.Score ] ]
-                        ])
-
-            page [] [
-                h1 [] [ str "Klassement" ]
-                table [ classNames [ Bootstrap.Table
-                                     Bootstrap.TableStriped
-                                     Bootstrap.TableLight ] ] [
-                    thead [] [
-                        tr [] [
-                            th [] []
-                            th [] [ str "Naam" ]
-                            th [] [ str "Score" ]
-                        ]
+    let userRows =
+        scores
+        |> List.map
+            (fun us ->
+                tr [ Key us.Name ] [
+                    td [] [
+                        img [ Src us.Picture
+                              HTMLAttr.Height "30px"
+                              HTMLAttr.Width "30x" ]
                     ]
-                    tbody [] [ ofList userRows ]
+                    td [] [ str us.Name ]
+                    td [] [ strong [] [ ofInt us.Score ] ]
+                ])
+
+    page [] [
+        h1 [] [ str "Klassement" ]
+        table [ classNames [ Bootstrap.Table
+                             Bootstrap.TableStriped
+                             Bootstrap.TableLight ] ] [
+            thead [] [
+                tr [] [
+                    th [] []
+                    th [] [ str "Naam" ]
+                    th [] [ str "Score" ]
                 ]
-            ])
-    )
+            ]
+            tbody [] [ ofList userRows ]
+        ]
+    ]
 
 exportDefault LeaderboardPage

@@ -30,8 +30,8 @@ let private urlB64ToUint8Array (value : string) : byte array =
     emitJsStatement
         value
         """
-    const padding = '='.repeat((4 - base64String.length % 4) % 4);
-    const base64 = (base64String + padding)
+    const padding = '='.repeat((4 - $0.length % 4) % 4);
+    const base64 = ($0 + padding)
         .replace(/\-/g, '+')
         .replace(/_/g, '/');
 
@@ -148,79 +148,76 @@ let private removeSubscription token =
                 errorToast "Notificaties uitzetten niet echt gelukt")
     | None -> ()
 
-let private Settings =
-    React.functionComponent (
-        "SettingsPage",
+[<ReactComponent>]
+let private Settings () =
+    let (isLoading, setIsLoading) = React.useState (false)
+    let eventCtx = React.useContext (eventContext)
+
+    let clearCacheHandler _ =
+        setIsLoading true
+
+        eventCtx.ClearCache()
+        |> Promise.iter
+            (fun () ->
+                setIsLoading false
+                infoToast "Cache reset!")
+
+    let auth0 = useAuth0 ()
+    let (token, setToken) = React.useState ("")
+    let roles = useRoles ()
+
+    React.useEffect (
         (fun () ->
-            let (isLoading, setIsLoading) = React.useState (false)
-            let eventCtx = React.useContext (eventContext)
-
-            let clearCacheHandler _ =
-                setIsLoading true
-
-                eventCtx.ClearCache()
-                |> Promise.iter
-                    (fun () ->
-                        setIsLoading false
-                        infoToast "Cache reset!")
-
-            let auth0 = useAuth0 ()
-            let (token, setToken) = React.useState ("")
-            let roles = useRoles ()
-
-            React.useEffect (
-                (fun () ->
-                    if auth0.isAuthenticated then
-                        auth0.getAccessTokenSilently ()
-                        |> Promise.iter setToken),
-                [| box auth0.isAuthenticated |]
-            )
-
-            let (notifications, setNotifications) = React.useState (false)
-
-            React.useEffectOnce
-                (fun () ->
-                    hasSubscription ()
-                    |> Promise.iter setNotifications)
-
-            let updateNotifications value =
-                if value <> notifications then
-                    setIsLoading true
-
-                    if value then
-                        addSubscription token
-                    else
-                        removeSubscription token
-
-                    setIsLoading false
-                    setNotifications value
-
-            page [] [
-                h1 [] [ str "Settings" ]
-                button [ classNames [ Bootstrap.Btn
-                                      Bootstrap.BtnOutlinePrimary
-                                      Bootstrap.My4 ]
-                         OnClick clearCacheHandler
-                         Disabled isLoading ] [
-                    str "Reset cache"
-                ]
-                h4 [] [ str "Notificaties?" ]
-                if browserSupportsNotifications
-                   && roles.IsEditorOrAdmin then
-                    Switch
-                        { TrueLabel = "Aan"
-                          FalseLabel = "Uit"
-                          OnChange = updateNotifications
-                          Disabled = isLoading
-                          Value = notifications }
-                else
-                    div [ classNames [ Bootstrap.Alert
-                                       Bootstrap.AlertWarning ] ] [
-                        str "Je browser ondersteunt geen notificaties"
-                    ]
-                if isLoading then
-                    loading "Syncen met de server..."
-            ])
+            if auth0.isAuthenticated then
+                auth0.getAccessTokenSilently ()
+                |> Promise.iter setToken),
+        [| box auth0.isAuthenticated |]
     )
+
+    let (notifications, setNotifications) = React.useState (false)
+
+    React.useEffectOnce
+        (fun () ->
+            hasSubscription ()
+            |> Promise.iter setNotifications)
+
+    let updateNotifications value =
+        if value <> notifications then
+            setIsLoading true
+
+            if value then
+                addSubscription token
+            else
+                removeSubscription token
+
+            setIsLoading false
+            setNotifications value
+
+    page [] [
+        h1 [] [ str "Settings" ]
+        button [ classNames [ Bootstrap.Btn
+                              Bootstrap.BtnOutlinePrimary
+                              Bootstrap.My4 ]
+                 OnClick clearCacheHandler
+                 Disabled isLoading ] [
+            str "Reset cache"
+        ]
+        h4 [] [ str "Notificaties?" ]
+        if browserSupportsNotifications
+           && roles.IsEditorOrAdmin then
+            Switch
+                { TrueLabel = "Aan"
+                  FalseLabel = "Uit"
+                  OnChange = updateNotifications
+                  Disabled = isLoading
+                  Value = notifications }
+        else
+            div [ classNames [ Bootstrap.Alert
+                               Bootstrap.AlertWarning ] ] [
+                str "Je browser ondersteunt geen notificaties"
+            ]
+        if isLoading then
+            loading "Syncen met de server..."
+    ]
 
 exportDefault Settings

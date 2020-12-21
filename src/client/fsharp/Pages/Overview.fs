@@ -113,73 +113,70 @@ let private useGetUsers () =
 
     users
 
-let private OverviewPage =
-    React.functionComponent (
-        "OverviewPage",
-        (fun () ->
-            let locations = useLocations ()
-            let sort, setSort = React.useState (SortBy.Name)
-            let roles = useRoles ()
-            let users = useGetUsers ()
+[<ReactComponent>]
+let private OverviewPage () =
+    let locations = useLocations ()
+    let sort, setSort = React.useState (SortBy.Name)
+    let roles = useRoles ()
+    let users = useGetUsers ()
 
-            let locationRows =
-                locations
-                |> sortFn sort
-                |> List.map
-                    (fun loc ->
-                        let creator =
-                            Map.tryFind loc.Creator users
-                            |> Option.map
-                                (fun creator ->
-                                    td [ classNames [ Bootstrap.TextRight
-                                                      Bootstrap.TextSmLeft ] ] [
-                                        str creator
-                                    ])
-
-                        tr [ Key loc.Id ] [
-                            td [] [
-                                Link [ To(sprintf "/detail/%s" loc.Id)
-                                       classNames [ if loc.NoLongerSellsRonnies then
-                                                        yield!
-                                                            [ Bootstrap.Strike
-                                                              Bootstrap.TextMuted ] ] ] [
-                                    str loc.Name
-                                ]
-                            ]
-                            td [] [ str loc.Price ]
-                            td [ classNames [ Bootstrap.TextCenter
+    let locationRows =
+        locations
+        |> sortFn sort
+        |> List.map
+            (fun loc ->
+                let creator =
+                    Map.tryFind loc.Creator users
+                    |> Option.map
+                        (fun creator ->
+                            td [ classNames [ Bootstrap.TextRight
                                               Bootstrap.TextSmLeft ] ] [
-                                str loc.Date
-                            ]
-                            if roles.IsEditorOrAdmin then
-                                ofOption creator
-                        ])
+                                str creator
+                            ])
 
-            page [] [
-                h1 [] [ str "Overzicht" ]
-                table [ classNames [ Bootstrap.Table
-                                     Bootstrap.TableStriped ] ] [
-                    thead [] [
-                        tr [ classNames [ Bootstrap.TextPrimary
-                                          Bootstrap.Pointer ] ] [
-                            th [ OnClick(fun _ -> setSort (SortBy.Name)) ] [
-                                str "Naam"
-                            ]
-                            th [ OnClick(fun _ -> setSort (SortBy.Price)) ] [
-                                str "Prijs"
-                            ]
-                            th [ OnClick(fun _ -> setSort (SortBy.Date)) ] [
-                                str "Datum toegevoegd"
-                            ]
-                            if roles.IsEditorOrAdmin then
-                                th [] [ str "Door" ]
+                tr [ Key loc.Id ] [
+                    td [] [
+                        Link [ To(sprintf "/detail/%s" loc.Id)
+                               classNames [ if loc.NoLongerSellsRonnies then
+                                                yield!
+                                                    [ Bootstrap.Strike
+                                                      Bootstrap.TextMuted ] ] ] [
+                            str loc.Name
                         ]
                     ]
-                    tbody [ ClassName Bootstrap.OverviewTbody ] [
-                        ofList locationRows
+                    td [] [ str loc.Price ]
+                    td [ classNames [ Bootstrap.TextCenter
+                                      Bootstrap.TextSmLeft ] ] [
+                        str loc.Date
                     ]
+                    if roles.IsEditorOrAdmin then
+                        ofOption creator
+                ])
+
+    page [] [
+        h1 [] [ str "Overzicht" ]
+        table [ classNames [ Bootstrap.Table
+                             Bootstrap.TableStriped ] ] [
+            thead [] [
+                tr [ classNames [ Bootstrap.TextPrimary
+                                  Bootstrap.Pointer ] ] [
+                    th [ OnClick(fun _ -> setSort (SortBy.Name)) ] [
+                        str "Naam"
+                    ]
+                    th [ OnClick(fun _ -> setSort (SortBy.Price)) ] [
+                        str "Prijs"
+                    ]
+                    th [ OnClick(fun _ -> setSort (SortBy.Date)) ] [
+                        str "Datum toegevoegd"
+                    ]
+                    if roles.IsEditorOrAdmin then
+                        th [] [ str "Door" ]
                 ]
-            ])
-    )
+            ]
+            tbody [ ClassName Bootstrap.OverviewTbody ] [
+                ofList locationRows
+            ]
+        ]
+    ]
 
 exportDefault OverviewPage

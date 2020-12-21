@@ -34,30 +34,27 @@ let private fetchLatestEvents setEvents =
                           newEvents ])
     |> Promise.iter (List.concat >> setEvents)
 
-let Events =
-    React.functionComponent (
-        "Events",
-        (fun (props : {| children : ReactElement |}) ->
-            let (events, setEvents) = React.useState ([])
-            let auth0 = useAuth0 ()
+[<ReactComponent>]
+let Events (props : {| children : ReactElement |}) =
+    let (events, setEvents) = React.useState ([])
+    let auth0 = useAuth0 ()
 
-            let addEvents (appendEvents : Event list) =
-                auth0.getAccessTokenSilently ()
-                |> Promise.bind (IdbKeyVal.persistEvents appendEvents)
-                |> Promise.map (fun persistedEvents -> setEvents (events @ persistedEvents))
+    let addEvents (appendEvents : Event list) =
+        auth0.getAccessTokenSilently ()
+        |> Promise.bind (IdbKeyVal.persistEvents appendEvents)
+        |> Promise.map (fun persistedEvents -> setEvents (events @ persistedEvents))
 
-            React.useEffectOnce (fun () -> fetchLatestEvents setEvents)
+    React.useEffectOnce (fun () -> fetchLatestEvents setEvents)
 
-            let clearCache () =
-                IdbKeyVal.removeAllEvents ()
+    let clearCache () =
+        IdbKeyVal.removeAllEvents ()
 
-                IdbKeyVal.syncLatestEvents ()
-                |> Promise.map (setEvents)
+        IdbKeyVal.syncLatestEvents ()
+        |> Promise.map (setEvents)
 
-            let contextValue =
-                { Events = events
-                  AddEvents = addEvents
-                  ClearCache = clearCache }
+    let contextValue =
+        { Events = events
+          AddEvents = addEvents
+          ClearCache = clearCache }
 
-            React.contextProvider (eventContext, contextValue, props.children))
-    )
+    React.contextProvider (eventContext, contextValue, props.children)
