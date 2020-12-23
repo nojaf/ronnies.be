@@ -21,7 +21,7 @@ group client
     nuget Feliz.UseElmish
     nuget Zanaptak.TypedCssClasses
     nuget Feliz.CompilerPlugins
-    nuget Feliz 1.29.0
+    nuget Feliz 1.31.1
 
 group server
     source https://api.nuget.org/v3/index.json
@@ -63,7 +63,7 @@ group build
     nuget Fake.Tools.Git
     nuget Fake.JavaScript.Yarn
     nuget FSharp.Compiler.Service
-    nuget Fantomas.Extras 4.4.0-alpha-003
+    nuget Fantomas.Extras 4.4.0-alpha-005
 
 group infrastructure
     source https://api.nuget.org/v3/index.json
