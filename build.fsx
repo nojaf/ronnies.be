@@ -23,7 +23,7 @@ let wwwroot = Path.Combine(artifactPath,  "wwwroot")
 let sln = Path.Combine(__SOURCE_DIRECTORY__, "ronnies.be.sln")
 let yarnSetParams = (fun (c: Yarn.YarnParams) -> { c with WorkingDirectory = clientPath })
 let fsharpFiles = !!"src/**/*.fs" -- "src/**/obj/**" -- "src/**/node_modules/**" -- "src/**/.fable/**"
-let javaScriptFiles = ["src/**/*.js";"src/*.js"]
+let javaScriptFiles = ["snowpack.config.js"]
 
 module Azure =
     let az parameters =

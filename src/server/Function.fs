@@ -299,8 +299,10 @@ let private (|UserRoute|_|) (path : string) =
 
 [<FunctionName("ronnies")>]
 let Ronnies
-    ([<HttpTrigger(AuthorizationLevel.Function, "get", "post", "delete", Route = "{*any}")>] req : HttpRequest,
-     log : ILogger)
+    (
+        [<HttpTrigger(AuthorizationLevel.Function, "get", "post", "delete", Route = "{*any}")>] req : HttpRequest,
+        log : ILogger
+    )
     =
     log.LogInformation("Entering Ronnies backend")
 

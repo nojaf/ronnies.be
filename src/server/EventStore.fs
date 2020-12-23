@@ -49,10 +49,10 @@ let rec private appendToAzureTableStorage (cosmoEvents : EventWrite<JsonValue> s
         let moreThanBatchLimit = Seq.length cosmoEvents > BatchLimit
 
         let batch =
-            if moreThanBatchLimit then
-                Seq.take BatchLimit cosmoEvents
-            else
-                cosmoEvents
+            (if moreThanBatchLimit then
+                 Seq.take BatchLimit cosmoEvents
+             else
+                 cosmoEvents)
             |> List.ofSeq
 
         let! events = eventStore.AppendEvents EventStream Any batch
