@@ -4,3 +4,5 @@ ports:
     onOpen: ignore
   - port: 9090
     onOpen: ignore
+tasks:
+  - init: dotnet tool restore && dotnet fake run build.fsx -t InstallClient -p 2
