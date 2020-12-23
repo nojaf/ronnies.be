@@ -8,13 +8,11 @@ open Ronnies.Client.Components.Loading
 
 type LatLng = float * float
 
-[<NoEquality>]
-[<NoComparison>]
-type LocationPickerProps =
-    { OnChange : LatLng -> LatLng -> unit
-      ExistingLocations : (string * LatLng) list }
-
-let LocationPicker (props : LocationPickerProps) =
+[<ReactComponent>]
+let LocationPicker
+    (props : {| OnChange : LatLng -> LatLng -> unit
+                ExistingLocations : (string * LatLng) list |})
+    =
     let geolocation = useGeolocation ()
     let (userLatitude, setUserLatitude) = React.useState (50.946139)
     let (userLongitude, setUserLongitude) = React.useState (3.138671)

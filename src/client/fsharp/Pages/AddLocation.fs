@@ -420,8 +420,8 @@ let private AddLocationPage () =
                     br []
                     div [ Id "locationPickerContainer" ] [
                         LocationPicker(
-                            { OnChange = onLocationChanges
-                              ExistingLocations = [] }
+                            {| OnChange = onLocationChanges
+                               ExistingLocations = [] |}
                         )
                     ]
                     ofOption locationError
