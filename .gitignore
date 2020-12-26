@@ -360,4 +360,4 @@ src/client-snowpack
 src/client/src/bin
 src/client/fsharp/bin
 src/client/fsharp/obj
-*.vsix
+/vsix
