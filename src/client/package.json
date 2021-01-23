@@ -25,6 +25,6 @@
   "scripts": {
     "start": "snowpack dev",
     "build": "snowpack build",
-    "setup": "sass ./src/style.sass ./src/style.css && dotnet fable ./fsharp/client.fsproj --outDir ./src/bin"
+    "setup": "dotnet fable ./fsharp/client.fsproj --outDir ./src/bin"
   }
 }
