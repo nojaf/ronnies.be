@@ -1,0 +1,12 @@
+{
+  "imports": {
+    "@auth0/auth0-react": "./@auth0/auth0-react.js",
+    "@reach/router": "./@reach/router.js",
+    "idb-keyval": "./idb-keyval.js",
+    "react": "./react.js",
+    "react-dom": "./react-dom.js",
+    "react-map-gl": "./react-map-gl.js",
+    "react-toastify": "./react-toastify.js",
+    "react-use": "./react-use.js"
+  }
+}

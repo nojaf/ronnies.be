@@ -53,9 +53,10 @@ self.addEventListener("push", (evt) => {
    */
   const payload = evt.data && evt.data.json();
 
+  const origin = evt.target.location.origin;
   // sync indexDb
   evt.waitUntil(
-    syncIndexDB(evt.target.location.origin === "http://localhost:8080")
+    syncIndexDB(origin === "http://localhost:8080" || evt.indexOf("gitpod") !== -1)
   );
 
   // show notification
