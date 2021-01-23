@@ -1,3 +1,10 @@
+export const SNOWPACK_PUBLIC_AUTH0_CIENT_ID = "9QM23irmnI7ZcxxPJFAv5Sxc8HZymuUS";
+export const SNOWPACK_PUBLIC_AUTH0_SCOPE = "openid profile offline_access";
+export const SNOWPACK_PUBLIC_AUTH0_AUDIENCE = "https://ronnies.be";
+export const SNOWPACK_PUBLIC_SUBSCRIPTION_KEY = "ee291b2be6464d6f94401c2c82c72775";
+export const SNOWPACK_PUBLIC_BACKEND = "https://nojaf-apim.azure-api.net/ronnies";
+export const SNOWPACK_PUBLIC_MAPBOX = "pk.eyJ1Ijoibm9qYWYiLCJhIjoiY2p6eHV4ODkwMWNoaTNidXRqeGlrb2JpMSJ9.x6fTQsfCfGMKwxpdKxjhMQ";
+export const SNOWPACK_PUBLIC_AUTH0_DOMAIN = "nojaf.eu.auth0.com";
 export const MODE = "production";
 export const NODE_ENV = "production";
 export const SSR = false;
