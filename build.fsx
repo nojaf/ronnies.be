@@ -103,6 +103,15 @@ Target.create "BuildServer"
 
 Target.create "Watch" (fun _ ->
     let compileFable = async {
+        let binFolder = clientPath </> "src" </> "bin"
+        let shouldInitialize = 
+            not (Directory.Exists(binFolder))
+            || Seq.isEmpty (Directory.EnumerateFiles(binFolder))
+
+        if shouldInitialize then 
+            printfn "initial Fable compile"
+            Yarn.exec "setup" yarnSetParams
+
         Yarn.exec "start" yarnSetParams
     }
 
@@ -143,9 +152,6 @@ Target.create "PrepareRelease" ignore
 
 "PrepareRelease"
     <== [ "BuildClient" ; "BuildServer" ]
-
-"Watch"
-    <== [ "InstallClient" ]
 
 // start build
 Target.runOrDefault "Build"

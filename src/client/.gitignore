@@ -25,3 +25,4 @@ src/bin
 src/style.css
 fsharp/bin
 fsharp/obj
+.snowpack/
