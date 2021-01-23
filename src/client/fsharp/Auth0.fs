@@ -55,7 +55,7 @@ type IdToken =
     abstract roles : string array
 
     [<Emit "$0[$1]{{=$2}}">]
-    abstract Item : key:string -> obj option with get, set
+    abstract Item : key : string -> obj option with get, set
 
 type LogoutOptions = { returnTo : string }
 
