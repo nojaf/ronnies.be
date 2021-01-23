@@ -25,6 +25,7 @@
   "scripts": {
     "start": "snowpack dev",
     "build": "snowpack build",
+    "postbuild": "touch ./build/.nojekyll",
     "setup": "dotnet fable ./fsharp/client.fsproj --outDir ./src/bin"
   }
 }
