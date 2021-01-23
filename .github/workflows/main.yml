@@ -18,13 +18,13 @@ jobs:
       - name: FAKE
         run: dotnet fake run build.fsx -t PrepareRelease
         env:
-          REACT_APP_BACKEND: ${{ secrets.BACKEND }}
-          REACT_APP_AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
-          REACT_APP_AUTH0_CIENT_ID: ${{ secrets.AUTH0_CIENT_ID }}
-          REACT_APP_AUTH0_AUDIENCE: ${{ secrets.AUTH0_AUDIENCE }}
-          REACT_APP_AUTH0_SCOPE: ${{ secrets.AUTH0_SCOPE }}
-          REACT_APP_MAPBOX: ${{ secrets.MAPBOX }}
-          REACT_APP_SUBSCRIPTION_KEY: ${{ secrets.SUBSCRIPTION_KEY }}
+          SNOWPACK_PUBLIC_BACKEND: ${{ secrets.BACKEND }}
+          SNOWPACK_PUBLIC_AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
+          SNOWPACK_PUBLIC_AUTH0_CIENT_ID: ${{ secrets.AUTH0_CIENT_ID }}
+          SNOWPACK_PUBLIC_AUTH0_AUDIENCE: ${{ secrets.AUTH0_AUDIENCE }}
+          SNOWPACK_PUBLIC_AUTH0_SCOPE: ${{ secrets.AUTH0_SCOPE }}
+          SNOWPACK_PUBLIC_MAPBOX: ${{ secrets.MAPBOX }}
+          SNOWPACK_PUBLIC_SUBSCRIPTION_KEY: ${{ secrets.SUBSCRIPTION_KEY }}
       - name: Deploy Frontend
         uses: peaceiris/actions-gh-pages@v3
         with:
