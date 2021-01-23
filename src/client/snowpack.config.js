@@ -17,5 +17,8 @@ module.exports = {
   ],
   devOptions: {
     output: "stream",
-  }
+  },
+  routes: [
+    { "match": "routes", "src": "/detail/.*", "dest": "/index.html" }
+  ]
 };
