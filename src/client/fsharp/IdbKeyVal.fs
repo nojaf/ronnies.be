@@ -83,8 +83,8 @@ let syncLatestEvents () =
             fetch
                 url
                 [ requestHeaders
-                    [ HttpRequestHeaders.ContentType "application/json"
-                      Common.subscriptionHeader ] ])
+                      [ HttpRequestHeaders.ContentType "application/json"
+                        Common.subscriptionHeader ] ])
     |> Promise.bind addEventsToIdb
 
 let persistEvents (events : Event list) authToken =

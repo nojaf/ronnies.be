@@ -95,10 +95,10 @@ let private Navigation () =
                        (fun ev ->
                            ev.preventDefault ()
                            logAuthToken ()) ] [
-                a [ Href "#"
-                    ClassName Bootstrap.NavLink ] [
-                    str "Bearer"
-                ]
+                  a [ Href "#"
+                      ClassName Bootstrap.NavLink ] [
+                      str "Bearer"
+                  ]
               ] ]
         else
             []
