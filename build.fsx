@@ -10,8 +10,6 @@ open Fake.IO.Globbing.Operators
 open Fake.IO.FileSystemOperators
 open Fake.JavaScript
 open System.IO
-open Fantomas
-open Fantomas.FormatConfig
 
 let root = __SOURCE_DIRECTORY__
 let clientPath = Path.Combine(root,"src","client")
@@ -50,25 +48,39 @@ Target.create "Clean"
     )
 
 Target.create "Format" (fun _ ->
-    fsharpFiles
-    |> Fantomas.Extras.FakeHelpers.formatCode
-    |> Async.RunSynchronously
-    |> printfn "Formatted F# files: %A"
-
+    let result = DotNet.exec id "fantomas" "src -r"
+    if not result.OK then
+        printfn "Errors while formatting all files: %A" result.Messages
+        
     javaScriptFiles
     |> List.iter (fun js -> Yarn.exec (sprintf "prettier %s --write" js) yarnSetParams))
 
-Target.create "CheckCodeFormat" (fun _ ->
-    let result =
-        fsharpFiles
-        |> Fantomas.Extras.FakeHelpers.checkCode
-        |> Async.RunSynchronously
+Target.create "FormatChanged" (fun _ ->
+    Fake.Tools.Git.FileStatus.getChangedFilesInWorkingCopy "." "HEAD"
+    |> Seq.choose (fun (_, file) ->
+        let ext = Path.GetExtension(file)
 
-    if result.IsValid then
-        Trace.log "No files need formatting with Fantomas"
-    elif result.NeedsFormatting then
-        Trace.log "The following files need formatting:"
-        List.iter Trace.log result.Formatted
+        if file.StartsWith("src")
+           && (ext = ".fs" || ext = ".fsi") then
+            Some file
+        else
+            None)
+    |> Seq.map (fun file -> async {
+        let result = DotNet.exec id "fantomas" file
+        if not result.OK then
+            printfn "Problem when formatting %s:\n%A" file result.Errors
+    })
+    |> Async.Parallel
+    |> Async.RunSynchronously
+    |> ignore)
+
+Target.create "CheckFormat" (fun _ ->
+    let result =
+        DotNet.exec id "fantomas" "src -r --check"
+
+    if result.ExitCode = 0 then
+        Trace.log "No files need formatting"
+    elif result.ExitCode = 99 then
         failwith "Some files need formatting, check output for more info"
     else
         Trace.logf "Errors while formatting: %A" result.Errors
