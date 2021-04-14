@@ -5,11 +5,11 @@ open Fable.Core.JsInterop
 open Fable.React
 open Fable.React.Props
 
-let useGeolocation : unit ->
-    {| latitude : float
-       longitude : float
-       loading : bool
-       error : obj option |} =
+let useGeolocation : unit
+    -> {| latitude : float
+          longitude : float
+          loading : bool
+          error : obj option |} =
     import "useGeolocation" "react-use"
 
 type Viewport =
