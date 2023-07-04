@@ -1,38 +1,22 @@
 ﻿module App
 
-open Fable.Core
 open Fable.Core.JsInterop
-open Browser.Types
 open Browser.Dom
 open Fable.React
 open Fable.React.Props
 open Feliz
+open Bindings
 
 #if DEBUG
 importSideEffects "./out/WebSocketClient.js"
 #endif
 
-let useMediaQuery (query : string) : bool = import "useMediaQuery" "usehooks-ts"
-let useState (initial : 'T) : 'T * ('T -> unit) = import "useState" "react"
-let useEffect (callback : unit -> unit) (deps : obj array) : unit = import "useEffect" "react"
-
-[<RequireQualifiedAccess>]
-type IconProps =
-    | Icon of string
-    | Width of int
-    | Height of int
-
-    interface IProp
-
-let inline Icon (props : IProp seq) =
-    ofImport "Icon" "@iconify/react" (keyValueList CaseRules.LowerFirst props) Array.empty
-
 [<ReactComponent>]
 let App () =
     let isTablet = useMediaQuery "screen and (min-width: 960px)"
-    let isMenuOpen, setIsMenuOpen = useState true
+    let isMenuOpen, setIsMenuOpen = React.useState false
 
-    useEffect
+    React.useEffect
         (fun () ->
             if isTablet then
                 setIsMenuOpen false
@@ -41,10 +25,12 @@ let App () =
 
     let menuClass = (if isMenuOpen then "show" else "")
 
-    fragment [] [
-        nav [] [
-            img [ Src "/images/r-white.png" ]
+    let mkNavLink too text =
+        li [ OnClick (fun _ -> setIsMenuOpen false) ] [ NavLink [ To too ] [ str text ] ]
 
+    BrowserRouter [
+        nav [] [
+            Link [ To "/" ; OnClick (fun _ -> setIsMenuOpen false) ] [ img [ Src "/images/r-white.png" ] ]
             button [
                 OnClick (fun ev ->
                     ev.preventDefault ()
@@ -54,14 +40,32 @@ let App () =
                 Icon [ IconProps.Icon "ic:baseline-menu" ; IconProps.Width 24 ; IconProps.Height 24 ]
             ]
             ul [ ClassName menuClass ] [
-                li [ ClassName "active" ] [ str "Overzicht" ]
-                li [] [ str "E nieuwen toevoegen" ]
-                li [] [ str "Klassement" ]
-                li [] [ str "Manifesto" ]
-                li [] [ str "Bearer" ]
+                mkNavLink "/overview" "Overzicht"
+                mkNavLink "/add-location" "E nieuwen toevoegen"
+            // li [] [ NavLink "add-location" [ str "Klassement" ] ]
+            // li [] [ NavLink "add-location" [ str "Manifesto" ] ]
+            // li [] [ NavLink "add-location" [ str "Bearer" ] ]
             ]
         ]
-        main [] [ h1 [] [ str "meh" ] ]
+        main [] [
+            Routes [
+                Route
+                    {|
+                        index = true
+                        element = h1 [] [ str "Home" ]
+                    |}
+                Route
+                    {|
+                        path = "/overview"
+                        element = h1 [] [ str "Overview" ]
+                    |}
+                Route
+                    {|
+                        path = "/add-location"
+                        element = h1 [] [ str "Add new" ]
+                    |}
+            ]
+        ]
     ]
 
 ReactDom.render (App (), document.querySelector "body")

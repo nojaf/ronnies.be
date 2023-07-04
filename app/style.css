@@ -54,13 +54,21 @@ nav {
 }
 
 nav img {
-    display: block;
     height: var(--unit-3);
+    margin-left: var(--unit-2);
+    margin-bottom: var(--unit-2);
+}
+
+nav img a {
+    display: block;
     grid-row: 1;
     grid-column: 1;
     justify-self: start;
-    margin-left: var(--unit-2);
-    margin-bottom: var(--unit-2);
+}
+
+nav a:hover img, nav button:hover svg {
+    background: rgba(255, 255, 255, .25);
+    border-radius: 6px;
 }
 
 nav button {
@@ -107,19 +115,25 @@ nav ul.show {
     animation: fade-in 0.2s ease-in forwards;
 }
 
-nav ul li {
+nav ul li.active {
+
+}
+
+nav ul li a {
+    display: block;
     padding: var(--unit);
     border-bottom: 1px solid var(--grey-border);
     background-color: var(--menu);
     color: white;
+    text-decoration: none;
 }
 
-nav ul li:hover {
+nav ul li a:hover {
     background-color: var(--menu-hover);
     cursor: pointer;
 }
 
-nav ul li:active, nav ul li.active {
+nav ul li a:active, nav ul li a.active {
     background-color: var(--primary);
     font-weight: bold;
 }
@@ -141,23 +155,24 @@ nav ul li:active, nav ul li.active {
         border: none;
     }
 
-    nav ul li {
+    nav ul li a {
         background-color: transparent;
         border: none;
         margin-right: var(--unit-2);
         padding: 0;
     }
 
-    nav ul li:hover {
+    nav ul li a:hover {
         background-color: transparent;
         text-decoration: underline;
     }
 
-    nav ul li:focus {
+    nav ul li a:focus {
         text-decoration: none;
     }
 }
 
 main {
     padding-top: var(--unit-7);
+    margin: 0 var(--unit-2);
 }

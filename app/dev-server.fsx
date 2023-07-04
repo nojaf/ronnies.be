@@ -64,7 +64,8 @@ let serveFiles =
     [
         GET >=> path "/" >=> file (__SOURCE_DIRECTORY__ </> "index.html")
         GET >=> browseHome
-        NOT_FOUND "Page not found."
+        // SPA route
+        file (__SOURCE_DIRECTORY__ </> "index.html")
     ]
 
 let args =
