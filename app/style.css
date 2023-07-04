@@ -11,12 +11,26 @@
     --grey-hover: #ffffff;
     --grey-border: #cbcbcb;
     --white: #ffffff;
+    --danger: #f92d51;
+    --danger-hover: #fb778f;
+    --danger-border: #d3062a;
+    --warning: #f7ca18;
+    --warning-hover: #fadb62;
+    --warning-border: #bc9707;
+    --success: #3fc380;
+    --success-hover: #79d5a7;
+    --success-border: #2b8a5a;
     --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --unit: 0.5rem;
     --unit-2: 1rem;
     --unit-3: 1.5rem;
     --unit-4: 2rem;
+    --unit-5: 2.5rem;
+    --unit-6: 3rem;
     --unit-7: 3.5rem;
+    --unit-8: 4rem;
+    --unit-9: 4.5rem;
+    --unit-10: 5rem;
 }
 
 html,
@@ -36,7 +50,110 @@ h6 {
     margin: 0;
 }
 
-body {
+input {
+    font-family: var(--font);
+}
+
+input.error {
+    border: 2px solid var(--danger-border);
+}
+
+input[type="email"] {
+    border-radius: 0;
+}
+
+/* Buttons */
+.btn, button {
+    text-decoration: none;
+    appearance: none;
+    background-color: #fafbfc;
+    border: 1px solid rgba(27, 31, 35, .15);
+    border-radius: 0;
+    box-shadow: #1b1f230a 0 1px, #ffffff40 0 1px inset;
+    box-sizing: border-box;
+    color: #24292e;
+    cursor: pointer;
+    display: inline-block;
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    list-style: none;
+    padding: 6px 16px;
+    position: relative;
+    transition: background-color .2s cubic-bezier(.3, 0, .5, 1);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: middle;
+    white-space: nowrap;
+    word-wrap: break-word
+}
+
+.btn:hover, button:hover {
+    background-color: #f3f4f6;
+    text-decoration: none;
+    transition-duration: .1s;
+    transform: translateY(1px)
+}
+
+.btn:disabled, button:disabled {
+    background-color: #fafbfc;
+    border-color: #1b1f2326;
+    color: #959da5;
+    cursor: default
+}
+
+.btn:active, button:active {
+    background-color: #edeff2;
+    box-shadow: #e1e4e833 0 1px inset;
+    transition: none 0s
+}
+
+.btn:focus, button:focus {
+    outline: 1px transparent
+}
+
+.btn:before, button:before {
+    display: none
+}
+
+.btn::-webkit-details-marker {
+    display: none
+}
+
+.btn i, button i {
+    margin-right: var(--unit)
+}
+
+.btn.primary, button.primary {
+    background-color: var(--primary);
+    border-color: var(--primary-border);
+    color: var(--white)
+}
+
+.btn.primary:hover, button.primary:hover {
+    background-color: var(--primary-hover)
+}
+
+.btn.danger, button.danger {
+    background-color: var(--danger);
+    border-color: var(--danger-border);
+    color: var(--white)
+}
+
+.btn.danger:hover, button.danger:hover {
+    background-color: var(--danger-hover)
+}
+
+.btn.warning, button.warning {
+    background-color: var(--warning);
+    border-color: var(--warning-border);
+    color: var(--white)
+}
+
+.btn.warning:hover, button.warning:hover {
+    background-color: var(--warning-hover)
 }
 
 nav {
@@ -53,17 +170,17 @@ nav {
     z-index: 10;
 }
 
-nav img {
-    height: var(--unit-3);
+nav > a {
     margin-left: var(--unit-2);
     margin-bottom: var(--unit-2);
-}
-
-nav img a {
-    display: block;
     grid-row: 1;
     grid-column: 1;
     justify-self: start;
+}
+
+nav > a img {
+    display: block;
+    height: var(--unit-3);
 }
 
 nav a:hover img, nav button:hover svg {
@@ -87,16 +204,21 @@ nav button {
 
 nav button:hover {
     color: var(--grey);
+    background: transparent;
 }
 
-@keyframes fade-in {
+@keyframes menu-open {
     from {
         opacity: 0;
+        visibility: collapse;
         height: 0;
+        border-top: none;
     }
     to {
         opacity: 1;
-        height: auto;
+        visibility: visible;
+        height: initial;
+        border-top: 1px solid var(--white);
     }
 }
 
@@ -106,17 +228,14 @@ nav ul {
     padding: 0;
     margin: 0;
     list-style: none;
-    border-top: 1px solid var(--white);
     opacity: 0;
+    visibility: collapse;
     height: 0;
+    box-sizing: content-box;
 }
 
 nav ul.show {
-    animation: fade-in 0.2s ease-in forwards;
-}
-
-nav ul li.active {
-
+    animation: menu-open 0.2s ease-in forwards;
 }
 
 nav ul li a {
@@ -126,6 +245,23 @@ nav ul li a {
     background-color: var(--menu);
     color: white;
     text-decoration: none;
+}
+
+nav ul #user {
+    display: flex;
+    align-items: center;
+    cursor: initial;
+    background-color: var(--menu);
+    padding: var(--unit);
+    font-weight: 500;
+}
+
+nav ul li #user:hover {
+    text-decoration: none;
+}
+
+nav ul #user svg {
+    margin-right: var(--unit);
 }
 
 nav ul li a:hover {
@@ -149,13 +285,15 @@ nav ul li a:active, nav ul li a.active {
         justify-self: end;
         display: flex;
         justify-content: flex-end;
+        align-items: center;
         height: var(--unit-3);
         animation: initial;
         opacity: 1;
+        visibility: visible;
         border: none;
     }
 
-    nav ul li a {
+    nav ul li a, nav ul #user {
         background-color: transparent;
         border: none;
         margin-right: var(--unit-2);
@@ -173,6 +311,26 @@ nav ul li a:active, nav ul li a.active {
 }
 
 main {
-    padding-top: var(--unit-7);
+    padding-top: var(--unit-8);
     margin: 0 var(--unit-2);
+}
+
+#login {
+    border: 1px solid var(--menu-border);
+    padding: var(--unit-2);
+    margin: auto;
+    max-width: 400px;
+}
+
+#login input {
+    display: block;
+    width: 100%;
+    margin: var(--unit-2) 0;
+    box-sizing: border-box;
+    font-size: var(--unit-2);
+    padding: var(--unit);
+}
+
+#login input:last-child {
+    margin-bottom: 0;
 }

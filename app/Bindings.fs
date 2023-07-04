@@ -12,7 +12,7 @@ type React =
     static member useState<'T> (initial : 'T) : 'T * ('T -> unit) = jsNative
 
     [<Import("useEffect", "react")>]
-    static member useEffect (callback : unit -> unit) (deps : obj array) : unit = jsNative
+    static member useEffect (callback : unit -> unit, deps : obj array) : unit = jsNative
 
 [<RequireQualifiedAccess>]
 type IconProps =
@@ -78,3 +78,5 @@ let inline NavLink (props : IProp seq) (children : ReactElement seq) =
         "react-router-dom"
         (mkPropObject [| yield! props ; DOMAttr.Custom ("className", !!className) |])
         children
+
+let useNavigate () : string -> unit = import "useNavigate" "react-router-dom"

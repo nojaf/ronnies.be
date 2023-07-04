@@ -5,23 +5,39 @@ open Browser.Dom
 open Fable.React
 open Fable.React.Props
 open Feliz
+open Firebase
+open type Firebase.Auth.Exports
+open type Firebase.Hooks.Exports
 open Bindings
 
 #if DEBUG
 importSideEffects "./out/WebSocketClient.js"
 #endif
 
+let auth : Auth.Auth = import "auth" "../firebase.config.js"
+
+[<ReactComponent>]
+let LogoutComponent () =
+    let navigate = useNavigate ()
+
+    let logoutHandler (ev : Browser.Types.Event) =
+        ev.preventDefault ()
+        signOut auth |> Promise.iter (fun () -> navigate "/")
+
+    a [ Href "#" ; OnClick logoutHandler ] [ str "uitloggen" ]
+
 [<ReactComponent>]
 let App () =
     let isTablet = useMediaQuery "screen and (min-width: 960px)"
     let isMenuOpen, setIsMenuOpen = React.useState false
+    let user, _, _ = useAuthState auth
 
-    React.useEffect
-        (fun () ->
+    React.useEffect (
+        fun () ->
             if isTablet then
                 setIsMenuOpen false
-        )
-        [| isTablet |]
+        , [| isTablet |]
+    )
 
     let menuClass = (if isMenuOpen then "show" else "")
 
@@ -40,8 +56,23 @@ let App () =
                 Icon [ IconProps.Icon "ic:baseline-menu" ; IconProps.Width 24 ; IconProps.Height 24 ]
             ]
             ul [ ClassName menuClass ] [
-                mkNavLink "/overview" "Overzicht"
-                mkNavLink "/add-location" "E nieuwen toevoegen"
+                yield mkNavLink "/overview" "Overzicht"
+                yield mkNavLink "/add-location" "E nieuwen toevoegen"
+                match user with
+                | None -> yield mkNavLink "/login" "Inloggen"
+                | Some user ->
+                    yield li [ OnClick (fun _ -> setIsMenuOpen false) ] [ LogoutComponent () ]
+
+                    yield
+                        li [ Id "user" ; OnClick (fun _ -> setIsMenuOpen false) ] [
+                            Icon [
+                                IconProps.Icon "clarity:user-line"
+                                IconProps.Height 24
+                                IconProps.Width 24
+                            ]
+                            str user.displayName
+                        ]
+
             // li [] [ NavLink "add-location" [ str "Klassement" ] ]
             // li [] [ NavLink "add-location" [ str "Manifesto" ] ]
             // li [] [ NavLink "add-location" [ str "Bearer" ] ]
@@ -63,6 +94,11 @@ let App () =
                     {|
                         path = "/add-location"
                         element = h1 [] [ str "Add new" ]
+                    |}
+                Route
+                    {|
+                        path = "/login"
+                        element = Login.LoginPage ()
                     |}
             ]
         ]

@@ -20,8 +20,7 @@ pipeline "Watch" {
     initialize
     stage "main" {
         paralle
-        // Run functions
-        // Run emulator
+        run "firebase emulators:start --project=ronnies-210509"
         run "dotnet fsi ./app/dev-server.fsx watch"
     }
 
