@@ -8,16 +8,16 @@ open Browser.Types
 open Feliz
 open React
 open React.Props
-open Bindings
 open Firebase
 open type Firebase.Auth.Exports
+open ReactRouterDom
 
 let auth : Auth.Auth = import "auth" "../../firebase.config.js"
 
 [<ReactComponent>]
 let LoginPage () =
     let email, setEmail =
-        let emailFromLocalStorage = window.localStorage.getItem ("email")
+        let emailFromLocalStorage = window.localStorage.getItem "email"
 
         if isNullOrUndefined emailFromLocalStorage then
             ""
@@ -34,7 +34,7 @@ let LoginPage () =
             if isSignInWithEmailLink (auth, window.location.href) then
                 // login with email link
                 signInWithEmailLink (auth, email, window.location.href)
-                |> Promise.iter (fun user -> navigate "/")
+                |> Promise.iter (fun _ -> navigate "/")
         , Array.empty
     )
 
@@ -42,12 +42,12 @@ let LoginPage () =
         setError false
         ev.preventDefault ()
 
-        if String.IsNullOrWhiteSpace email || not (email.Contains ("@")) then
+        if String.IsNullOrWhiteSpace email || not (email.Contains "@") then
             setError true
         elif isSignInWithEmailLink (auth, window.location.href) then
             // login with email link
             signInWithEmailLink (auth, email, window.location.href)
-            |> Promise.map (fun user ->
+            |> Promise.map (fun _ ->
                 window.localStorage.setItem ("email", email)
                 navigate "/"
             )

@@ -8,7 +8,7 @@ open Feliz.UseElmish
 open Elmish
 open React
 open React.Props
-open Bindings
+open ReactRouterDom
 open Firebase
 open type Firebase.Auth.Exports
 open type Firebase.Hooks.Exports

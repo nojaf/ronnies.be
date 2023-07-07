@@ -54,9 +54,9 @@ type React =
     [<Import("createElement", "react")>]
     static member createElement (comp : obj, props : obj, [<ParamList>] children : ReactElement seq) : ReactElement =
         jsNative
-        
+
     [<Import("Fragment", "react")>]
-    static member Fragment: string = jsNative
+    static member Fragment : string = jsNative
 
 type ReactDom =
     [<Import("render", "react-dom")>]
@@ -185,6 +185,7 @@ let inline u props children = domEl "u" props children
 let inline ul props children = domEl "ul" props children
 let inline var props children = domEl "var" props children
 let inline video props children = domEl "video" props children
+
 let inline fragment props children =
     React.createElement (React.Fragment, mkPropObject props, children)
 

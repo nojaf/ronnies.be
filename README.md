@@ -17,7 +17,7 @@ dotnet fsi build.fsx -p Watch
 ## Format code
 
 ```bash
-dotnet fantomas app
+dotnet fantomas app build.fsx
 ```
 
 ## Seed

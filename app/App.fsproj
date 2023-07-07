@@ -1,24 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <LangVersion>preview</LangVersion>
+        <DefineConstants>$(DefineConstants);FABLE_COMPILER</DefineConstants>
     </PropertyGroup>
 
     <ItemGroup>
         <Compile Include="WebSocketClient.fs" />
-        <Compile Include="React.fs" />
-        <Compile Include="Bindings.fs" />
-        <Compile Include="ReactMapGL.fs" />
-        <Compile Include="../../thunder/fsharp/Firebase.fs" />
+        <Compile Include="Bindings\Firebase.fs" />
+        <Compile Include="Bindings\UseHooksTs.fs" />
+        <Compile Include="Bindings\React.fs" />
+        <Compile Include="Bindings\Iconify.fs" />
+        <Compile Include="Bindings\ReactRouterDom.fs" />
+        <Compile Include="Bindings\ReactMapGL.fs" />
         <Compile Include="API.fs" />
         <Compile Include="Pages\Login.fs" />
         <Compile Include="Pages\AddLocation.fsi" />
         <Compile Include="Pages\AddLocation.fs" />
         <Compile Include="App.fs" />
         <Content Include="favicon.ico" />
-        <Content Include="images\r-white.png" />
     </ItemGroup>
 
     <ItemGroup>

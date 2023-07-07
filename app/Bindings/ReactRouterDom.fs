@@ -1,23 +1,10 @@
-﻿module Bindings
+﻿module ReactRouterDom
 
 open Fable.Core.JsInterop
 open React
 open React.Props
 
 #nowarn "1182"
-
-[<RequireQualifiedAccess>]
-type IconProps =
-    | Icon of string
-    | Width of int
-    | Height of int
-
-    interface IProp
-
-let inline Icon (props : IProp seq) =
-    ofImportWithoutChildren "Icon" "@iconify/react" props
-
-let useMediaQuery (query : string) : bool = import "useMediaQuery" "usehooks-ts"
 
 let inline BrowserRouter (children : ReactElement seq) =
     ofImportWithoutProps "BrowserRouter" "react-router-dom" children

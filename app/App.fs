@@ -6,9 +6,11 @@ open Feliz
 open Firebase
 open type Firebase.Auth.Exports
 open type Firebase.Hooks.Exports
-open Bindings
 open React
 open React.Props
+open ReactRouterDom
+open UseHooksTs
+open Iconify
 
 #if DEBUG
 importSideEffects "./out/WebSocketClient.js"
@@ -53,7 +55,7 @@ let App () =
                     setIsMenuOpen (not isMenuOpen)
                 )
             ] [
-                Bindings.Icon [ IconProps.Icon "ic:baseline-menu" ; IconProps.Width 24 ; IconProps.Height 24 ]
+                Icon [ IconProps.Icon "ic:baseline-menu" ; IconProps.Width 24 ; IconProps.Height 24 ]
             ]
             ul [ ClassName menuClass ] [
                 yield mkNavLink "/overview" "Overzicht"
@@ -66,7 +68,7 @@ let App () =
 
                     yield
                         li [ Id "user" ; OnClick (fun _ -> setIsMenuOpen false) ] [
-                            Bindings.Icon [
+                            Icon [
                                 IconProps.Icon "clarity:user-line"
                                 IconProps.Height 24
                                 IconProps.Width 24
