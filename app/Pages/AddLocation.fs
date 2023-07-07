@@ -76,39 +76,38 @@ let LocationPicker
             ]
         )
 
-    if geolocation.loading then
-        str "locatie aan het zoeken.."
-    else
-        ReactMapGL [
-            OnViewportChange setViewport :> IProp
-            OnClick onMapClick
-            Style [ CSSProp.Height "300px" ; CSSProp.Width "300px" ]
-            Latitude viewport.latitude
-            Longitude viewport.longitude
-            Zoom viewport.zoom
-            MapClassName "add-location-map"
-            MapStyle "mapbox://styles/nojaf/ck0wtbppf0jal1cq72o8i8vm1"
-        ] [
-            ofList existingRonnies
-            Marker [
-                MarkerKey "ronny"
-                MarkerLatitude ronnyLatitude
-                MarkerLongitude ronnyLongitude
-                OffsetTop 0
-                OffsetLeft 0
-            ] [ img [ Src "/assets/ronny.png" ; HTMLAttr.Width 24 ; HTMLAttr.Height 24 ] ]
-            Marker [
-                MarkerKey "user"
-                MarkerLatitude userLatitude
-                MarkerLongitude userLongitude
-                OffsetTop 0
-                OffsetLeft 0
-            ] [ UserIcon ]
-        ]
+    ReactMapGL [
+        OnViewportChange setViewport :> IProp
+        OnClick onMapClick
+        Style [ CSSProp.Height "30vh" ; CSSProp.Width "100%" ]
+        Latitude viewport.latitude
+        Longitude viewport.longitude
+        Zoom viewport.zoom
+        MapClassName "add-location-map"
+        MapStyle "mapbox://styles/nojaf/ck0wtbppf0jal1cq72o8i8vm1"
+    ] [
+        ofList existingRonnies
+        Marker [
+            MarkerKey "ronny"
+            MarkerLatitude ronnyLatitude
+            MarkerLongitude ronnyLongitude
+            OffsetTop 0
+            OffsetLeft 0
+        ] [ img [ Src "/assets/ronny.png" ; HTMLAttr.Width 24 ; HTMLAttr.Height 24 ] ]
+        Marker [
+            MarkerKey "user"
+            MarkerLatitude userLatitude
+            MarkerLongitude userLongitude
+            OffsetTop 0
+            OffsetLeft 0
+        ] [ UserIcon ]
+    ]
 
 let currencies =
     [
         "EUR", "Euro"
+        "GBP", "Brits pond sterling"
+        "USD", "Amerikaanse dollar"
         "AED", "VAE-dirham"
         "AFN", "Afghani"
         "ALL", "Albanese lek"
@@ -158,7 +157,6 @@ let currencies =
         "ETB", "Ethiopische birr"
         "FJD", "Fiji-dollar"
         "FKP", "Falklandeilands pond"
-        "GBP", "Brits pond sterling"
         "GEL", "Georgische lari"
         "GHS", "Ghanese cedi (Geldig per 1 juli 2007, 1 GHS = 10.000 GHC)"
         "GIP", "Gibraltarees pond"
@@ -254,7 +252,6 @@ let currencies =
         "TZS", "Tanzaniaanse shilling"
         "UAH", "Oekraïense grivna"
         "UGX", "Oegandese shilling"
-        "USD", "Amerikaanse dollar"
         "USN", "Amerikaanse dollar (Next day) (aandelen)"
         "USS", "Amerikaanse dollar (Same day) (aandelen)"
         "UYU", "Uruguayaanse peso"
@@ -487,26 +484,21 @@ let AddLocationPage () =
                 ]
                 div [] [
                     label [] [ str "Prijs*" ]
-                    div [] [
+                    div [ ClassName "price"] [
                         input [
                             Type "number"
                             Step "0.01"
                             DefaultValue model.Price
                             updateOnChange UpdatePrice
                         ]
-
-                        div [] [
-                            select [
-                                updateOnChange UpdateCurrency
-                                Style [ Background "none" ; BorderTopLeftRadius "0" ; BorderBottomLeftRadius "0" ]
-                            ] [ ofList (List.map mapToCurrencyItem currencies) ]
-                        ]
-                        inputError model.Errors.Price
+                        select [
+                            updateOnChange UpdateCurrency
+                        ] [ ofList (List.map mapToCurrencyItem currencies) ]
                     ]
+                    inputError model.Errors.Price
                 ]
                 div [] [
                     label [] [ str "Locatie*" ]
-                    br []
                     div [ Id "locationPickerContainer" ] [
                         LocationPicker
                             {|
@@ -531,7 +523,7 @@ let AddLocationPage () =
                 ]
                 div [] [
                     label [] [ str "Opmerking" ]
-                    textarea [ DefaultValue model.Remark ; updateOnChange UpdateRemark ] []
+                    textarea [ DefaultValue model.Remark ; updateOnChange UpdateRemark; Rows 2 ] []
                 ]
                 button [ Class "primary" ] [ str "Save!" ]
                 pre [] [ str (Fable.Core.JS.JSON.stringify (model, space = 4)) ]

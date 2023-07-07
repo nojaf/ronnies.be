@@ -20,6 +20,7 @@
     --success: #3fc380;
     --success-hover: #79d5a7;
     --success-border: #2b8a5a;
+    --dark: #383A42;
     --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --unit: 0.5rem;
     --unit-2: 1rem;
@@ -50,16 +51,24 @@ h6 {
     margin: 0;
 }
 
-input {
+input, select, textarea {
     font-family: var(--font);
+    border-radius: 0;
+    display: block;
+    box-sizing: border-box;
+    font-size: var(--unit-2);
+    padding: var(--unit);
+    width: 100%;
+    border: 1px solid var(--dark);
+    border-style: inset;
+}
+
+input, select {
+    height: var(--unit-5);
 }
 
 input.error {
     border: 2px solid var(--danger-border);
-}
-
-input[type="email"] {
-    border-radius: 0;
 }
 
 /* Buttons */
@@ -322,14 +331,6 @@ main {
     max-width: 400px;
 }
 
-input {
-    display: block;
-    box-sizing: border-box;
-    font-size: var(--unit-2);
-    padding: var(--unit);
-    width: 100%;
-}
-
 #login input {
     margin: var(--unit-2) 0;
 }
@@ -340,8 +341,36 @@ input {
 
 label {
     font-weight: bold;
+    display: block;
+}
+
+#add-location {
+    margin: 0 var(--unit-2);
 }
 
 #add-location h1 {
     margin-bottom: var(--unit-2);
+}
+
+#add-location form > div {
+    margin-bottom: var(--unit-2);
+}
+
+#add-location form label {
+    margin-bottom: var(--unit);
+
+}
+
+#add-location form .price {
+    display: flex;
+    align-items: center;
+}
+
+#add-location form .price input {
+    flex: 1;
+}
+
+#add-location form .price select {
+    border-left: none;
+    max-width: var(--unit-10);
 }
