@@ -2,13 +2,13 @@
 
 open Fable.Core.JsInterop
 open Browser.Dom
-open Fable.React
-open Fable.React.Props
 open Feliz
 open Firebase
 open type Firebase.Auth.Exports
 open type Firebase.Hooks.Exports
 open Bindings
+open React
+open React.Props
 
 #if DEBUG
 importSideEffects "./out/WebSocketClient.js"
@@ -53,19 +53,20 @@ let App () =
                     setIsMenuOpen (not isMenuOpen)
                 )
             ] [
-                Icon [ IconProps.Icon "ic:baseline-menu" ; IconProps.Width 24 ; IconProps.Height 24 ]
+                Bindings.Icon [ IconProps.Icon "ic:baseline-menu" ; IconProps.Width 24 ; IconProps.Height 24 ]
             ]
             ul [ ClassName menuClass ] [
                 yield mkNavLink "/overview" "Overzicht"
-                yield mkNavLink "/add-location" "E nieuwen toevoegen"
+
                 match user with
                 | None -> yield mkNavLink "/login" "Inloggen"
                 | Some user ->
+                    yield mkNavLink "/add-location" "E nieuwen toevoegen"
                     yield li [ OnClick (fun _ -> setIsMenuOpen false) ] [ LogoutComponent () ]
 
                     yield
                         li [ Id "user" ; OnClick (fun _ -> setIsMenuOpen false) ] [
-                            Icon [
+                            Bindings.Icon [
                                 IconProps.Icon "clarity:user-line"
                                 IconProps.Height 24
                                 IconProps.Width 24
@@ -78,29 +79,21 @@ let App () =
             // li [] [ NavLink "add-location" [ str "Bearer" ] ]
             ]
         ]
-        main [] [
-            Routes [
-                Route
-                    {|
-                        index = true
-                        element = h1 [] [ str "Home" ]
-                    |}
-                Route
-                    {|
-                        path = "/overview"
-                        element = h1 [] [ str "Overview" ]
-                    |}
-                Route
-                    {|
-                        path = "/add-location"
-                        element = h1 [] [ str "Add new" ]
-                    |}
-                Route
-                    {|
-                        path = "/login"
-                        element = Login.LoginPage ()
-                    |}
+        Routes [
+            Route [
+                ReactRouterProp.Index true
+                ReactRouterProp.Element (main [] [ h1 [] [ str "Home" ] ])
             ]
+            Route [
+                ReactRouterProp.Path "/overview"
+                ReactRouterProp.Element (main [] [ h1 [] [ str "Overview" ] ])
+            ]
+            Route [
+                ReactRouterProp.Path "/add-location"
+                ReactRouterProp.Element (AddLocation.AddLocationPage ())
+            ]
+            Route [ ReactRouterProp.Path "/login" ; ReactRouterProp.Element (Login.LoginPage ()) ]
+            Route [ ReactRouterProp.Path "*" ; ReactRouterProp.Element (Navigate [ To "/" ]) ]
         ]
     ]
 

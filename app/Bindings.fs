@@ -1,18 +1,10 @@
 ﻿module Bindings
 
-open Fable.Core
 open Fable.Core.JsInterop
-open Fable.React
-open Fable.React.Props
+open React
+open React.Props
 
 #nowarn "1182"
-
-type React =
-    [<Import("useState", "react")>]
-    static member useState<'T> (initial : 'T) : 'T * ('T -> unit) = jsNative
-
-    [<Import("useEffect", "react")>]
-    static member useEffect (callback : unit -> unit, deps : obj array) : unit = jsNative
 
 [<RequireQualifiedAccess>]
 type IconProps =
@@ -22,61 +14,37 @@ type IconProps =
 
     interface IProp
 
-let mkPropObject (props : IProp seq) =
-    let isProp (o : IProp) =
-        emitJsExpr o "$0.name && $0.fields && $0.fields.length === 1"
-
-    let name (o : IProp) =
-        emitJsExpr o "$0.name.charAt(0).toLowerCase() + $0.name.slice(1)"
-
-    let field (o : IProp) = emitJsExpr o "$0.fields[0]"
-
-    props
-    |> Seq.choose (fun prop ->
-        if JS.Constructors.Array.isArray prop then
-            let array : obj array = emitJsExpr prop "$0"
-
-            if array.Length = 2 then
-                Some (!!array.[0], array.[1])
-            else
-                None
-        elif isProp prop then
-            Some (name prop, field prop)
-        else
-            JS.console.warn ("Prop is not parsed", prop)
-            None
-    )
-    |> createObj
-
 let inline Icon (props : IProp seq) =
-    ofImport "Icon" "@iconify/react" (mkPropObject props) Array.empty
+    ofImportWithoutChildren "Icon" "@iconify/react" props
 
 let useMediaQuery (query : string) : bool = import "useMediaQuery" "usehooks-ts"
 
-let BrowserRouter (children : ReactElement seq) =
-    ofImport "BrowserRouter" "react-router-dom" null children
+let inline BrowserRouter (children : ReactElement seq) =
+    ofImportWithoutProps "BrowserRouter" "react-router-dom" children
 
-let Routes (routes : ReactElement seq) =
-    ofImport "Routes" "react-router-dom" null routes
+let inline Routes (routes : ReactElement seq) =
+    ofImportWithoutProps "Routes" "react-router-dom" routes
 
-let Route<'route> (props : 'route) =
-    ofImport "Route" "react-router-dom" props Array.empty
+let inline Route (props : IProp seq) =
+    ofImportWithoutChildren "Route" "react-router-dom" props
 
 type ReactRouterProp =
     | To of string
+    | Index of bool
+    | Path of string
+    | Element of ReactElement
 
     interface IProp
 
+let inline Navigate (props : IProp seq) =
+    ofImportWithoutChildren "Navigate" "react-router-dom" props
+
 let inline Link (props : IProp seq) (children : ReactElement seq) =
-    ofImport "Link" "react-router-dom" (mkPropObject props) children
+    ofImport "Link" "react-router-dom" props children
 
 let inline NavLink (props : IProp seq) (children : ReactElement seq) =
     let className (prop : {| isActive : bool |}) = if prop.isActive then "active" else ""
 
-    ofImport
-        "NavLink"
-        "react-router-dom"
-        (mkPropObject [| yield! props ; DOMAttr.Custom ("className", !!className) |])
-        children
+    ofImport "NavLink" "react-router-dom" [| yield! props ; DOMAttr.Custom ("className", !!className) |] children
 
 let useNavigate () : string -> unit = import "useNavigate" "react-router-dom"

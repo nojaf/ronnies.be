@@ -5,9 +5,9 @@ open Fable.Core.JsInterop
 open Fable.Core
 open Browser
 open Browser.Types
-open Fable.React
-open Fable.React.Props
 open Feliz
+open React
+open React.Props
 open Bindings
 open Firebase
 open type Firebase.Auth.Exports
@@ -75,19 +75,21 @@ let LoginPage () =
 
     let emailClass = if error then "error" else ""
 
-    form [ Id "login" ; OnSubmit onSubmit ] [
-        h1 [] [ str "Inloggen" ]
-        if not emailSent then
-            input [
-                Type "email"
-                Placeholder "email"
-                AutoComplete "email"
-                OnChange (fun ev -> setEmail ev.Value)
-                Value email
-                ClassName emailClass
-            ]
+    main [] [
+        form [ Id "login" ; OnSubmit onSubmit ] [
+            h1 [] [ str "Inloggen" ]
+            if not emailSent then
+                input [
+                    Type "email"
+                    Placeholder "email"
+                    AutoComplete "email"
+                    OnChange (fun ev -> setEmail ev.Value)
+                    Value email
+                    ClassName emailClass
+                ]
 
-            input [ Type "submit" ; Class "btn primary" ]
-        else
-            p [] [ str $"Er werd een email verstuurd naar {email}. Via deze log je in." ]
+                input [ Type "submit" ; Class "btn primary" ]
+            else
+                p [] [ str $"Er werd een email verstuurd naar {email}. Via deze log je in." ]
+        ]
     ]

@@ -60,6 +60,15 @@ let build () =
     |> List.map (fun file -> __SOURCE_DIRECTORY__ </> file)
     |> Shell.copy dist
 
+    // Update importmap to use esm.sh
+    let indexHtml = Path.Combine (dist, "index.html")
+
+    let indexHtmlContent =
+        (File.ReadAllText indexHtml)
+            .Replace ("http://localhost:9004", "https://esmh.sh")
+
+    File.WriteAllText (indexHtml, indexHtmlContent)
+
 let serveFiles =
     [
         GET >=> path "/" >=> file (__SOURCE_DIRECTORY__ </> "index.html")

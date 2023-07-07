@@ -1,7 +1,7 @@
 ﻿// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAuth, connectAuthEmulator } from 'firebase/auth';
-import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
+import {initializeApp} from "firebase/app";
+import {getAuth, connectAuthEmulator} from 'firebase/auth';
+import {getFirestore, connectFirestoreEmulator} from 'firebase/firestore';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -18,12 +18,17 @@ export const app = initializeApp(firebaseConfig);
 
 // Connect to the Firebase Authentication emulator
 export const auth = getAuth(app);
-if(window.location.hostname === 'localhost') {
+
+const isLocalHost = window.location.hostname === 'localhost';
+
+if (isLocalHost) {
     connectAuthEmulator(auth, 'http://localhost:9099');
 }
 
 // Connect to the Firestore emulator
 const firestore = getFirestore(app);
-if(window.location.hostname === 'localhost') {
+if (isLocalHost) {
     connectFirestoreEmulator(firestore, 'localhost', 6006);
 }
+
+export const functionsBase = isLocalHost ? 'http://127.0.0.1:5001/ronnies-210509/europe-west1' : 'TODO';

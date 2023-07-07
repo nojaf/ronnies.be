@@ -322,15 +322,26 @@ main {
     max-width: 400px;
 }
 
-#login input {
+input {
     display: block;
-    width: 100%;
-    margin: var(--unit-2) 0;
     box-sizing: border-box;
     font-size: var(--unit-2);
     padding: var(--unit);
+    width: 100%;
+}
+
+#login input {
+    margin: var(--unit-2) 0;
 }
 
 #login input:last-child {
     margin-bottom: 0;
+}
+
+label {
+    font-weight: bold;
+}
+
+#add-location h1 {
+    margin-bottom: var(--unit-2);
 }

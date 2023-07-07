@@ -8,26 +8,30 @@
     <title>ronnies.be</title>
     <link rel="stylesheet" href="/style.css">
     <link rel="icon" href="/favicon.ico?v2">
+    <link href='https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.css' rel='stylesheet' />
 </head>
 <body>
 <noscript>You need to enable JavaScript to run this app.</noscript>
 <script type="importmap">
     {
         "imports": {
-            "fable-library/": "https://esm.sh/fable-library@1.1.1/",
-            "react": "https://esm.sh/react@18.2.0",
-            "react-dom": "https://esm.sh/react-dom@18.2.0",
-            "usehooks-ts": "https://esm.sh/usehooks-ts@2.9.1?exports=useCopyToClipboard,useMediaQuery",
-            "firebase": "https://esm.sh/firebase@9.23.0",
-            "firebase/app": "https://esm.sh/firebase@9.23.0/app",
-            "firebase/auth": "https://esm.sh/firebase@9.23.0/auth",
-            "firebase/firestore": "https://esm.sh/firebase@9.23.0/firestore",
-            "react-firehooks/auth": "https://esm.sh/react-firehooks@2.4.0/auth",
-            "@iconify/react": "https://esm.sh/@iconify/react@4.1.1",
-            "react-router-dom": "https://esm.sh/react-router-dom@6.14.1"
+            "fable-library/": "http://localhost:9004/fable-library@1.1.1/",
+            "react": "http://localhost:9004/react@18.2.0",
+            "react-dom": "http://localhost:9004/react-dom@18.2.0",
+            "usehooks-ts": "http://localhost:9004/usehooks-ts@2.9.1?exports=useCopyToClipboard,useMediaQuery",
+            "firebase": "http://localhost:9004/firebase@9.23.0",
+            "firebase/app": "http://localhost:9004/firebase@9.23.0/app",
+            "firebase/auth": "http://localhost:9004/firebase@9.23.0/auth",
+            "firebase/firestore": "http://localhost:9004/firebase@9.23.0/firestore",
+            "react-firehooks/auth": "http://localhost:9004/react-firehooks@2.4.0/auth",
+            "@iconify/react": "http://localhost:9004/@iconify/react@4.1.1",
+            "react-router-dom": "http://localhost:9004/react-router-dom@6.14.1",
+            "use-sync-external-store/shim": "http://localhost:9004/use-sync-external-store@1.2.0/shim",
+            "react-map-gl": "http://localhost:9004/react-map-gl@7.1.1",
+            "react-use": "http://localhost:9004/react-use@17.4.0?exports=useGeolocation"
         }
     }
 </script>
-<script type="module" src="./out/App.js"></script>
+<script type="module" src="out/App.js"></script>
 </body>
 </html>
