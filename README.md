@@ -2,6 +2,12 @@
 
 ## Init
 
+### Local CDN server
+
+```bash
+docker run -p 9004:8080 -d --name esm ghcr.io/esm-dev/esm.sh:latest
+```
+
 ## Run application
 
 ```bash

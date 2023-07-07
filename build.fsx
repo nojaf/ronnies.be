@@ -20,7 +20,7 @@ pipeline "Watch" {
     initialize
     stage "main" {
         paralle
-        run "docker run -it -p 9004:8080 ghcr.io/esm-dev/esm.sh:latest"
+        run "docker start esm"
         run "firebase emulators:start --project=ronnies-210509"
         run "dotnet fsi ./app/dev-server.fsx watch"
     }
