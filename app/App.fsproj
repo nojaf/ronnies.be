@@ -14,6 +14,7 @@
     <Compile Include="Bindings\ReactRouterDom.fs" />
     <Compile Include="Bindings\ReactMapGL.fs" />
     <Compile Include="Bindings\ReactWebcam.fs" />
+    <Compile Include="Types.fs" />
     <Compile Include="API.fs" />
     <Compile Include="Components.fs" />
     <Compile Include="Pages\Login.fs" />

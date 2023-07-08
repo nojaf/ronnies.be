@@ -7,10 +7,22 @@ open Fable.Core.JS
 #nowarn "1182"
 
 module App =
+    /// https://firebase.google.com/docs/reference/js/app.firebaseoptions.md#firebaseoptions_interface
+    type FirebaseOptions =
+        abstract apiKey : string
+        abstract appId : string
+        abstract authDomain : string
+        abstract databaseURL : string
+        abstract measurementId : string
+        abstract messagingSenderId : string
+        abstract projectId : string
+        abstract storageBucket : string
 
+    /// https://firebase.google.com/docs/reference/js/app.firebaseapp
     type FirebaseApp =
-        interface
-        end
+        abstract automaticDataCollectionEnabled : bool
+        abstract name : string
+        abstract options : FirebaseOptions
 
 module Auth =
     /// https://firebase.google.com/docs/reference/js/auth.userinfo.md#userinfo_interface
@@ -23,13 +35,16 @@ module Auth =
         inherit UserInfo
         abstract member isAnonymous : bool
 
+    /// https://firebase.google.com/docs/reference/js/auth.idtokenresult
     type IdTokenResult =
         abstract member claims : obj
 
+    /// https://firebase.google.com/docs/reference/js/auth.auth
     type Auth =
         abstract member app : App.FirebaseApp
         abstract member currentUser : User option
 
+    /// https://firebase.google.com/docs/reference/js/auth.usercredential
     type UserCredential =
         interface
         end
@@ -82,22 +97,27 @@ module Auth =
 module rec FireStore =
     open App
 
+    /// https://firebase.google.com/docs/reference/js/firestore_.firestore
     type FireStore =
-        interface
-        end
+        abstract app : App.FirebaseApp
+        abstract ``type`` : string
 
+    /// https://firebase.google.com/docs/reference/js/firestore_.query.md#query_class
     type Query<'T> =
         abstract member converter : obj
         abstract member firestore : FireStore
         abstract member ``type`` : string
 
+    /// https://firebase.google.com/docs/reference/js/firestore_.collectionreference
     type CollectionReference<'T> =
         inherit Query<'T>
 
+    /// https://firebase.google.com/docs/reference/js/firestore_.snapshotmetadata
     type SnapshotMetadata =
         abstract member fromCache : bool
         abstract member hasPendingWrites : bool
 
+    /// https://firebase.google.com/docs/reference/js/firestore_.documentreference
     type DocumentReference<'T> =
         abstract member id : string
         abstract member parent : CollectionReference<'T>
@@ -129,10 +149,12 @@ module rec FireStore =
         abstract member query : Query<'T>
         abstract member size : int
 
+    /// https://firebase.google.com/docs/reference/js/firestore_.queryconstraint
     type QueryConstraint =
         interface
         end
 
+    /// https://firebase.google.com/docs/reference/js/firestore_#wherefilterop
     [<StringEnum>]
     [<RequireQualifiedAccess>]
     type WhereFilterOp =
@@ -147,6 +169,7 @@ module rec FireStore =
         | [<CompiledName("array-contains-any")>] ArrayContainsAny
         | [<CompiledName("not-in")>] NotIn
 
+    /// https://firebase.google.com/docs/reference/node/firebase.firestore#firestoreerrorcode
     [<StringEnum>]
     [<RequireQualifiedAccess>]
     type FirestoreErrorCode =
@@ -167,6 +190,7 @@ module rec FireStore =
         | [<CompiledName("data-loss")>] DateLoss
         | [<CompiledName("unauthenticated")>] Unauthenticated
 
+    /// https://firebase.google.com/docs/reference/node/firebase.firestore.FirestoreError
     type FirestoreError =
         abstract member code : FirestoreErrorCode
         abstract member message : string
@@ -181,9 +205,11 @@ module rec FireStore =
         | [<CompiledName "none">] None
 
     type Exports =
+        /// https://firebase.google.com/docs/reference/js/firestore_.md#getfirestore
         [<Import("getFirestore", "firebase/firestore")>]
         static member getFirestore (?app : FirebaseApp) : FireStore = jsNative
 
+        /// https://firebase.google.com/docs/reference/js/firestore_.md#collection
         [<Import("collection", "firebase/firestore")>]
         static member collection<'T>
             (
@@ -195,6 +221,7 @@ module rec FireStore =
             =
             jsNative
 
+        /// https://firebase.google.com/docs/reference/js/firestore_.md#doc
         [<Import("doc", "firebase/firestore")>]
         static member doc<'T>
             (
@@ -206,6 +233,7 @@ module rec FireStore =
             =
             jsNative
 
+        /// https://firebase.google.com/docs/reference/js/firestore_.md#query
         [<Import("query", "firebase/firestore")>]
         static member query<'T>
             (
@@ -216,6 +244,7 @@ module rec FireStore =
             =
             jsNative
 
+        /// https://firebase.google.com/docs/reference/js/firestore_.md#where
         [<Import("where", "firebase/firestore")>]
         static member where
             (
@@ -227,15 +256,61 @@ module rec FireStore =
             =
             jsNative
 
+        /// https://firebase.google.com/docs/reference/js/firestore_lite.md#setdoc
         [<Import("setDoc ", "firebase/firestore")>]
         static member setDoc<'T> (reference : DocumentReference<'T>, data : 'T) : Promise<unit> = jsNative
 
+        /// https://firebase.google.com/docs/reference/js/firestore_lite.md#adddoc
         [<Import("addDoc", "firebase/firestore")>]
         static member addDoc<'T> (reference : CollectionReference<'T>, data : 'T) : Promise<DocumentReference<'T>> =
             jsNative
 
+        /// https://firebase.google.com/docs/reference/js/firestore_lite.md#updatedoc
         [<Import("updateDoc", "firebase/firestore")>]
         static member updateDoc<'T, 'V> (reference : DocumentReference<'T>, data : 'V) : Promise<unit> = jsNative
+
+module Storage =
+    open Browser.Types
+
+    /// https://firebase.google.com/docs/reference/js/storage.firebasestorage
+    type FirebaseStorage =
+        abstract app : App.FirebaseApp
+        abstract maxOperationRetryTime : int
+        abstract maxUploadRetryTime : int
+
+    /// https://firebase.google.com/docs/reference/js/storage.storagereference.md#storagereference_interface
+    type StorageReference =
+        abstract bucket : string
+        abstract fullPath : string
+        abstract name : string
+        abstract parent : StorageReference option
+        abstract root : StorageReference
+        abstract storage : FirebaseStorage
+        abstract toString : unit -> string
+
+    /// https://firebase.google.com/docs/reference/js/storage.fullmetadata.md#fullmetadata_interface
+    type FullMetadata =
+        abstract bucket : string
+        abstract downloadTokens : string array option
+        abstract fullPath : string
+        abstract ref : StorageReference option
+        abstract size : int
+        abstract timeCreated : string
+        abstract updated : string
+
+    /// https://firebase.google.com/docs/reference/js/storage.uploadresult.md#uploadresult_interface
+    type UploadResult =
+        abstract metadata : FullMetadata
+        abstract ref : StorageReference
+
+    type Exports =
+        /// https://firebase.google.com/docs/reference/js/storage.md#ref
+        [<Import("ref", "firebase/storage")>]
+        static member ref (storage : FirebaseStorage, ?path : string) : StorageReference = jsNative
+
+        /// https://firebase.google.com/docs/reference/js/storage.md#uploadbytes
+        [<Import("uploadBytes", "firebase/storage")>]
+        static member uploadBytes (ref : StorageReference, data : Blob) : Promise<UploadResult> = jsNative
 
 /// https://github.com/andipaetzold/react-firehooks
 module Hooks =
@@ -244,17 +319,12 @@ module Hooks =
     type ValueHookResult<'T, 'Error> = 'T option * bool * 'Error option
 
     type Exports =
-        /// https://github.com/andipaetzold/react-firehooks/blob/main/src/firestore/useCollection.ts
-        [<Import("useCollection", "react-firehooks/firestore")>]
-        static member useCollection<'T>
-            (
-                query : Query<'T>,
-                ?options : obj
-            )
-            : QuerySnapshot<'T> * bool * FirestoreError
-            =
+        /// https://github.com/andipaetzold/react-firehooks#useQuery
+        [<Import("useQuery", "react-firehooks/firestore")>]
+        static member useQuery<'T> (query : Query<'T>, ?options : obj) : QuerySnapshot<'T> * bool * FirestoreError =
             jsNative
 
+        /// https://github.com/andipaetzold/react-firehooks#useDocumentData
         [<Import("useDocumentData", "react-firehooks/firestore")>]
         static member useDocumentData<'T>
             (

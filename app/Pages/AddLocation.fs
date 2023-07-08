@@ -1,6 +1,7 @@
 ﻿module AddLocation
 
 open System
+open Fable.Core
 open Fable.Core.JsInterop
 open Fable.Import
 open Feliz
@@ -12,6 +13,10 @@ open ReactRouterDom
 open Firebase
 open type Firebase.Auth.Exports
 open type Firebase.Hooks.Exports
+
+type Storage = Firebase.Storage.Exports
+type Firestore = Firebase.FireStore.Exports
+
 open ReactMapGL
 open Iconify
 open ReactWebcam
@@ -355,7 +360,49 @@ let init _ : Model * Cmd<Msg> =
 
 let isValidNumber (v : string) : bool = emitJsExpr v "!isNaN($0)"
 
-let update msg model =
+let storage : Storage.FirebaseStorage = import "storage" "../../firebase.config.js"
+
+let firestore : Firebase.FireStore.FireStore =
+    import "firestore" "../../firebase.config.js"
+
+let submitLocation (navigate : string -> unit) (model : Model) (dispatch : Msg -> unit) =
+    let storagePromise =
+        if not model.HasPhoto then
+            Promise.lift None
+        else
+
+        promise {
+            let fileName = emitJsExpr () "`locations/${Date.now()}.png`"
+            let imageRef = Storage.ref (storage, fileName)
+            let! res = Fetch.fetch model.Photo []
+            let! blob = res.blob ()
+            let! snapShot = Storage.uploadBytes (imageRef, blob)
+            return Some imageRef.name
+        }
+
+    let addLocation (photoName : string option) : unit =
+        let locations = Firestore.collection (firestore, Constants.Locations)
+
+        Firestore.addDoc<RonnyLocation> (
+            locations,
+            {|
+                name = model.Name
+                price = JS.parseFloat model.Price
+                currency = model.Currency
+                latitude = model.Latitude
+                longitude = model.Longitude
+                isDraft = model.IsDraft
+                userId = model.UserId
+                otherUserIds = Seq.toArray model.OtherUsers
+                photoName = emitJsExpr photoName "$0 ?? null"
+                date = JS.Constructors.Date.Create ()
+            |}
+        )
+        |> Promise.eitherEnd (fun docRef -> navigate $"/{docRef.id}") (fun err -> JS.console.error err)
+
+    storagePromise |> Promise.eitherEnd addLocation (fun err -> addLocation None)
+
+let update (navigate : string -> unit) msg model =
     match msg with
     | UpdateUserId uid -> { model with UserId = uid }, Cmd.OfPromise.perform API.getUsers uid Msg.UsersLoaded
     | IsUnauthorized ->
@@ -408,14 +455,21 @@ let update msg model =
                         model.Errors.Location
             }
 
+        let model =
+            if errors.HasErrors then
+                { model with Errors = errors }
+            else
+                { model with
+                    CurrentState = State.Submit
+                }
+
         let cmd =
             if errors.HasErrors then
                 Cmd.none
             else
-                Browser.Dom.window.alert "valid vent"
-                Cmd.none
+                Cmd.ofEffect (submitLocation navigate model)
 
-        { model with Errors = errors }, cmd
+        model, cmd
     | UsersLoaded users ->
         { model with
             Users = users
@@ -464,7 +518,7 @@ let AddLocationPage () =
     let navigate = useNavigate ()
     let user, isUserLoading, _ = useAuthState auth
     let tokenResult, isTokenResultLoading, _ = useAuthIdTokenResult auth
-    let model, dispatch = React.useElmish (init, update, Array.empty)
+    let model, dispatch = React.useElmish (init, update navigate, Array.empty)
 
     React.useEffect (
         fun () ->
@@ -565,7 +619,7 @@ let AddLocationPage () =
         h1 [] [ str "E nieuwen toevoegen" ]
         match model.CurrentState with
         | State.Loading -> Loader ()
-        | State.Submit -> str "Ant opsloan..."
+        | State.Submit -> fragment [] [ Loader () ; str "Ant opsloan..." ]
         | State.UnAuthorized ->
             span [] [
                 str "Sorry matje, je bent geen patron of niet "
@@ -662,7 +716,8 @@ let AddLocationPage () =
 
 (*
     TODO:
-        - [ ] Take a picture?
+        - [X] Take a picture?
         - [ ] Submit to firebase
+        - [ ] Handle error in promise
         - [ ] Load other locations
 *)

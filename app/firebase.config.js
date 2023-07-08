@@ -2,6 +2,7 @@
 import {initializeApp} from "firebase/app";
 import {getAuth, connectAuthEmulator} from 'firebase/auth';
 import {getFirestore, connectFirestoreEmulator} from 'firebase/firestore';
+import {getStorage, connectStorageEmulator } from 'firebase/storage';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -26,9 +27,14 @@ if (isLocalHost) {
 }
 
 // Connect to the Firestore emulator
-const firestore = getFirestore(app);
+export const firestore = getFirestore(app);
 if (isLocalHost) {
     connectFirestoreEmulator(firestore, 'localhost', 6006);
+}
+
+export const storage = getStorage();
+if (isLocalHost) {
+    connectStorageEmulator(storage, "localhost", 7007);
 }
 
 export const functionsBase = isLocalHost ? 'http://127.0.0.1:5001/ronnies-210509/europe-west1' : 'TODO';

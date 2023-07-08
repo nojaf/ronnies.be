@@ -8,10 +8,17 @@
 docker run -p 9004:8080 -d --name esm ghcr.io/esm-dev/esm.sh:latest
 ```
 
+## Run emulators
+
+```bash
+firebase emulators:start --project=ronnies-210509
+```
+
 ## Run application
 
 ```bash
 dotnet fsi build.fsx -p Watch
+exit
 ```
 
 ## Format code
@@ -24,12 +31,16 @@ dotnet fantomas app build.fsx
 
 ```bash
 dotnet fsi seed.fsx
+exit
 ```
 ## View in use port in Ubuntu
 
 ```bash
+# Try and kill firebase processes
+sudo pkill -f firebase
+
 # Define the ports you want to search for
-PORTS=("4000" "6006")
+PORTS=("4000" "6006" "6007")
 
 # Search for processes using the specified ports
 for PORT in "${PORTS[@]}"; do

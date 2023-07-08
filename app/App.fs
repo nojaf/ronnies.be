@@ -92,6 +92,10 @@ let App () =
             ]
             Route [ ReactRouterProp.Path "/login" ; ReactRouterProp.Element (Login.LoginPage ()) ]
             Route [ ReactRouterProp.Path "*" ; ReactRouterProp.Element (Navigate [ To "/" ]) ]
+            Route [
+                ReactRouterProp.Path "/:id"
+                ReactRouterProp.Element (main [] [ h1 [] [ str "detail page" ] ])
+            ]
         ]
     ]
 
