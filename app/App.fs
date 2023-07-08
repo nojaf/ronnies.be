@@ -55,7 +55,7 @@ let App () =
                     setIsMenuOpen (not isMenuOpen)
                 )
             ] [
-                Icon [ IconProps.Icon "ic:baseline-menu" ; IconProps.Width 24 ; IconProps.Height 24 ]
+                Icon [ IconProp.Icon "ic:baseline-menu" ; IconProp.Width 24 ; IconProp.Height 24 ]
             ]
             ul [ ClassName menuClass ] [
                 yield mkNavLink "/overview" "Overzicht"
@@ -68,11 +68,7 @@ let App () =
 
                     yield
                         li [ Id "user" ; OnClick (fun _ -> setIsMenuOpen false) ] [
-                            Icon [
-                                IconProps.Icon "clarity:user-line"
-                                IconProps.Height 24
-                                IconProps.Width 24
-                            ]
+                            Icon [ IconProp.Icon "clarity:user-line" ; IconProp.Height 24 ; IconProp.Width 24 ]
                             str user.displayName
                         ]
 

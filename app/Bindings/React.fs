@@ -58,6 +58,12 @@ type React =
     [<Import("Fragment", "react")>]
     static member Fragment : string = jsNative
 
+    [<Import("useCallback", "react")>]
+    static member useCallback (callBack : unit -> unit, deps : obj array) : unit -> unit = jsNative
+
+    [<Import("useRef", "react")>]
+    static member useRef<'T when 'T : null> (?initialValue : 'T) : {| current : 'T |} = jsNative
+
 type ReactDom =
     [<Import("render", "react-dom")>]
     static member render (reactNode : ReactElement, domNode : Element, ?callback : unit -> unit) = jsNative

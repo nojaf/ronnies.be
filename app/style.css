@@ -416,6 +416,10 @@ label {
     margin-bottom: var(--unit-2);
 }
 
+#add-location form > div > p {
+    margin: 0;
+}
+
 #add-location form label {
     margin-bottom: var(--unit);
 
@@ -456,6 +460,10 @@ label {
     border: 1px solid var(--danger);
 }
 
+#add-location #others {
+    margin-top: var(--unit);
+}
+
 #add-location #others button {
     display: inline-block;
     margin: 0 calc(var(--unit) / 2);
@@ -492,6 +500,35 @@ label {
 #add-location #selectedOthers li button {
     padding: var(--unit);
     display: flex;
+}
+
+#add-location #take-picture button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#add-location #take-picture button svg {
+    margin-left: var(--unit-2);
+}
+
+#add-location #take-picture button span {
+    line-height: var(--unit-4);
+    font-size: var(--unit-2);
+}
+
+#add-location #take-picture video {
+    margin: var(--unit-2) auto;
+    display: block;
+}
+
+#add-location #take-picture img {
+    margin: var(--unit) 0;
+}
+
+#add-location pre {
+    overflow-x: auto;
 }
 
 

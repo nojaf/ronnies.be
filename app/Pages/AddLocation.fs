@@ -14,6 +14,7 @@ open type Firebase.Auth.Exports
 open type Firebase.Hooks.Exports
 open ReactMapGL
 open Iconify
+open ReactWebcam
 open Components
 
 type LatLng = float * float
@@ -102,11 +103,7 @@ let LocationPicker
             OffsetTop 0
             OffsetLeft 0
         ] [
-            Icon [
-                IconProps.Icon "clarity:user-line"
-                IconProps.Height 24
-                IconProps.Width 24
-            ]
+            Icon [ IconProp.Icon "clarity:user-line" ; IconProp.Height 24 ; IconProp.Width 24 ]
         ]
     ]
 
@@ -313,8 +310,12 @@ type Model =
         Errors : Errors
         Users : API.User array
         OtherUsers : string Set
+        HidePhoto : bool
+        Photo : string
         CurrentState : State
     }
+
+    member this.HasPhoto = String.IsNullOrWhiteSpace this.Photo |> not
 
 type Msg =
     | UpdateUserId of string
@@ -329,6 +330,8 @@ type Msg =
     | Submit
     | UsersLoaded of API.User array
     | ToggleUser of uid : string
+    | UpdatePhoto of string
+    | HidePhoto
 
 let init _ : Model * Cmd<Msg> =
     {
@@ -343,6 +346,8 @@ let init _ : Model * Cmd<Msg> =
         Errors = Errors.Empty
         Users = Array.empty
         OtherUsers = Set.empty
+        HidePhoto = false
+        Photo = ""
         // Loading the logged in user and the list of users
         CurrentState = State.Loading
     },
@@ -428,6 +433,8 @@ let update msg model =
                 OtherUsers = Set.add uid model.OtherUsers
             },
             Cmd.none
+    | UpdatePhoto base64String -> { model with Photo = base64String }, Cmd.none
+    | HidePhoto -> { model with HidePhoto = true }, Cmd.none
 
 let mapToCurrencyItem (currencyCode, description) =
     option [ ClassName "" ; Key currencyCode ; Value currencyCode ; Title description ] [ str currencyCode ]
@@ -472,6 +479,20 @@ let AddLocationPage () =
 
         , [| box tokenResult ; box user |]
     )
+
+    let webcamRef = React.useRef<WebcamRef> null
+
+    let capture =
+        React.useCallback (
+            fun () ->
+                printfn "callback"
+
+                if not (isNullOrUndefined webcamRef.current) then
+                    let screenShot = webcamRef.current.getScreenshot ()
+                    Fable.Core.JS.console.log screenShot
+                    dispatch (Msg.UpdatePhoto screenShot)
+            , [| !!webcamRef ; dispatch |]
+        )
 
     let updateOnChange msg =
         fun (ev : Browser.Types.Event) -> ev.Value |> msg |> dispatch
@@ -524,13 +545,21 @@ let AddLocationPage () =
                     )
                 ] [
                     Icon [
-                        IconProps.Icon "iconamoon:trash-duotone"
-                        IconProps.Width 16
-                        IconProps.Height 16
+                        IconProp.Icon "iconamoon:trash-duotone"
+                        IconProp.Width 16
+                        IconProp.Height 16
                     ]
                 ]
             ]
         )
+
+    let onTakePicture (ev : Browser.Types.MouseEvent) =
+        ev.preventDefault ()
+
+        if model.HasPhoto then
+            dispatch (Msg.UpdatePhoto "")
+        else
+            capture ()
 
     main [ Id "add-location" ] [
         h1 [] [ str "E nieuwen toevoegen" ]
@@ -595,6 +624,33 @@ let AddLocationPage () =
                     div [ Id "others" ] [ ofArray coPatronsOptions ]
                     ul [ Id "selectedOthers" ] [ ofArray coPatronsSelected ]
                 ]
+                if not model.HidePhoto then
+                    div [ Id "take-picture" ] [
+                        label [] [ str "Foto" ]
+                        p [] [ str "Niet verplicht, kan wel leutig zijn." ]
+                        if model.HasPhoto then
+                            img [ Src model.Photo ; HTMLAttr.Width "100%" ]
+                        else
+                            Webcam [
+                                WebcamProp.Audio false :> IProp
+                                HTMLAttr.Width "100%"
+                                Ref webcamRef
+                                WebcamProp.ScreenshotFormat "image/png"
+                                WebcamProp.VideoConstraints {| facingMode = {| ideal = "user" |} |}
+                                WebcamProp.OnUserMediaError (fun () -> dispatch Msg.HidePhoto)
+                            ]
+                        button [ OnClick onTakePicture ] [
+                            span [] [
+                                str (
+                                    if String.IsNullOrWhiteSpace model.Photo then
+                                        "Neem foto"
+                                    else
+                                        "Herneem foto"
+                                )
+                            ]
+                            Icon [ IconProp.Icon "ph:camera-duotone" ; IconProp.Height 24 ; IconProp.Width 24 ]
+                        ]
+                    ]
                 div [] [
                     label [] [ str "Opmerking" ]
                     textarea [ DefaultValue model.Remark ; updateOnChange UpdateRemark ; Rows 2 ] []
@@ -603,3 +659,10 @@ let AddLocationPage () =
                 pre [] [ str (Fable.Core.JS.JSON.stringify (model, space = 4)) ]
             ]
     ]
+
+(*
+    TODO:
+        - [ ] Take a picture?
+        - [ ] Submit to firebase
+        - [ ] Load other locations
+*)

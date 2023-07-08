@@ -5,7 +5,7 @@ open React
 #nowarn "1182"
 
 [<RequireQualifiedAccess>]
-type IconProps =
+type IconProp =
     | Icon of string
     | Width of int
     | Height of int
