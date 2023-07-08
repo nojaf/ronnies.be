@@ -25,3 +25,8 @@ dotnet fantomas app build.fsx
 ```bash
 dotnet fsi seed.fsx
 ```
+## View in use port in Ubuntu
+
+```bash
+sudo lsof -nP | grep LISTEN
+```

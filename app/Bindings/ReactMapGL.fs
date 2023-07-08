@@ -21,22 +21,25 @@ type Viewport =
         zoom : int
     |}
 
-type MapClickEvent =
+type LngLat =
+    abstract lng : float
+    abstract lat : float
+
+type MapLayerMouseEvent =
     inherit Browser.Types.Event
 
-    [<Emit("$0.lngLat.reverse()")>]
-    abstract LatLng : unit -> (float * float)
+    abstract lngLat : LngLat
 
 // TODO: https://visgl.github.io/react-map-gl/docs/get-started
+[<RequireQualifiedAccess>]
 type ReactMapGLProp =
     | Latitude of float
     | Longitude of float
     | Zoom of int
-    | OnViewportChange of (Viewport -> unit)
-    | OnClick of (MapClickEvent -> unit)
-    | [<CompiledName("className")>] MapClassName of string
+    | OnClick of (MapLayerMouseEvent -> unit)
     | MapStyle of string
     | MapboxAccessToken of string
+    | OnMove of ({| viewState : Viewport |} -> unit)
 
     interface IProp
 
@@ -47,7 +50,7 @@ let mapboxApiAccessToken : string =
 let inline ReactMapGL (props : #IProp seq) (children : ReactElement seq) : ReactElement =
     let allProps =
         [|
-            yield MapboxAccessToken mapboxApiAccessToken :> IProp
+            yield ReactMapGLProp.MapboxAccessToken mapboxApiAccessToken :> IProp
             for p in props do
                 yield p :> IProp
         |]
@@ -65,6 +68,3 @@ type MarkerProp =
 
 let inline Marker (props : MarkerProp list) (children : ReactElement seq) : ReactElement =
     ofImport "Marker" "react-map-gl" props children
-
-// Todo: use other icon
-let UserIcon = str "icon"

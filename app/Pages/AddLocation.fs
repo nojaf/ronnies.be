@@ -13,6 +13,8 @@ open Firebase
 open type Firebase.Auth.Exports
 open type Firebase.Hooks.Exports
 open ReactMapGL
+open Iconify
+open Components
 
 type LatLng = float * float
 
@@ -61,30 +63,29 @@ let LocationPicker
         [| box geolocation.loading |]
     )
 
-    let onMapClick (ev : MapClickEvent) =
-        let lat, lng = ev.LatLng ()
-        setRonnyLatitude lat
-        setRonnyLongitude lng
-        props.OnChange (userLatitude, userLongitude) (lat, lng)
+    let onMapClick (ev : MapLayerMouseEvent) =
+        let lngLat = ev.lngLat
+        setRonnyLatitude lngLat.lat
+        setRonnyLongitude lngLat.lng
+        props.OnChange (userLatitude, userLongitude) (lngLat.lat, lngLat.lng)
 
     let existingRonnies =
         props.ExistingLocations
         |> List.map (fun (name, (lat, lng)) ->
             Marker [ MarkerLatitude lat ; MarkerLongitude lng ; MarkerKey name ] [
-                img [ Src "/assets/r-black.png" ]
+                img [ Src "/images/r-black.png" ]
                 strong [] [ str name ]
             ]
         )
 
     ReactMapGL [
-        OnViewportChange setViewport :> IProp
-        OnClick onMapClick
+        ReactMapGLProp.OnMove (fun ev -> setViewport ev.viewState) :> IProp
+        ReactMapGLProp.OnClick onMapClick
         Style [ CSSProp.Height "30vh" ; CSSProp.Width "100%" ]
-        Latitude viewport.latitude
-        Longitude viewport.longitude
-        Zoom viewport.zoom
-        MapClassName "add-location-map"
-        MapStyle "mapbox://styles/nojaf/ck0wtbppf0jal1cq72o8i8vm1"
+        ReactMapGLProp.Latitude viewport.latitude
+        ReactMapGLProp.Longitude viewport.longitude
+        ReactMapGLProp.Zoom viewport.zoom
+        ReactMapGLProp.MapStyle "mapbox://styles/nojaf/ck0wtbppf0jal1cq72o8i8vm1"
     ] [
         ofList existingRonnies
         Marker [
@@ -93,14 +94,20 @@ let LocationPicker
             MarkerLongitude ronnyLongitude
             OffsetTop 0
             OffsetLeft 0
-        ] [ img [ Src "/assets/ronny.png" ; HTMLAttr.Width 24 ; HTMLAttr.Height 24 ] ]
+        ] [ img [ Src "/images/ronny.png" ; HTMLAttr.Width 24 ; HTMLAttr.Height 24 ] ]
         Marker [
             MarkerKey "user"
             MarkerLatitude userLatitude
             MarkerLongitude userLongitude
             OffsetTop 0
             OffsetLeft 0
-        ] [ UserIcon ]
+        ] [
+            Icon [
+                IconProps.Icon "clarity:user-line"
+                IconProps.Height 24
+                IconProps.Width 24
+            ]
+        ]
     ]
 
 let currencies =
@@ -277,9 +284,6 @@ type Errors =
         Location : string option
     }
 
-    member this.NameClass = if this.Name.IsSome then "error" else ""
-    member this.PriceClass = if this.Price.IsSome then "error" else ""
-    member this.LocationClass = if this.Location.IsSome then "error" else ""
     member this.HasErrors = this.Name.IsSome || this.Price.IsSome || this.Location.IsSome
 
     static member Empty =
@@ -308,7 +312,7 @@ type Model =
         Remark : string
         Errors : Errors
         Users : API.User array
-        OtherUsers : string list
+        OtherUsers : string Set
         CurrentState : State
     }
 
@@ -324,6 +328,7 @@ type Msg =
     | UpdateLocationError of isError : bool
     | Submit
     | UsersLoaded of API.User array
+    | ToggleUser of uid : string
 
 let init _ : Model * Cmd<Msg> =
     {
@@ -337,7 +342,7 @@ let init _ : Model * Cmd<Msg> =
         Remark = ""
         Errors = Errors.Empty
         Users = Array.empty
-        OtherUsers = List.empty
+        OtherUsers = Set.empty
         // Loading the logged in user and the list of users
         CurrentState = State.Loading
     },
@@ -384,7 +389,7 @@ let update msg model =
                         None
                 Price =
                     if String.IsNullOrWhiteSpace model.Price then
-                        Some "Naam is verplicht"
+                        Some "Prijs is verplicht"
                     elif not (isValidNumber model.Price) then
                         Some "Prijs is precies geen getal"
                     else
@@ -398,7 +403,12 @@ let update msg model =
                         model.Errors.Location
             }
 
-        let cmd = if errors.HasErrors then Cmd.none else Cmd.none
+        let cmd =
+            if errors.HasErrors then
+                Cmd.none
+            else
+                Browser.Dom.window.alert "valid vent"
+                Cmd.none
 
         { model with Errors = errors }, cmd
     | UsersLoaded users ->
@@ -407,6 +417,17 @@ let update msg model =
             CurrentState = State.Enter
         },
         Cmd.none
+    | ToggleUser uid ->
+        if model.OtherUsers.Contains uid then
+            { model with
+                OtherUsers = Set.remove uid model.OtherUsers
+            },
+            Cmd.none
+        else
+            { model with
+                OtherUsers = Set.add uid model.OtherUsers
+            },
+            Cmd.none
 
 let mapToCurrencyItem (currencyCode, description) =
     option [ ClassName "" ; Key currencyCode ; Value currencyCode ; Title description ] [ str currencyCode ]
@@ -434,20 +455,22 @@ let auth : Auth.Auth = import "auth" "../../firebase.config.js"
 [<ReactComponent>]
 let AddLocationPage () =
     let navigate = useNavigate ()
-    let user, _, _ = useAuthState auth
-    let tokenResult, _, _ = useAuthIdTokenResult auth
+    let user, isUserLoading, _ = useAuthState auth
+    let tokenResult, isTokenResultLoading, _ = useAuthIdTokenResult auth
     let model, dispatch = React.useElmish (init, update, Array.empty)
-
-    React.useEffect ((fun () -> user |> Option.iter (fun user -> dispatch (Msg.UpdateUserId user.uid))), [| box user |])
 
     React.useEffect (
         fun () ->
-            tokenResult
-            |> Option.iter (fun tokenResult ->
+            match user, tokenResult with
+            | Some user, Some tokenResult ->
                 if not tokenResult.claims?``member`` then
                     dispatch Msg.IsUnauthorized
-            )
-        , [| box tokenResult |]
+                else
+                    dispatch (Msg.UpdateUserId user.uid)
+            | None, None when (isUserLoading && isTokenResultLoading) -> dispatch Msg.IsUnauthorized
+            | _ -> ()
+
+        , [| box tokenResult ; box user |]
     )
 
     let updateOnChange msg =
@@ -462,14 +485,63 @@ let AddLocationPage () =
         dispatch (UpdateLocationError isTooFar)
 
     let inputError error =
-        error |> Option.map (fun error -> div [] [ str error ]) |> ofOption
+        error |> Option.map (fun error -> p [] [ str error ]) |> ofOption
+
+    let errorClass error : IHTMLProp seq =
+        match error with
+        | None -> []
+        | Some _ -> [ ClassName "error" ]
+
+    let coPatronsOptions =
+        model.Users
+        |> Array.filter (fun u -> not (model.OtherUsers.Contains u.uid))
+        |> Array.sortBy (fun u -> u.displayName)
+        |> Array.map (fun u ->
+            button [
+                Key u.uid
+                OnClick (fun ev ->
+                    ev.preventDefault ()
+                    dispatch (Msg.ToggleUser u.uid)
+                )
+            ] [ str u.displayName ]
+        )
+
+    let coPatronsSelected =
+        model.OtherUsers
+        |> Seq.toArray
+        |> Array.map (fun uid ->
+            let displayName =
+                model.Users
+                |> Seq.pick (fun u -> if u.uid = uid then Some u.displayName else None)
+
+            li [ Key uid ] [
+                span [] [ str displayName ]
+                button [
+                    ClassName "danger"
+                    OnClick (fun ev ->
+                        ev.preventDefault ()
+                        dispatch (Msg.ToggleUser uid)
+                    )
+                ] [
+                    Icon [
+                        IconProps.Icon "iconamoon:trash-duotone"
+                        IconProps.Width 16
+                        IconProps.Height 16
+                    ]
+                ]
+            ]
+        )
 
     main [ Id "add-location" ] [
         h1 [] [ str "E nieuwen toevoegen" ]
         match model.CurrentState with
-        | State.Loading -> str "..."
+        | State.Loading -> Loader ()
         | State.Submit -> str "Ant opsloan..."
-        | State.UnAuthorized -> str "Sorry, je bent geen patron"
+        | State.UnAuthorized ->
+            span [] [
+                str "Sorry matje, je bent geen patron of niet "
+                Link [ To "/login" ] [ str "ingelogd" ]
+            ]
         | State.Enter ->
             form [
                 OnSubmit (fun ev ->
@@ -477,27 +549,25 @@ let AddLocationPage () =
                     dispatch Submit
                 )
             ] [
-                div [] [
+                div [ yield! errorClass model.Errors.Name ] [
                     label [] [ str "Naam*" ]
                     input [ DefaultValue model.Name ; updateOnChange UpdateName ]
                     inputError model.Errors.Name
                 ]
-                div [] [
+                div [ yield! errorClass model.Errors.Price ] [
                     label [] [ str "Prijs*" ]
-                    div [ ClassName "price"] [
+                    div [ ClassName "price" ] [
                         input [
                             Type "number"
                             Step "0.01"
                             DefaultValue model.Price
                             updateOnChange UpdatePrice
                         ]
-                        select [
-                            updateOnChange UpdateCurrency
-                        ] [ ofList (List.map mapToCurrencyItem currencies) ]
+                        select [ updateOnChange UpdateCurrency ] [ ofList (List.map mapToCurrencyItem currencies) ]
                     ]
                     inputError model.Errors.Price
                 ]
-                div [] [
+                div [ yield! errorClass model.Errors.Location ] [
                     label [] [ str "Locatie*" ]
                     div [ Id "locationPickerContainer" ] [
                         LocationPicker
@@ -510,23 +580,26 @@ let AddLocationPage () =
                 ]
                 div [] [
                     label [] [ str "Ist van vat?" ]
-                    br []
-                // Switch (
-                //     {
-                //         TrueLabel = "Joat"
-                //         FalseLabel = "Nint"
-                //         OnChange = (UpdateIsDraft >> dispatch)
-                //         Value = model.IsDraft
-                //         Disabled = false
-                //     }
-                // )
+                    Toggle
+                        {|
+                            TrueLabel = "Joat"
+                            FalseLabel = "Nint"
+                            OnChange = (UpdateIsDraft >> dispatch)
+                            Value = model.IsDraft
+                            Disabled = false
+                        |}
+                ]
+                div [] [
+                    label [] [ str "Co-patrons?" ]
+                    p [] [ str "Zin der nog matjes aanwezig?" ]
+                    div [ Id "others" ] [ ofArray coPatronsOptions ]
+                    ul [ Id "selectedOthers" ] [ ofArray coPatronsSelected ]
                 ]
                 div [] [
                     label [] [ str "Opmerking" ]
-                    textarea [ DefaultValue model.Remark ; updateOnChange UpdateRemark; Rows 2 ] []
+                    textarea [ DefaultValue model.Remark ; updateOnChange UpdateRemark ; Rows 2 ] []
                 ]
-                button [ Class "primary" ] [ str "Save!" ]
+                input [ Type "submit" ; Class "primary" ; Value "Save!" ]
                 pre [] [ str (Fable.Core.JS.JSON.stringify (model, space = 4)) ]
             ]
-
     ]
