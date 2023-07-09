@@ -118,3 +118,36 @@ exports.users = onRequest(
     }
   }
 );
+
+exports.cleanUpUsers =
+  onRequest(
+    { region: "europe-west1" },
+    async (request, response) => {
+      try {
+        if (request.method !== "POST") {
+          return response.status(400).send("Bad request");
+        }
+
+        if (
+          request.headers &&
+          request.headers["x-kye"] !== "Um9ubmllcyB6aWpuIGtpc3pha3Mh"
+        ) {
+          return response.status(400).send("Bad request");
+        }
+
+        const listUsersResult = await auth.listUsers(1000);
+        const nonMembers = listUsersResult.users.filter((userRecord) => !userRecord.customClaims.member);
+        for (const nonMember of nonMembers) {
+          await auth.deleteUser(nonMember.uid);
+          logger.info(`Deleted ${nonMember.uid} ${nonMember.email}`);
+        }
+
+        return response.sendStatus(200);
+      } catch (error) {
+        logger.error("Error while creating user", error, {
+          structuredData: true,
+        });
+        return response.sendStatus(500);
+      }
+    }
+  );

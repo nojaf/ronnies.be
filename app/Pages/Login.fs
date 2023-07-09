@@ -12,8 +12,6 @@ open Firebase
 open type Firebase.Auth.Exports
 open ReactRouterDom
 
-let auth : Auth.Auth = import "auth" "../../firebase.config.js"
-
 [<ReactComponent>]
 let LoginPage () =
     let email, setEmail =

@@ -2,6 +2,8 @@
 module Types
 
 open System
+open Fable.Core.JsInterop
+open Firebase
 
 /// Firebase uid
 type uid = string
@@ -21,3 +23,10 @@ type RonnyLocation =
     |}
 
 let Constants = {| Locations = "locations" |}
+
+let auth : Auth.Auth = import "auth" "./firebase.config.js"
+let storage : Storage.FirebaseStorage = import "storage" "./firebase.config.js"
+let firestore : FireStore.FireStore = import "firestore" "./firebase.config.js"
+
+let allRonniesQuery =
+    FireStore.Exports.query<RonnyLocation> (FireStore.Exports.collection (firestore, Constants.Locations))

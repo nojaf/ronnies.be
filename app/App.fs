@@ -16,8 +16,6 @@ open Iconify
 importSideEffects "./out/WebSocketClient.js"
 #endif
 
-let auth : Auth.Auth = import "auth" "../firebase.config.js"
-
 [<ReactComponent>]
 let LogoutComponent () =
     let navigate = useNavigate ()
@@ -78,13 +76,10 @@ let App () =
             ]
         ]
         Routes [
-            Route [
-                ReactRouterProp.Index true
-                ReactRouterProp.Element (main [] [ h1 [] [ str "Home" ] ])
-            ]
+            Route [ ReactRouterProp.Index true ; ReactRouterProp.Element (Home.HomePage ()) ]
             Route [
                 ReactRouterProp.Path "/overview"
-                ReactRouterProp.Element (main [] [ h1 [] [ str "Overview" ] ])
+                ReactRouterProp.Element (Overview.OverviewPage ())
             ]
             Route [
                 ReactRouterProp.Path "/add-location"

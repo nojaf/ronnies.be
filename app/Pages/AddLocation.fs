@@ -29,7 +29,7 @@ let LocationPicker
     (props :
         {|
             OnChange : LatLng -> LatLng -> unit
-            ExistingLocations : (string * LatLng) list
+            ExistingLocations : (string * LatLng) array
         |})
     =
     let geolocation = useGeolocation ()
@@ -77,9 +77,9 @@ let LocationPicker
 
     let existingRonnies =
         props.ExistingLocations
-        |> List.map (fun (name, (lat, lng)) ->
+        |> Array.map (fun (name, (lat, lng)) ->
             Marker [ MarkerLatitude lat ; MarkerLongitude lng ; MarkerKey name ] [
-                img [ Src "/images/r-black.png" ]
+                img [ Src "/images/r-black.png" ; HTMLAttr.Width 24 ; HTMLAttr.Height 24 ]
                 strong [] [ str name ]
             ]
         )
@@ -93,7 +93,7 @@ let LocationPicker
         ReactMapGLProp.Zoom viewport.zoom
         ReactMapGLProp.MapStyle "mapbox://styles/nojaf/ck0wtbppf0jal1cq72o8i8vm1"
     ] [
-        ofList existingRonnies
+        ofArray existingRonnies
         Marker [
             MarkerKey "ronny"
             MarkerLatitude ronnyLatitude
@@ -317,6 +317,7 @@ type Model =
         OtherUsers : string Set
         HidePhoto : bool
         Photo : string
+        ExistingLocations : RonnyLocation array
         CurrentState : State
     }
 
@@ -337,8 +338,21 @@ type Msg =
     | ToggleUser of uid : string
     | UpdatePhoto of string
     | HidePhoto
+    | ExistingLocationsLoaded of RonnyLocation array
 
 let init _ : Model * Cmd<Msg> =
+    let cmd =
+        Cmd.ofEffect (fun dispatch ->
+            Firestore.getDocs<RonnyLocation> allRonniesQuery
+            |> Promise.map (fun querySnapshot ->
+                querySnapshot.docs
+                |> Array.map (fun snapshot -> snapshot.data ())
+                |> Msg.ExistingLocationsLoaded
+                |> dispatch
+            )
+            |> Promise.start
+        )
+
     {
         UserId = ""
         Name = ""
@@ -355,15 +369,11 @@ let init _ : Model * Cmd<Msg> =
         Photo = ""
         // Loading the logged in user and the list of users
         CurrentState = State.Loading
+        ExistingLocations = Array.empty
     },
-    Cmd.none
+    cmd
 
 let isValidNumber (v : string) : bool = emitJsExpr v "!isNaN($0)"
-
-let storage : Storage.FirebaseStorage = import "storage" "../../firebase.config.js"
-
-let firestore : Firebase.FireStore.FireStore =
-    import "firestore" "../../firebase.config.js"
 
 let submitLocation (navigate : string -> unit) (model : Model) (dispatch : Msg -> unit) =
     let storagePromise =
@@ -489,6 +499,11 @@ let update (navigate : string -> unit) msg model =
             Cmd.none
     | UpdatePhoto base64String -> { model with Photo = base64String }, Cmd.none
     | HidePhoto -> { model with HidePhoto = true }, Cmd.none
+    | ExistingLocationsLoaded existingLocations ->
+        { model with
+            ExistingLocations = existingLocations
+        },
+        Cmd.none
 
 let mapToCurrencyItem (currencyCode, description) =
     option [ ClassName "" ; Key currencyCode ; Value currencyCode ; Title description ] [ str currencyCode ]
@@ -510,8 +525,6 @@ let distanceBetweenTwoPoints (latA, lngA) (latB, lngB) =
             |> (*) (60. * 1.1515 * 1.609344)
 
         dist
-
-let auth : Auth.Auth = import "auth" "../../firebase.config.js"
 
 [<ReactComponent>]
 let AddLocationPage () =
@@ -543,7 +556,6 @@ let AddLocationPage () =
 
                 if not (isNullOrUndefined webcamRef.current) then
                     let screenShot = webcamRef.current.getScreenshot ()
-                    Fable.Core.JS.console.log screenShot
                     dispatch (Msg.UpdatePhoto screenShot)
             , [| !!webcamRef ; dispatch |]
         )
@@ -656,7 +668,11 @@ let AddLocationPage () =
                         LocationPicker
                             {|
                                 OnChange = onLocationChanges
-                                ExistingLocations = []
+                                ExistingLocations =
+                                    model.ExistingLocations
+                                    |> Array.map (fun exisingLocation ->
+                                        exisingLocation.name, (exisingLocation.latitude, exisingLocation.longitude)
+                                    )
                             |}
                     ]
                     inputError model.Errors.Location
@@ -717,7 +733,7 @@ let AddLocationPage () =
 (*
     TODO:
         - [X] Take a picture?
-        - [ ] Submit to firebase
+        - [x] Submit to firebase
         - [ ] Handle error in promise
-        - [ ] Load other locations
+        - [X] Load other locations
 *)

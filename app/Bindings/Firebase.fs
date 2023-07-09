@@ -139,7 +139,8 @@ module rec FireStore =
     /// https://firebase.google.com/docs/reference/js/firestore_.querydocumentsnapshot.md#querydocumentsnapshot_class
     type QueryDocumentSnapshot<'T> =
         inherit DocumentSnapshot<'T>
-        abstract member data : ?options : obj -> 'T
+        abstract member data : unit -> 'T
+        abstract member data : options : obj -> 'T
 
     /// https://firebase.google.com/docs/reference/js/firestore_.querysnapshot
     type QuerySnapshot<'T> =
@@ -269,6 +270,10 @@ module rec FireStore =
         [<Import("updateDoc", "firebase/firestore")>]
         static member updateDoc<'T, 'V> (reference : DocumentReference<'T>, data : 'V) : Promise<unit> = jsNative
 
+        /// https://firebase.google.com/docs/reference/js/firestore_.md#getdocs
+        [<Import("getDocs", "firebase/firestore")>]
+        static member getDocs<'T> (query : Query<'T>) : Promise<QuerySnapshot<'T>> = jsNative
+
 module Storage =
     open Browser.Types
 
@@ -321,7 +326,13 @@ module Hooks =
     type Exports =
         /// https://github.com/andipaetzold/react-firehooks#useQuery
         [<Import("useQuery", "react-firehooks/firestore")>]
-        static member useQuery<'T> (query : Query<'T>, ?options : obj) : QuerySnapshot<'T> * bool * FirestoreError =
+        static member useQuery<'T>
+            (
+                query : Query<'T>,
+                ?options : obj
+            )
+            : QuerySnapshot<'T> option * bool * FirestoreError
+            =
             jsNative
 
         /// https://github.com/andipaetzold/react-firehooks#useDocumentData

@@ -17,8 +17,7 @@ firebase emulators:start --project=ronnies-210509
 ## Run application
 
 ```bash
-dotnet fsi build.fsx -p Watch
-exit
+dotnet fsi app/dev-server.fsx
 ```
 
 ## Format code
