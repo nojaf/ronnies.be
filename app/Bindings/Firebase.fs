@@ -317,6 +317,10 @@ module Storage =
         [<Import("uploadBytes", "firebase/storage")>]
         static member uploadBytes (ref : StorageReference, data : Blob) : Promise<UploadResult> = jsNative
 
+        /// https://firebase.google.com/docs/reference/js/storage#getdownloadurl
+        [<Import("getDownloadURL", "firebase/storage")>]
+        static member getDownloadURL (ref : StorageReference) : Promise<string> = jsNative
+
 /// https://github.com/andipaetzold/react-firehooks
 module Hooks =
     open FireStore

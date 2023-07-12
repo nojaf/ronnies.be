@@ -78,7 +78,7 @@ let LocationPicker
     let existingRonnies =
         props.ExistingLocations
         |> Array.map (fun (name, (lat, lng)) ->
-            Marker [ MarkerLatitude lat ; MarkerLongitude lng ; MarkerKey name ] [
+            Marker [ MarkerLatitude lat ; MarkerLongitude lng ; Key name ] [
                 img [ Src "/images/r-black.png" ; HTMLAttr.Width 24 ; HTMLAttr.Height 24 ]
                 strong [] [ str name ]
             ]
@@ -95,14 +95,14 @@ let LocationPicker
     ] [
         ofArray existingRonnies
         Marker [
-            MarkerKey "ronny"
+            Key "ronny"
             MarkerLatitude ronnyLatitude
             MarkerLongitude ronnyLongitude
             OffsetTop 0
             OffsetLeft 0
         ] [ img [ Src "/images/ronny.png" ; HTMLAttr.Width 24 ; HTMLAttr.Height 24 ] ]
         Marker [
-            MarkerKey "user"
+            Key "user"
             MarkerLatitude userLatitude
             MarkerLongitude userLongitude
             OffsetTop 0
@@ -409,11 +409,12 @@ let submitLocation (navigate : string -> unit) (model : Model) (dispatch : Msg -
                 userId = model.UserId
                 otherUserIds = Seq.toArray model.OtherUsers
                 photoName = emitJsExpr photoName "$0 ?? null"
+                remark = model.Remark
                 date = JS.Constructors.Date.Create ()
             |}
         )
         |> Promise.eitherEnd
-            (fun docRef -> navigate $"/{docRef.id}")
+            (fun docRef -> navigate $"/detail/{docRef.id}")
             (fun err ->
                 JS.console.error err
                 dispatch (Msg.SubmitFailed err.Message)
@@ -667,13 +668,14 @@ let AddLocationPage () =
             ] [
                 div [ yield! errorClass model.Errors.Name ] [
                     label [] [ str "Naam*" ]
-                    input [ DefaultValue model.Name ; updateOnChange UpdateName ]
+                    input [ Name "name" ; DefaultValue model.Name ; updateOnChange UpdateName ]
                     inputError model.Errors.Name
                 ]
                 div [ yield! errorClass model.Errors.Price ] [
                     label [] [ str "Prijs*" ]
                     div [ ClassName "price" ] [
                         input [
+                            Name "price"
                             Type "number"
                             Step "0.01"
                             DefaultValue model.Price
@@ -750,11 +752,3 @@ let AddLocationPage () =
                 pre [] [ str (Fable.Core.JS.JSON.stringify (model, space = 4)) ]
             ]
     ]
-
-(*
-    TODO:
-        - [X] Take a picture?
-        - [x] Submit to firebase
-        - [ ] Handle error in promise
-        - [X] Load other locations
-*)

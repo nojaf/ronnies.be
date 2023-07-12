@@ -58,7 +58,6 @@ let inline ReactMapGL (props : #IProp seq) (children : ReactElement seq) : React
     ofImport "default" "react-map-gl" allProps children
 
 type MarkerProp =
-    | [<CompiledName("key")>] MarkerKey of string
     | [<CompiledName("latitude")>] MarkerLatitude of float
     | [<CompiledName("longitude")>] MarkerLongitude of float
     | OffsetLeft of int
@@ -66,5 +65,5 @@ type MarkerProp =
 
     interface IProp
 
-let inline Marker (props : MarkerProp list) (children : ReactElement seq) : ReactElement =
+let inline Marker (props : IProp list) (children : ReactElement seq) : ReactElement =
     ofImport "Marker" "react-map-gl" props children

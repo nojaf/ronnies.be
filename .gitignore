@@ -482,3 +482,4 @@ $RECYCLE.BIN/
 .idea/
 app/out
 seed.fsx
+dist/

@@ -19,6 +19,7 @@ type RonnyLocation =
         userId : uid
         otherUserIds : uid array
         photoName : string option
+        remark : string
         date : DateTime
     |}
 

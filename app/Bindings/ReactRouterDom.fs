@@ -35,3 +35,5 @@ let inline NavLink (props : IProp seq) (children : ReactElement seq) =
     ofImport "NavLink" "react-router-dom" [| yield! props ; DOMAttr.Custom ("className", !!className) |] children
 
 let useNavigate () : string -> unit = import "useNavigate" "react-router-dom"
+
+let useParams<'T> () : 'T = import "useParams" "react-router-dom"
