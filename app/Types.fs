@@ -4,6 +4,7 @@ module Types
 open System
 open Fable.Core.JsInterop
 open Firebase
+open Firebase.FireStore
 
 /// Firebase uid
 type uid = string
@@ -20,7 +21,7 @@ type RonnyLocation =
         otherUserIds : uid array
         photoName : string option
         remark : string
-        date : DateTime
+        date : Timestamp
     |}
 
 let Constants = {| Locations = "locations" |}

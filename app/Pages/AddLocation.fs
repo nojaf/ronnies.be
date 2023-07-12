@@ -410,7 +410,7 @@ let submitLocation (navigate : string -> unit) (model : Model) (dispatch : Msg -
                 otherUserIds = Seq.toArray model.OtherUsers
                 photoName = emitJsExpr photoName "$0 ?? null"
                 remark = model.Remark
-                date = JS.Constructors.Date.Create ()
+                date = JS.Constructors.Date.Create () |> FireStore.TimestampStatic.fromDate
             |}
         )
         |> Promise.eitherEnd

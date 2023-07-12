@@ -604,3 +604,60 @@ label {
 #detail p:last-of-type {
     margin-bottom: 0;
 }
+
+#overview table {
+    margin-top: var(--unit-2);
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#overview table th {
+    text-align: left;
+}
+
+#overview table th, #overview table td {
+    display: table-cell;
+    border-top: 1px solid var(--grey);
+    border-bottom: 1px solid var(--grey);
+    box-sizing: border-box;
+    border-collapse: collapse;
+}
+
+#overview table th {
+    color: var(--primary);
+    cursor: pointer;
+}
+
+#overview table th:active {
+    color: var(--dark);
+    font-weight: bold;
+}
+
+#overview table th:hover {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+#overview table th, #overview table td {
+    padding: var(--unit-2);
+}
+
+#overview table tbody tr:nth-child(2n - 1) {
+    background-color:var(--grey);
+}
+
+#overview table a {
+    color:var(--primary);
+    text-decoration: none;
+}
+
+#overview table a:hover {
+    text-decoration: underline;
+}
+
+@media screen and (min-width: 960px) {
+    #overview {
+        max-width: 960px;
+        margin: auto;
+    }
+}

@@ -102,6 +102,16 @@ module rec FireStore =
         abstract app : App.FirebaseApp
         abstract ``type`` : string
 
+    /// https://firebase.google.com/docs/reference/js/firestore_.timestamp
+    type Timestamp =
+        abstract seconds : int
+        abstract toDate : unit -> DateTime
+
+    [<Import("Timestamp", "firebase/firestore")>]
+    type TimestampStatic =
+        /// https://firebase.google.com/docs/reference/js/firestore_.timestamp.md#timestampfromdate
+        static member fromDate (date : DateTime) : Timestamp = jsNative
+
     /// https://firebase.google.com/docs/reference/js/firestore_.query.md#query_class
     type Query<'T> =
         abstract member converter : obj

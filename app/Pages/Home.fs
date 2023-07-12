@@ -132,7 +132,7 @@ let HomePage () =
                 elif detailLocation.currency = "USD" then
                     $"Prijs ${detailLocation.price}"
                 else
-                    $"Prijs ${detailLocation.price} {detailLocation.currency}"
+                    $"Prijs {detailLocation.price} {detailLocation.currency}"
 
             div [ Id "detail" ] [
                 div [] [
