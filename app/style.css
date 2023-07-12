@@ -221,6 +221,9 @@ input.error {
     }
 }
 
+/* helper */
+.center { text-align: center; }
+
 nav {
     background-color: var(--primary);
     color: white;
@@ -531,6 +534,15 @@ label {
     overflow-x: auto;
 }
 
+#submit-failed {
+    margin-top: var(--unit-6);
+}
+
+#submit-failed code pre { 
+    color: var(--danger-border);
+    background-color: var(--grey);
+    padding: var(--unit-2);
+}
 
 @media screen and (min-width: 600px) {
     #add-location {

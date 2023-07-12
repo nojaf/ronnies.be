@@ -301,6 +301,7 @@ type State =
     | Enter
     | UnAuthorized
     | Submit
+    | SubmitFailed
 
 type Model =
     {
@@ -318,6 +319,7 @@ type Model =
         HidePhoto : bool
         Photo : string
         ExistingLocations : RonnyLocation array
+        SubmitError : string
         CurrentState : State
     }
 
@@ -339,6 +341,7 @@ type Msg =
     | UpdatePhoto of string
     | HidePhoto
     | ExistingLocationsLoaded of RonnyLocation array
+    | SubmitFailed of error : string
 
 let init _ : Model * Cmd<Msg> =
     let cmd =
@@ -367,6 +370,7 @@ let init _ : Model * Cmd<Msg> =
         OtherUsers = Set.empty
         HidePhoto = false
         Photo = ""
+        SubmitError = ""
         // Loading the logged in user and the list of users
         CurrentState = State.Loading
         ExistingLocations = Array.empty
@@ -408,7 +412,12 @@ let submitLocation (navigate : string -> unit) (model : Model) (dispatch : Msg -
                 date = JS.Constructors.Date.Create ()
             |}
         )
-        |> Promise.eitherEnd (fun docRef -> navigate $"/{docRef.id}") (fun err -> JS.console.error err)
+        |> Promise.eitherEnd
+            (fun docRef -> navigate $"/{docRef.id}")
+            (fun err ->
+                JS.console.error err
+                dispatch (Msg.SubmitFailed err.Message)
+            )
 
     storagePromise |> Promise.eitherEnd addLocation (fun err -> addLocation None)
 
@@ -502,6 +511,12 @@ let update (navigate : string -> unit) msg model =
     | ExistingLocationsLoaded existingLocations ->
         { model with
             ExistingLocations = existingLocations
+        },
+        Cmd.none
+    | SubmitFailed error ->
+        { model with
+            CurrentState = State.SubmitFailed
+            SubmitError = error
         },
         Cmd.none
 
@@ -631,11 +646,17 @@ let AddLocationPage () =
         h1 [] [ str "E nieuwen toevoegen" ]
         match model.CurrentState with
         | State.Loading -> Loader ()
-        | State.Submit -> fragment [] [ Loader () ; str "Ant opsloan..." ]
+        | State.Submit -> fragment [] [ Loader () ; p [ ClassName "center" ] [ str "Ant opsloan..." ] ]
         | State.UnAuthorized ->
             span [] [
                 str "Sorry matje, je bent geen patron of niet "
                 Link [ To "/login" ] [ str "ingelogd" ]
+            ]
+        | State.SubmitFailed ->
+            div [ Id "submit-failed" ] [
+                h2 [] [ str "Butter, zwoar mislukt zeg 😸!" ]
+                code [] [ pre [] [ str model.SubmitError ] ]
+                p [] [ str "Je kan later nog eens proberen, maar rekent er niet op 😅" ]
             ]
         | State.Enter ->
             form [
