@@ -257,6 +257,9 @@ let inline ofOption (o : ReactElement option) : ReactElement =
     | Some o -> o
     | None -> null
 
+/// Cast an int to a React element (erased in runtime)
+let inline ofInt (i : int) : ReactElement = unbox i
+
 type Browser.Types.Event with
 
     /// Access the value from target

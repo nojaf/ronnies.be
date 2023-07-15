@@ -7,6 +7,7 @@ open React
 open React.Props
 open Firebase
 open ReactRouterDom
+open Components
 
 let formatDate (d : DateTime) : string =
     emitJsExpr
@@ -85,4 +86,9 @@ let OverviewPage () =
             ]
         )
 
-    main [ Id "overview" ] [ h1 [] [ str "Overzicht" ] ; ofOption overviewTable ]
+    main [ Id "overview" ] [
+        h1 [] [ str "Overzicht" ]
+        match overviewTable with
+        | None -> Loader ()
+        | Some overviewTable -> overviewTable
+    ]

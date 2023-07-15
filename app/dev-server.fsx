@@ -86,8 +86,15 @@ let args =
 match args with
 | [ "help" ]
 | [ "--help" ] ->
-    printfn "Available commands: build, preview, watch"
+    printfn "Available commands: build, preview, watch, fable"
     exit 0
+| [ "fable" ] ->
+    Cli
+        .Wrap("dotnet")
+        .WithArguments($"fable {fableArgs}  -e .js")
+        .WithWorkingDirectory(__SOURCE_DIRECTORY__)
+        .ExecuteAsync()
+        .Task.Wait ()
 | [ "build" ] -> build ()
 | [ "preview" ] ->
     build ()

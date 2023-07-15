@@ -23,6 +23,7 @@
     <Compile Include="Pages\Home.fs" />
     <Compile Include="Pages\AddLocation.fsi" />
     <Compile Include="Pages\AddLocation.fs" />
+    <Compile Include="Pages\Leaderboard.fs" />
     <Compile Include="App.fs" />
   </ItemGroup>
   <ItemGroup>

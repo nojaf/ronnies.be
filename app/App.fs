@@ -62,6 +62,7 @@ let App () =
                 | None -> yield mkNavLink "/login" "Inloggen"
                 | Some user ->
                     yield mkNavLink "/add-location" "E nieuwen toevoegen"
+                    yield mkNavLink "/leaderboard" "Klassement"
                     yield li [ OnClick (fun _ -> setIsMenuOpen false) ] [ LogoutComponent () ]
 
                     yield
@@ -70,7 +71,6 @@ let App () =
                             str user.displayName
                         ]
 
-            // li [] [ NavLink "add-location" [ str "Klassement" ] ]
             // li [] [ NavLink "add-location" [ str "Manifesto" ] ]
             // li [] [ NavLink "add-location" [ str "Bearer" ] ]
             ]
@@ -84,6 +84,10 @@ let App () =
             Route [
                 ReactRouterProp.Path "/add-location"
                 ReactRouterProp.Element (AddLocation.AddLocationPage ())
+            ]
+            Route [
+                ReactRouterProp.Path "/leaderboard"
+                ReactRouterProp.Element (Leaderboard.LeaderboardPage ())
             ]
             Route [ ReactRouterProp.Path "/login" ; ReactRouterProp.Element (Login.LoginPage ()) ]
             Route [ ReactRouterProp.Path "*" ; ReactRouterProp.Element (Navigate [ To "/" ]) ]
