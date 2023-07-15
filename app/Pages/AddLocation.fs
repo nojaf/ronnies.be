@@ -749,6 +749,7 @@ let AddLocationPage () =
                     textarea [ DefaultValue model.Remark ; updateOnChange UpdateRemark ; Rows 2 ] []
                 ]
                 input [ Type "submit" ; Class "primary" ; Value "Save!" ]
-                pre [] [ str (Fable.Core.JS.JSON.stringify (model, space = 4)) ]
+                if Browser.Dom.window.location.host.StartsWith("localhost") then
+                    pre [] [ str (Fable.Core.JS.JSON.stringify (model, space = 4)) ]
             ]
     ]

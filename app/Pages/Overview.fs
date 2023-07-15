@@ -21,7 +21,9 @@ type SortOrder =
 [<ReactComponent>]
 let OverviewPage () =
     let querySnapshot, _, _ = Hooks.Exports.useQuery allRonniesQuery
-    let sortOrder, setSortOrder = React.useState<SortOrder> (SortOrder.ByPrice)
+
+    let sortOrder, setSortOrder =
+        React.useState<SortOrder * bool> (SortOrder.ByDate, false)
 
     let overviewTable =
         querySnapshot
@@ -30,11 +32,28 @@ let OverviewPage () =
                 querySnapshot.docs
                 |> Array.map (fun snapshot -> snapshot.id, snapshot.data ())
                 |> fun locations ->
-                    match sortOrder with
-                    | SortOrder.ByPrice -> Array.sortBy (fun (_, location : RonnyLocation) -> location.price) locations
+                    match fst sortOrder with
+                    | SortOrder.ByPrice ->
+                        (if snd sortOrder then
+                             Array.sortBy
+                         else
+                             Array.sortByDescending)
+                            (fun (_, location : RonnyLocation) -> location.price)
+                            locations
                     | SortOrder.ByDate ->
-                        Array.sortBy (fun (_, location : RonnyLocation) -> location.date.toDate ()) locations
-                    | _ -> Array.sortBy (fun (_, location : RonnyLocation) -> location.name) locations
+                        (if snd sortOrder then
+                             Array.sortBy
+                         else
+                             Array.sortByDescending)
+                            (fun (_, location : RonnyLocation) -> location.date.toDate ())
+                            locations
+                    | _ ->
+                        (if snd sortOrder then
+                             Array.sortBy
+                         else
+                             Array.sortByDescending)
+                            (fun (_, location : RonnyLocation) -> location.name)
+                            locations
                 |> Array.map (fun (id, location) ->
                     let priceText =
                         if location.currency = "EUR" then $"€{location.price}"
@@ -48,12 +67,18 @@ let OverviewPage () =
                     ]
                 )
 
+            let onHeaderClick (nextSortOrder : SortOrder) =
+                if nextSortOrder = fst sortOrder then
+                    fun _ -> setSortOrder (nextSortOrder, not (snd sortOrder))
+                else
+                    fun _ -> setSortOrder (nextSortOrder, true)
+
             table [] [
                 thead [] [
                     tr [] [
-                        th [ OnClick (fun _ -> setSortOrder SortOrder.ByName) ] [ str "Naam" ]
-                        th [ OnClick (fun _ -> setSortOrder SortOrder.ByPrice) ] [ str "Prijs" ]
-                        th [ OnClick (fun _ -> setSortOrder SortOrder.ByDate) ] [ str "Datum toegevoegd" ]
+                        th [ OnClick (onHeaderClick SortOrder.ByName) ] [ str "Naam" ]
+                        th [ OnClick (onHeaderClick SortOrder.ByPrice) ] [ str "Prijs" ]
+                        th [ OnClick (onHeaderClick SortOrder.ByDate) ] [ str "Datum toegevoegd" ]
                     ]
                 ]
                 tbody [] [ ofArray rows ]
