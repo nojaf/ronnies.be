@@ -36,7 +36,7 @@ let RulesPage () =
             yield! faqItem "En meugen winkels?" "Nope, enkel permanente cafes/restaurants"
             yield!
                 faqItem
-                    "Oewe, zim op nieuws begun mss?"
+                    "Oewe, zim op nieuw begun mss?"
                     "Jom, seizoen twee gom zeggen. Tis behoorlijk lik de vorige keer. Mo nu kuj wel met meerderen een nieuwe plekke toevoegen."
             yield!
                 faqItem

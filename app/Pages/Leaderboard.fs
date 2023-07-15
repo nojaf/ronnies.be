@@ -1,6 +1,5 @@
 module Leaderboard
 
-open System
 open Fable.Core.JsInterop
 open Fable.Core
 open Browser
@@ -31,7 +30,7 @@ let LeaderboardPage () =
         fun () ->
             match querySnapshot, user with
             | Some querySnapshot, Some user ->
-                API.getUsers user.uid
+                API.getUsers ()
                 |> Promise.map (fun users ->
                     let userMap =
                         [|

@@ -3,6 +3,7 @@ import {initializeApp} from "firebase/app";
 import {getAuth, connectAuthEmulator} from 'firebase/auth';
 import {getFirestore, connectFirestoreEmulator} from 'firebase/firestore';
 import {getStorage, connectStorageEmulator } from 'firebase/storage';
+import { getFunctions, connectFunctionsEmulator } from 'firebase/functions';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -37,4 +38,7 @@ if (isLocalHost) {
     connectStorageEmulator(storage, "localhost", 7007);
 }
 
-export const functionsBase = isLocalHost ? 'http://127.0.0.1:5001/ronnies-210509/europe-west1' : 'TODO';
+export const functions = getFunctions(app, "europe-west1");
+if (isLocalHost) {
+    connectFunctionsEmulator(functions, "localhost", 5001);
+}

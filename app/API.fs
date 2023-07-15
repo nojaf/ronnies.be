@@ -2,12 +2,11 @@
 module API
 
 open Fable.Core
-open Fable.Core.JsInterop
-
-let private functionsBase = import "functionsBase" "../firebase.config.js"
+open type Firebase.Functions.Exports
 
 type User = {| displayName : string ; uid : uid |}
 
-let getUsers (uid : string) : JS.Promise<User array> =
-    Fetch.fetchUnsafe $"%s{functionsBase}/users/%s{uid}" []
-    |> Promise.bind (fun res -> res.json<User array> ())
+let private users = httpsCallable<unit, User array> (functions, "users")
+
+let getUsers () : JS.Promise<User array> =
+    users () |> Promise.map (fun result -> result.data)

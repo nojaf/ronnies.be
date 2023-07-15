@@ -1,6 +1,6 @@
 const { initializeApp } = require("firebase-admin/app");
 
-const { onRequest } = require("firebase-functions/v2/https");
+const { onRequest, onCall, HttpsError } = require("firebase-functions/v2/https");
 const logger = require("firebase-functions/logger");
 const { getAuth } = require("firebase-admin/auth");
 
@@ -93,15 +93,16 @@ exports.sudo = onRequest(
   }
 );
 
-exports.users = onRequest(
+exports.users = onCall(
   { region: "europe-west1", cors: allowedCors },
-  async (request, response) => {
+  async (request) => {
     try {
-      if (request.method !== "GET") {
-        return response.status(400).send("Bad request");
+      const isMember = request && request.auth && request.auth.token && request.auth.token.member;
+      if (!isMember) {
+        throw new HttpsError("Unauthorized access");
       }
 
-      const currentId = request.path && request.path.replace("/", "");
+      const currentId = request.auth.uid;
       const listUsersResult = await auth.listUsers(1000);
       const users = listUsersResult.users
         .filter((userRecord) => userRecord.uid !== currentId && userRecord.customClaims.member)
@@ -109,12 +110,12 @@ exports.users = onRequest(
           displayName: userRecord.displayName,
           uid: userRecord.uid,
         }));
-      return response.status(200).send(users);
+      return users;
     } catch (error) {
       logger.error("Error while creating user", error, {
         structuredData: true,
       });
-      return response.sendStatus(500);
+      return [];
     }
   }
 );

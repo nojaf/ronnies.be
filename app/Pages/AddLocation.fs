@@ -11,7 +11,6 @@ open React
 open React.Props
 open ReactRouterDom
 open Firebase
-open type Firebase.Auth.Exports
 open type Firebase.Hooks.Exports
 
 type Storage = Firebase.Storage.Exports
@@ -424,7 +423,7 @@ let submitLocation (navigate : string -> unit) (model : Model) (dispatch : Msg -
 
 let update (navigate : string -> unit) msg model =
     match msg with
-    | UpdateUserId uid -> { model with UserId = uid }, Cmd.OfPromise.perform API.getUsers uid Msg.UsersLoaded
+    | UpdateUserId uid -> { model with UserId = uid }, Cmd.OfPromise.perform API.getUsers () Msg.UsersLoaded
     | IsUnauthorized ->
         { model with
             CurrentState = State.UnAuthorized

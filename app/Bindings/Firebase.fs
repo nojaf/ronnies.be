@@ -331,6 +331,38 @@ module Storage =
         [<Import("getDownloadURL", "firebase/storage")>]
         static member getDownloadURL (ref : StorageReference) : Promise<string> = jsNative
 
+module Functions =
+    /// https://firebase.google.com/docs/reference/js/functions.functions
+    type Functions =
+        abstract app : App.FirebaseApp
+        abstract customDomain : string option
+        abstract region : string
+
+    /// https://firebase.google.com/docs/reference/js/functions.httpscallableoptions.md#httpscallableoptions_interface
+    type HttpsCallableOptions =
+        abstract limitedUseAppCheckTokens : bool
+        abstract timeout : int
+
+    /// https://firebase.google.com/docs/reference/js/functions.httpscallableresult
+    type HttpsCallableResult<'T> =
+        abstract data : 'T
+
+    /// https://firebase.google.com/docs/reference/js/functions.md#httpscallable_2
+    type HttpsCallable<'TRequestData, 'TResponseData> = 'TRequestData -> Promise<HttpsCallableResult<'TResponseData>>
+
+    type Exports =
+        /// https://firebase.google.com/docs/reference/js/functions.md#httpscallable
+        [<Import("httpsCallable", "firebase/functions")>]
+        static member httpsCallable<'TRequestData, 'TResponseData>
+            (
+                functionsInstance : Functions,
+                name : string,
+                ?options : HttpsCallableOptions
+            )
+            : HttpsCallable<'TRequestData, 'TResponseData>
+            =
+            jsNative
+
 /// https://github.com/andipaetzold/react-firehooks
 module Hooks =
     open FireStore
