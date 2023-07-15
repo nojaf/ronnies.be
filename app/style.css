@@ -671,3 +671,22 @@ table a:hover {
     margin-right: var(--unit);
     color: #F6CF57;
 }
+
+#manifesto h2 {
+    margin-top: var(--unit-4);
+    font-size: calc( 1.75 * var(--unit-2));
+}
+
+#manifesto ol {
+    list-style: upper-roman;
+}
+
+
+dt {
+    font-weight: bold;
+    margin-top: var(--unit-2);
+}
+
+dd {
+    margin: 0;
+}
