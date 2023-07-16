@@ -396,8 +396,7 @@ let submitLocation (navigate : string -> unit) (model : Model) (dispatch : Msg -
     let addLocation (photoName : string option) : unit =
         let locations = Firestore.collection (firestore, Constants.Locations)
 
-        Firestore.addDoc<RonnyLocation> (
-            locations,
+        let locationData =
             {|
                 name = model.Name
                 price = JS.parseFloat model.Price
@@ -411,7 +410,8 @@ let submitLocation (navigate : string -> unit) (model : Model) (dispatch : Msg -
                 remark = model.Remark
                 date = JS.Constructors.Date.Create () |> FireStore.TimestampStatic.fromDate
             |}
-        )
+
+        Firestore.addDoc<RonnyLocation> (locations, locationData)
         |> Promise.eitherEnd
             (fun docRef -> navigate $"/detail/{docRef.id}")
             (fun err ->
@@ -567,8 +567,6 @@ let AddLocationPage () =
     let capture =
         React.useCallback (
             fun () ->
-                printfn "callback"
-
                 if not (isNullOrUndefined webcamRef.current) then
                     let screenShot = webcamRef.current.getScreenshot ()
                     dispatch (Msg.UpdatePhoto screenShot)

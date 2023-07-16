@@ -284,6 +284,10 @@ module rec FireStore =
         [<Import("getDocs", "firebase/firestore")>]
         static member getDocs<'T> (query : Query<'T>) : Promise<QuerySnapshot<'T>> = jsNative
 
+        /// https://firebase.google.com/docs/reference/js/firestore_#getdoc
+        [<Import("getDoc", "firebase/firestore")>]
+        static member getDoc<'T> (reference : DocumentReference<'T>) : Promise<DocumentSnapshot<'T>> = jsNative
+
 module Storage =
     open Browser.Types
 
@@ -362,6 +366,23 @@ module Functions =
             : HttpsCallable<'TRequestData, 'TResponseData>
             =
             jsNative
+
+module Messaging =
+    /// https://firebase.google.com/docs/reference/js/messaging_.messaging.md#messaging_interface
+    type Messaging =
+        abstract app : App.FirebaseApp
+
+    /// https://firebase.google.com/docs/reference/js/messaging_.gettokenoptions
+    type GetTokenOptions =
+        {|
+            vapidKey : string
+            serviceWorkerRegistration : Browser.Types.ServiceWorkerRegistration
+        |}
+
+    type Exports =
+        /// https://firebase.google.com/docs/reference/js/messaging_.md#gettoken
+        [<Import("getToken", "firebase/messaging")>]
+        static member getToken (messaging : Messaging, ?options : GetTokenOptions) : Promise<string option> = jsNative
 
 /// https://github.com/andipaetzold/react-firehooks
 module Hooks =

@@ -128,9 +128,11 @@ let HomePage () =
 
             let priceText =
                 if detailLocation.currency = "EUR" then
-                    $"Prijs €{detailLocation.price}"
+                    $"Prijs €%.2f{detailLocation.price}"
                 elif detailLocation.currency = "USD" then
-                    $"Prijs ${detailLocation.price}"
+                    $"Prijs $%.2f{detailLocation.price}"
+                elif detailLocation.currency = "GBP" then
+                    $"Prijs £%.2f{detailLocation.price}"
                 else
                     $"Prijs {detailLocation.price} {detailLocation.currency}"
 

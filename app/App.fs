@@ -41,8 +41,14 @@ let App () =
 
     let menuClass = (if isMenuOpen then "show" else "")
 
-    let mkNavLink too text =
-        li [ OnClick (fun _ -> setIsMenuOpen false) ] [ NavLink [ To too ] [ str text ] ]
+    let mkNavLinkAux too id content =
+        li [
+            OnClick (fun _ -> setIsMenuOpen false)
+            if not (System.String.IsNullOrWhiteSpace id) then
+                Id id
+        ] [ NavLink [ To too ] [ content ] ]
+
+    let mkNavLink too text = mkNavLinkAux too "" (str text)
 
     BrowserRouter [
         nav [] [
@@ -67,10 +73,13 @@ let App () =
                     yield li [ OnClick (fun _ -> setIsMenuOpen false) ] [ LogoutComponent () ]
 
                     yield
-                        li [ Id "user" ; OnClick (fun _ -> setIsMenuOpen false) ] [
-                            Icon [ IconProp.Icon "clarity:user-line" ; IconProp.Height 24 ; IconProp.Width 24 ]
-                            str user.displayName
-                        ]
+                        mkNavLinkAux
+                            "/settings"
+                            "user"
+                            (fragment [] [
+                                Icon [ IconProp.Icon "clarity:user-line" ; IconProp.Height 24 ; IconProp.Width 24 ]
+                                str user.displayName
+                            ])
             ]
         ]
         Routes [
@@ -89,6 +98,10 @@ let App () =
             ]
             Route [ ReactRouterProp.Path "/rules" ; ReactRouterProp.Element (Rules.RulesPage ()) ]
             Route [ ReactRouterProp.Path "/login" ; ReactRouterProp.Element (Login.LoginPage ()) ]
+            Route [
+                ReactRouterProp.Path "/settings"
+                ReactRouterProp.Element (Settings.SettingsPage ())
+            ]
             Route [ ReactRouterProp.Path "*" ; ReactRouterProp.Element (Navigate [ To "/" ]) ]
             Route [
                 ReactRouterProp.Path "/detail/:id"

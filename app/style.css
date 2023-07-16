@@ -179,6 +179,14 @@ input.error {
     color: var(--primary);
 }
 
+.toggle button.active:disabled {
+    background-color: #fafbfc;
+    border-color: #1b1f2326;
+    color: #959da5;
+    cursor: default;
+    outline: none;
+}
+
 .toggle button:first-child {
     border-right: none;
 }
@@ -315,20 +323,18 @@ nav ul li a {
     text-decoration: none;
 }
 
-nav ul #user {
+nav ul #user a {
     display: flex;
     align-items: center;
-    cursor: initial;
-    background-color: var(--menu);
     padding: var(--unit);
     font-weight: 500;
 }
 
-nav ul li #user:hover {
+nav ul #user a:hover {
     text-decoration: none;
 }
 
-nav ul #user svg {
+nav ul #user a svg {
     margin-right: var(--unit);
 }
 
@@ -689,4 +695,8 @@ dt {
 
 dd {
     margin: 0;
+}
+
+#settings h2 {
+    margin: var(--unit-4) 0;
 }

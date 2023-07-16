@@ -42,7 +42,7 @@ function syncIndexDB(isLocalhost) {
 
 const ronnyInMorse = ".-. --- -. -. -.--"
   .split("")
-  .map((c) => (c === "." ? 100 : 200));
+  .map((c) => (c === "." ? 100 : 250));
 
 self.addEventListener("push", (evt) => {
   /** @typedef {Object} json

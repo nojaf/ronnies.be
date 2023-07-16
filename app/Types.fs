@@ -31,5 +31,8 @@ let storage : Storage.FirebaseStorage = import "storage" "./firebase.config.js"
 let firestore : FireStore.FireStore = import "firestore" "./firebase.config.js"
 let functions : Functions.Functions = import "functions" "./firebase.config.js"
 
+let messaging : unit -> Fable.Core.JS.Promise<Messaging.Messaging> =
+    import "messaging" "./firebase.config.js"
+
 let allRonniesQuery =
     FireStore.Exports.query<RonnyLocation> (FireStore.Exports.collection (firestore, Constants.Locations))

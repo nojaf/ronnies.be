@@ -4,6 +4,7 @@ import {getAuth, connectAuthEmulator} from 'firebase/auth';
 import {getFirestore, connectFirestoreEmulator} from 'firebase/firestore';
 import {getStorage, connectStorageEmulator } from 'firebase/storage';
 import { getFunctions, connectFunctionsEmulator } from 'firebase/functions';
+import { getMessaging, isSupported } from 'firebase/messaging';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -42,3 +43,9 @@ export const functions = getFunctions(app, "europe-west1");
 if (isLocalHost) {
     connectFunctionsEmulator(functions, "localhost", 5001);
 }
+
+export function messaging () {
+    return isSupported().then(() => {
+        return getMessaging(app);
+    })
+} 

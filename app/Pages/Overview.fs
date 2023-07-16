@@ -57,8 +57,9 @@ let OverviewPage () =
                             locations
                 |> Array.map (fun (id, location) ->
                     let priceText =
-                        if location.currency = "EUR" then $"€{location.price}"
-                        elif location.currency = "USD" then $"${location.price}"
+                        if location.currency = "EUR" then $"€%.2f{location.price}"
+                        elif location.currency = "USD" then $"$%.2f{location.price}"
+                        elif location.currency = "GBP" then $"£%.2f{location.price}"
                         else $"{location.price} {location.currency}"
 
                     tr [ Key id ] [
