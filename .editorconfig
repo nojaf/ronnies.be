@@ -17,6 +17,7 @@ fsharp_bar_before_discriminated_union_declaration = true
 fsharp_keep_max_number_of_blank_lines = 1
 fsharp_experimental_elmish = true
 fsharp_multiline_bracket_style = aligned
+fsharp_keep_max_number_of_blank_lines = 1
 
 [build.fsx]
 fsharp_blank_lines_around_nested_multiline_expressions = false

@@ -25,6 +25,7 @@
     <Compile Include="Pages\AddLocation.fs" />
     <Compile Include="Pages\Leaderboard.fs" />
     <Compile Include="Pages\Rules.fs" />
+    <Compile Include="Pages\Settings.fsi" />
     <Compile Include="Pages\Settings.fs" />
     <Compile Include="App.fs" />
   </ItemGroup>
