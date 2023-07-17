@@ -57,7 +57,13 @@ let getFcmToken () =
             )
     }
 
-let rec requestNotificationsPermissions (uid : uid) : JS.Promise<bool> =
+[<RequireQualifiedAccess>]
+type EnableNotifications =
+    | Unknown
+    | Yes
+    | No
+
+let rec requestNotificationsPermissions (uid : uid) : JS.Promise<EnableNotifications> =
     promise {
         let! permission = emitJsExpr<JS.Promise<string>> () "Notification.requestPermission()"
 
@@ -65,10 +71,10 @@ let rec requestNotificationsPermissions (uid : uid) : JS.Promise<bool> =
             return! saveMessagineDeviceToken uid
         else
             console.log $"Unable to get permission to notify, got %s{permission}"
-            return false
+            return EnableNotifications.No
     }
 
-and saveMessagineDeviceToken (uid : uid) : JS.Promise<bool> =
+and saveMessagineDeviceToken (uid : uid) : JS.Promise<EnableNotifications> =
     try
         promise {
             let! fcmToken = getFcmToken ()
@@ -86,21 +92,23 @@ and saveMessagineDeviceToken (uid : uid) : JS.Promise<bool> =
                         [| yield fcmToken ; yield! data.tokens |] |> Array.distinct
 
                     do! updateDoc (tokenRef, {| tokens = tokens |})
-                    return true
+                    return EnableNotifications.Yes
                 else
                     do! setDoc (tokenRef, {| tokens = [| fcmToken |] |})
-                    return true
+                    return EnableNotifications.Yes
 
         }
     with ex ->
         console.error ("Unable to get messaging token.", ex)
-        Promise.lift false
+        Promise.lift EnableNotifications.No
 
 [<ReactComponent>]
 let SettingsPage () =
     let user, isUserLoading, _ = useAuthState auth
-    let tokenResult, isTokenResultLoading, _ = useAuthIdTokenResult auth
-    let value, setValue = React.useState<bool> false
+    let tokenResult, _, _ = useAuthIdTokenResult auth
+
+    let value, setValue =
+        React.useState<EnableNotifications> EnableNotifications.Unknown
 
     let onChange (v : bool) =
         match user with
@@ -126,7 +134,7 @@ let SettingsPage () =
                     let tokenData = docSnapshot.data ()
                     let tokens = tokenData.tokens |> Array.filter (fun t -> t <> fcmToken)
                     do! updateDoc (docSnapshot.ref, {| tokens = tokens |})
-                    setValue false
+                    setValue EnableNotifications.No
 
             }
             |> Promise.start
@@ -150,7 +158,12 @@ let SettingsPage () =
                             | Some fcmToken ->
 
                             let tokenData = tokenSnapshot.data ()
-                            Array.contains fcmToken tokenData.tokens |> setValue
+                            let hasToken = Array.contains fcmToken tokenData.tokens
+
+                            if hasToken then
+                                setValue EnableNotifications.Yes
+                            else
+                                setValue EnableNotifications.No
                     }
                     |> Promise.start
 
@@ -162,7 +175,7 @@ let SettingsPage () =
 
     main [ Id "settings" ] [
         h1 [] [ str "Settings" ]
-        if browserSupportsNotifications then
+        if browserSupportsNotifications && value <> EnableNotifications.Unknown then
             h2 [] [ str "Notificaties?" ]
 
             if not browserSupportsNotifications then
@@ -173,7 +186,7 @@ let SettingsPage () =
                     TrueLabel = "Aan"
                     FalseLabel = "Uit"
                     OnChange = onChange
-                    Value = value
+                    Value = value = EnableNotifications.Yes
                     Disabled = false
                 |}
     ]
