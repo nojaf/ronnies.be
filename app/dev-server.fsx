@@ -66,7 +66,7 @@ let build () =
 
     let indexHtmlContent =
         (File.ReadAllText indexHtml)
-            .Replace ("http://localhost:9004", "https://esmh.sh")
+            .Replace ("http://localhost:9004", "https://esm.sh")
 
     File.WriteAllText (indexHtml, indexHtmlContent)
 
