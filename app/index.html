@@ -12,28 +12,37 @@
 </head>
 <body>
 <noscript>You need to enable JavaScript to run this app.</noscript>
+<script>
+    if (navigator && navigator.serviceWorker && navigator.serviceWorker.register){
+        const originalRegister = navigator.serviceWorker.register;
+        navigator.serviceWorker.register = function (scriptURL, options) {
+            options.type = "module";
+            return originalRegister.call(navigator.serviceWorker, scriptURL, options);
+        };
+    }
+</script>
 <script type="importmap">
     {
         "imports": {
-            "fable-library/": "http://localhost:9004/fable-library@1.1.1/",
-            "react": "http://localhost:9004/react@18.2.0",
-            "react-dom": "http://localhost:9004/react-dom@18.2.0",
-            "usehooks-ts": "http://localhost:9004/usehooks-ts@2.9.1?exports=useCopyToClipboard,useMediaQuery",
-            "firebase": "http://localhost:9004/firebase@10.0.0",
-            "firebase/app": "http://localhost:9004/firebase@10.0.0/app",
-            "firebase/auth": "http://localhost:9004/firebase@10.0.0/auth",
-            "firebase/firestore": "http://localhost:9004/firebase@10.0.0/firestore",
-            "firebase/storage": "http://localhost:9004/firebase@10.0.0/storage",
-            "firebase/functions": "http://localhost:9004/firebase@10.0.0/functions",
-            "firebase/messaging": "http://localhost:9004/firebase@10.0.0/messaging",
-            "react-firehooks/auth": "http://localhost:9004/react-firehooks@2.5.0/auth",
-            "react-firehooks/firestore": "http://localhost:9004/react-firehooks@2.5.0/firestore",
-            "@iconify/react": "http://localhost:9004/@iconify/react@4.1.1",
-            "react-router-dom": "http://localhost:9004/react-router-dom@6.14.1",
-            "use-sync-external-store/shim": "http://localhost:9004/use-sync-external-store@1.2.0/shim",
-            "react-map-gl": "http://localhost:9004/react-map-gl@7.1.1",
-            "react-use": "http://localhost:9004/react-use@17.4.0?exports=useGeolocation",
-            "react-webcam": "http://localhost:9004/react-webcam@7.1.1"
+            "fable-library/": "https://esm.sh/fable-library@1.1.1/",
+            "react": "https://esm.sh/react@18.2.0",
+            "react-dom": "https://esm.sh/react-dom@18.2.0",
+            "usehooks-ts": "https://esm.sh/usehooks-ts@2.9.1?exports=useCopyToClipboard,useMediaQuery",
+            "firebase": "https://esm.sh/firebase@10.0.0",
+            "firebase/app": "https://esm.sh/firebase@10.0.0/app",
+            "firebase/auth": "https://esm.sh/firebase@10.0.0/auth",
+            "firebase/firestore": "https://esm.sh/firebase@10.0.0/firestore",
+            "firebase/storage": "https://esm.sh/firebase@10.0.0/storage",
+            "firebase/functions": "https://esm.sh/firebase@10.0.0/functions",
+            "firebase/messaging": "https://esm.sh/firebase@10.0.0/messaging",
+            "react-firehooks/auth": "https://esm.sh/react-firehooks@2.5.0/auth",
+            "react-firehooks/firestore": "https://esm.sh/react-firehooks@2.5.0/firestore",
+            "@iconify/react": "https://esm.sh/@iconify/react@4.1.1",
+            "react-router-dom": "https://esm.sh/react-router-dom@6.14.1",
+            "use-sync-external-store/shim": "https://esm.sh/use-sync-external-store@1.2.0/shim",
+            "react-map-gl": "https://esm.sh/react-map-gl@7.1.1",
+            "react-use": "https://esm.sh/react-use@17.4.0?exports=useGeolocation",
+            "react-webcam": "https://esm.sh/react-webcam@7.1.1"
         }
     }
 </script>
