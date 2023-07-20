@@ -5,7 +5,6 @@
     <LangVersion>Preview</LangVersion>
     <DefineConstants>$(DefineConstants);FABLE_COMPILER</DefineConstants>
     <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
-     <RollForward>Major</RollForward>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="WebSocketClient.fs" />
