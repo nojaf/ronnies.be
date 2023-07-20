@@ -31,7 +31,7 @@ let LocationPicker
             ExistingLocations : (string * LatLng) array
         |})
     =
-    let geolocation = useGeolocation ()
+    let geolocation = useGeolocation {| enableHighAccuracy = true |}
     let userLatitude, setUserLatitude = React.useState 50.946139
     let userLongitude, setUserLongitude = React.useState 3.138671
     let ronnyLatitude, setRonnyLatitude = React.useState userLatitude
@@ -726,7 +726,10 @@ let AddLocationPage () =
                                 HTMLAttr.Width "100%"
                                 Ref webcamRef
                                 WebcamProp.ScreenshotFormat "image/png"
-                                WebcamProp.VideoConstraints {| facingMode = {| ideal = "user" |} |}
+                                WebcamProp.VideoConstraints
+                                    {|
+                                        facingMode = {| ideal = "environment" |}
+                                    |}
                                 WebcamProp.OnUserMediaError (fun () -> dispatch Msg.HidePhoto)
                             ]
                         button [ OnClick onTakePicture ] [
@@ -745,8 +748,8 @@ let AddLocationPage () =
                     label [] [ str "Opmerking" ]
                     textarea [ DefaultValue model.Remark ; updateOnChange UpdateRemark ; Rows 2 ] []
                 ]
-                input [ Type "submit" ; Class "primary" ; Value "Save!" ]
-                if Browser.Dom.window.location.host.StartsWith ("localhost") then
-                    pre [] [ str (Fable.Core.JS.JSON.stringify (model, space = 4)) ]
+                div [ ClassName "align-right" ] [ input [ Type "submit" ; Class "primary" ; Value "Save!" ] ]
+            // if Browser.Dom.window.location.host.StartsWith ("localhost") then
+            //     pre [] [ str (Fable.Core.JS.JSON.stringify (model, space = 4)) ]
             ]
     ]

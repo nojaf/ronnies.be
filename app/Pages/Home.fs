@@ -12,7 +12,7 @@ open ReactRouterDom
 [<ReactComponent>]
 let HomePage () =
     let querySnapshot, queryLoading, _ = Hooks.Exports.useQuery allRonniesQuery
-    let geolocation = useGeolocation ()
+    let geolocation = useGeolocation {| enableHighAccuracy = true |}
 
     let viewport, setViewport =
         React.useState<Viewport>

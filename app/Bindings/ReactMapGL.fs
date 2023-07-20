@@ -5,7 +5,7 @@ open Fable.Core.JsInterop
 open React
 
 let useGeolocation
-    : unit
+    : {| enableHighAccuracy : bool |}
           -> {|
               latitude : float
               longitude : float

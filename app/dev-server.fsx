@@ -61,7 +61,7 @@ let build () =
     |> GlobbingPattern.setBaseDir __SOURCE_DIRECTORY__
     |> Shell.copyFilesWithSubFolder dist
 
-    [ "index.html" ; "style.css" ; "favicon.ico" ]
+    [ "index.html" ; "style.css" ; "favicon.ico" ; "legacy.json" ]
     |> List.map (fun file -> __SOURCE_DIRECTORY__ </> file)
     |> Shell.copy dist
 

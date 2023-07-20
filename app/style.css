@@ -231,6 +231,7 @@ input.error {
 
 /* helper */
 .center { text-align: center; }
+.align-right { text-align: right; }
 
 nav {
     background-color: var(--primary);
@@ -448,10 +449,10 @@ label {
     max-width: var(--unit-10);
 }
 
+
 #add-location input[type=submit] {
-    display: inline;
     width: initial;
-    float: right;
+    margin-bottom: var(--unit-2);
 }
 
 #add-location .error input {
@@ -577,11 +578,13 @@ label {
     padding: var(--unit-3);
     background-color: var(--white);
     position: relative;
-    min-width: 300px;
+    width: calc(100vw - var(--unit-4));
+    max-width: 420px;
+    box-sizing: border-box;
 }
 
 #detail h1 {
-    font-size: var(--unit-4);
+    font-size: var(--unit-3);
 }
 
 #detail .close {
