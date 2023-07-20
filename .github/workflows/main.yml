@@ -18,8 +18,6 @@ jobs:
         uses: actions/setup-dotnet@v3
       - name: Restore local tools
         run: dotnet tool restore
-      - name: Restore project
-        run: dotnet restore app/App.fsproj
       - name: Build frontend
         run: dotnet fsi app/dev-server.fsx build
       - name: Upload artifact
