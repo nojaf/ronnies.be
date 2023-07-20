@@ -95,7 +95,9 @@ match args with
         .WithWorkingDirectory(__SOURCE_DIRECTORY__)
         .ExecuteAsync()
         .Task.Wait ()
-| [ "build" ] -> build ()
+| [ "build" ] -> 
+    build ()
+    exit 0
 | [ "preview" ] ->
     build ()
 
