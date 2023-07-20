@@ -49,6 +49,7 @@ let build () =
         .Wrap("dotnet")
         .WithArguments($"fable {fableArgs}  -e .js")
         .WithWorkingDirectory(__SOURCE_DIRECTORY__)
+        .WithStandardOutputPipe(PipeTarget.ToDelegate (printfn "%A"))
         .ExecuteAsync()
         .Task.Wait ()
 
@@ -82,8 +83,6 @@ let args =
     |> Array.skipWhile (fun arg -> arg.EndsWith ".fsx")
     |> Array.map String.toLowerInvariant
     |> Array.toList
-
-printfn "ARGS: %A" args
 
 match args with
 | [ "help" ]
