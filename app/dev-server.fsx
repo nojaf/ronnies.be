@@ -83,6 +83,8 @@ let args =
     |> Array.map String.toLowerInvariant
     |> Array.toList
 
+printfn "ARGS: %A" args
+
 match args with
 | [ "help" ]
 | [ "--help" ] ->
