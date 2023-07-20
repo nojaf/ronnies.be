@@ -57,6 +57,10 @@ let build () =
     |> GlobbingPattern.setBaseDir __SOURCE_DIRECTORY__
     |> Shell.copyFilesWithSubFolder dist
 
+    !!(__SOURCE_DIRECTORY__ </> "images/*.*")
+    |> GlobbingPattern.setBaseDir __SOURCE_DIRECTORY__
+    |> Shell.copyFilesWithSubFolder dist
+
     [ "index.html" ; "style.css" ; "favicon.ico" ]
     |> List.map (fun file -> __SOURCE_DIRECTORY__ </> file)
     |> Shell.copy dist
@@ -65,8 +69,7 @@ let build () =
     let indexHtml = Path.Combine (dist, "index.html")
 
     let indexHtmlContent =
-        (File.ReadAllText indexHtml)
-            .Replace ("http://localhost:9004", "https://esm.sh")
+        (File.ReadAllText indexHtml).Replace ("http://localhost:9004", "https://esm.sh")
 
     File.WriteAllText (indexHtml, indexHtmlContent)
 
@@ -96,7 +99,7 @@ match args with
         .WithWorkingDirectory(__SOURCE_DIRECTORY__)
         .ExecuteAsync()
         .Task.Wait ()
-| [ "build" ] -> 
+| [ "build" ] ->
     build ()
     exit 0
 | [ "preview" ] ->
