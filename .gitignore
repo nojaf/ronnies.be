@@ -483,3 +483,5 @@ $RECYCLE.BIN/
 app/out
 seed.fsx
 dist/
+data/
+.env

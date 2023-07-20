@@ -8,6 +8,8 @@ import { getMessaging } from "firebase-admin/messaging";
 
 const isEmulator = process.env.FUNCTIONS_EMULATOR === "true";
 const allowedCors = isEmulator ? "http://localhost:4000" : "https://ronnies.be";
+const SECRET_HEADER = process.env.SECRET_HEADER;
+const SECRET_HEADER_VALUE = process.env.SECRET_HEADER_VALUE;
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -33,7 +35,7 @@ export const user = onRequest(
 
       if (
         request.headers &&
-        request.headers["x-kye"] !== "Um9ubmllcyB6aWpuIGtpc3pha3Mh"
+        request.headers[SECRET_HEADER] !== SECRET_HEADER_VALUE
       ) {
         return response.status(400).send("Bad request");
       }
@@ -74,7 +76,7 @@ export const sudo = onRequest(
 
       if (
         request.headers &&
-        request.headers["x-kye"] !== "Um9ubmllcyB6aWpuIGtpc3pha3Mh"
+        request.headers[SECRET_HEADER] !== SECRET_HEADER_VALUE
       ) {
         return response.status(400).send("Bad request");
       }
@@ -141,7 +143,7 @@ export const cleanUpUsers = onRequest(
 
       if (
         request.headers &&
-        request.headers["x-kye"] !== "Um9ubmllcyB6aWpuIGtpc3pha3Mh"
+        request.headers[SECRET_HEADER] !== SECRET_HEADER_VALUE
       ) {
         return response.status(400).send("Bad request");
       }
