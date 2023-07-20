@@ -63,6 +63,7 @@ let App () =
             ]
             ul [ ClassName menuClass ] [
                 yield mkNavLink "/overview" "Overzicht"
+                yield mkNavLink "/legacy" "De vorige keer"
 
                 match user with
                 | None -> yield mkNavLink "/login" "Inloggen"
@@ -97,6 +98,10 @@ let App () =
                 ReactRouterProp.Element (Leaderboard.LeaderboardPage ())
             ]
             Route [ ReactRouterProp.Path "/rules" ; ReactRouterProp.Element (Rules.RulesPage ()) ]
+            Route [
+                ReactRouterProp.Path "/legacy"
+                ReactRouterProp.Element (Legacy.LegacyPage ())
+            ]
             Route [ ReactRouterProp.Path "/login" ; ReactRouterProp.Element (Login.LoginPage ()) ]
             Route [
                 ReactRouterProp.Path "/settings"

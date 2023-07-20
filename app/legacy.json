@@ -1,0 +1,4151 @@
+[
+  {
+    "id": "acd5a7c4-e881-44cb-a3a6-3b1aba88b08c",
+    "name": "Piramide",
+    "latitude": 51.0330755,
+    "longitude": 3.742568,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2020-10-11T15:42:43.145+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "5ab693e8-f063-49c7-969a-9ba04fe54ee6",
+    "name": "Café Trollekelder",
+    "latitude": 51.0563915936027,
+    "longitude": 3.72780986060445,
+    "price": 2.7,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-09-18T15:22:49+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "b4118209-5413-4dd3-8cb3-b55b1635e41c",
+    "name": "'t Genoegen",
+    "latitude": 50.849932,
+    "longitude": 2.8839116,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2018-09-17T14:54:46+00:00",
+    "creator": "Gilles V"
+  },
+  {
+    "id": "d6b5e86e-a716-4caf-aca4-fa7384f37f5d",
+    "name": "'t Kobbetje",
+    "latitude": 50.8206726,
+    "longitude": 2.8318698,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-09-16T15:54:47+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "6921d74b-f61a-4465-87e2-329653297cea",
+    "name": "dCouvert",
+    "latitude": 51.1117469,
+    "longitude": 2.6111112,
+    "price": 4.2,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Alleen in grand cru beschikbaar"
+      ]
+    },
+    "created": "2018-09-16T11:49:30+00:00",
+    "creator": "Gilles V"
+  },
+  {
+    "id": "3a871478-8ef7-40bb-a0a4-639f0f105dc3",
+    "name": "Defoo",
+    "latitude": 51.0432313,
+    "longitude": 3.7245195,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-09-11T19:19:18+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "9319603e-cc4d-462e-8c91-db477783fa84",
+    "name": "Au Blason",
+    "latitude": 51.1481592,
+    "longitude": 2.7158258,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "2,50 ? voor 25 cl\n2,70 ? voor 33 cl\n4,80 ? voor 50 cl"
+      ]
+    },
+    "created": "2018-09-10T13:22:26+00:00",
+    "creator": "Bram B"
+  },
+  {
+    "id": "8bdfc174-7aa7-41e2-bb85-b005be6f45d6",
+    "name": "Au Nouveau St Eloi",
+    "latitude": 50.8227189366617,
+    "longitude": 2.6296918512727,
+    "price": 2.4,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-09-09T11:25:39+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "fc90d00e-2efe-49da-8448-50cc81a7aa80",
+    "name": "Sint Jan",
+    "latitude": 51.0356572,
+    "longitude": 2.8589708,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-09-09T09:35:36+00:00",
+    "creator": "Bram B"
+  },
+  {
+    "id": "ff3c6939-2b03-44a2-bb37-5f32c71ae614",
+    "name": "De huifkar",
+    "latitude": 51.1204794,
+    "longitude": 2.6344374,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-09-08T17:14:09+00:00",
+    "creator": "Wout B"
+  },
+  {
+    "id": "0b49ef1f-c6d7-4a16-86eb-5fd452988986",
+    "name": "Den drummer ",
+    "latitude": 51.039858,
+    "longitude": 3.7272693,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-09-05T15:36:14+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "1d70142e-2a87-4a5d-9c9e-8fca4ec3e276",
+    "name": "De Boshoeve",
+    "latitude": 50.8361858,
+    "longitude": 2.6756771,
+    "price": 2.8,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-09-02T16:46:58+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "c1cb8a43-3637-4355-8b2c-234d01d3d669",
+    "name": "La siesta",
+    "latitude": 51.2310872,
+    "longitude": 2.9177383,
+    "price": 2.9,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-09-02T15:35:45+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "7b76cd9a-869f-4d1a-9560-9942f563f9c8",
+    "name": "Het Labyrint",
+    "latitude": 50.7831306,
+    "longitude": 2.826168,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Was tijdens rommelmarkt Kemmel, reële prijs is wsl lager"
+      ]
+    },
+    "created": "2018-09-02T09:59:39+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "7cba5969-0b9f-40d3-99a4-97be379207da",
+    "name": "De Wijngaard",
+    "latitude": 50.849359,
+    "longitude": 2.8765549,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Tis e restorang, mo tis ook lekker bie e bifstiksje"
+      ]
+    },
+    "created": "2018-09-01T17:43:34+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "f74cbd28-609b-41a6-8cc2-0f83055f2e6c",
+    "name": "Huis van Alijn",
+    "latitude": 51.0576032,
+    "longitude": 3.7231745,
+    "price": 2.3,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-09-01T13:15:40+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "dd0c6dd3-5a08-4a47-b988-aab6e5ec1eda",
+    "name": "Old Tom",
+    "latitude": 50.8517480804434,
+    "longitude": 2.88759492719237,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-09-01T11:51:37+00:00",
+    "creator": "Gilles V"
+  },
+  {
+    "id": "e2beb093-7033-452f-845a-e200a534c951",
+    "name": "Petit Comité",
+    "latitude": 50.8562625,
+    "longitude": 2.7265927,
+    "price": 2.2,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2018-08-31T19:41:49+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "04085c81-6e7b-46fa-8c5f-e43db2175064",
+    "name": "Kaffée allée",
+    "latitude": 51.1713341,
+    "longitude": 4.4332357,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Tis in een blik"
+      ]
+    },
+    "created": "2018-08-31T19:39:21+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "389ab867-14b6-4311-8f58-eee6b9b4ca5f",
+    "name": "Marimain",
+    "latitude": 51.0488039,
+    "longitude": 3.7269595,
+    "price": 2.8,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-08-31T19:25:37+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "22bec562-57b4-40bf-85a4-100998269112",
+    "name": "Esperance",
+    "latitude": 50.855702,
+    "longitude": 2.7257891,
+    "price": 2.2,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-08-31T19:07:20+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "0a71d20a-46f4-4ce3-982c-e443dde189d0",
+    "name": "'t Fabriekje",
+    "latitude": 50.8551461,
+    "longitude": 2.7259205,
+    "price": 2.2,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-08-31T18:25:38+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "e6eeb2fa-c773-4952-93d4-b1527bb80a54",
+    "name": "De Sterre",
+    "latitude": 50.8588558,
+    "longitude": 2.6651066,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2018-08-31T17:56:55+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "1f65cbf6-9300-48cc-a8f0-d18f5e4a79f8",
+    "name": "De kikker",
+    "latitude": 50.856688,
+    "longitude": 2.6204737,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-08-31T17:14:00+00:00",
+    "creator": "jensdevos5"
+  },
+  {
+    "id": "d92864b1-3873-4f14-89ac-a2172cb74946",
+    "name": "Nobody",
+    "latitude": 50.8904893,
+    "longitude": 2.6565322,
+    "price": 1.55,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-08-31T16:29:16+00:00",
+    "creator": "jensdevos5"
+  },
+  {
+    "id": "19067887-16da-4575-9461-3f3da868f2f6",
+    "name": "Ice Mountain",
+    "latitude": 50.7821812,
+    "longitude": 3.0014035,
+    "price": 2.9,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-08-29T18:36:01+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "efaa768e-e959-45b4-b14c-641e28606b10",
+    "name": "In den nieuwen appel",
+    "latitude": 50.828418831332,
+    "longitude": 2.65501141548157,
+    "price": 1.8,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Hmmmm"
+      ]
+    },
+    "created": "2018-08-24T14:54:33+00:00",
+    "creator": "Wout B"
+  },
+  {
+    "id": "1194661d-1d80-4465-8954-4ce2e0e7639c",
+    "name": "Café Boutique",
+    "latitude": 50.7834940630363,
+    "longitude": 2.8274130821228,
+    "price": 2.3,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2018-08-22T16:21:09+00:00",
+    "creator": "jensdevos5"
+  },
+  {
+    "id": "34e54587-881e-4da5-906b-94a5cc585af2",
+    "name": "Het rode kruis",
+    "latitude": 50.84137,
+    "longitude": 2.7103641,
+    "price": 1.8,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Glazen zijn ook gekoeld!"
+      ]
+    },
+    "created": "2018-08-22T15:26:57+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "820bf118-831e-443a-b9b2-64a454002a48",
+    "name": "Rood loungebar",
+    "latitude": 51.2319676993976,
+    "longitude": 2.91321756361526,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Sjone plekke om de menschn te bekikn die voorbij wandelen"
+      ]
+    },
+    "created": "2018-08-20T18:15:10+00:00",
+    "creator": "Lander B"
+  },
+  {
+    "id": "50386b95-beb7-4779-a9e8-b113ede1d282",
+    "name": "Café Valetina",
+    "latitude": 51.3318216308226,
+    "longitude": 4.36490088701248,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-08-17T20:45:09+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "5b17aa47-0d5d-41e6-af3f-cbaaaa7c2dd8",
+    "name": "Rokkebolle",
+    "latitude": 51.0375890826317,
+    "longitude": 3.74338746070862,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-08-16T19:37:36+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "e584f10f-2881-431e-9160-9bb2618e6a1c",
+    "name": "'t Kerkegat",
+    "latitude": 50.919598,
+    "longitude": 2.6240885,
+    "price": 2.3,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-08-09T16:39:35+00:00",
+    "creator": "Gilles V"
+  },
+  {
+    "id": "4bf7b1d4-ff48-4c56-9952-191123dccf6b",
+    "name": "Terminus",
+    "latitude": 50.813605,
+    "longitude": 2.6390097,
+    "price": 2.6,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-08-08T16:05:53+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "cbbd7419-39f8-4304-bb60-f165a14c68c4",
+    "name": "Tea room palingbeek",
+    "latitude": 50.8134914730993,
+    "longitude": 2.91954335390596,
+    "price": 2.8,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-08-05T12:57:33+00:00",
+    "creator": "Gilles V"
+  },
+  {
+    "id": "eabf1f11-2c65-4608-9c26-97dc76cc2ebd",
+    "name": "Het Spijker",
+    "latitude": 51.055542,
+    "longitude": 3.721284,
+    "price": 2.8,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-08-03T15:09:45+00:00",
+    "creator": "Mathieu R"
+  },
+  {
+    "id": "97f6ebcf-2222-4d38-943c-3328d6d06923",
+    "name": "Circus157",
+    "latitude": 50.7661173,
+    "longitude": 2.7843253,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-08-02T19:55:39+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "b0801e16-6168-4c3b-a0d5-ffd365a249a9",
+    "name": "bvbastis",
+    "latitude": 50.8508667443996,
+    "longitude": 2.8540244573453,
+    "price": 2.4,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-08-01T17:12:01+00:00",
+    "creator": "Gilles V"
+  },
+  {
+    "id": "645516a3-6cf8-4695-815b-c597e2136d35",
+    "name": "St. Christophe",
+    "latitude": 50.8490179905374,
+    "longitude": 2.86534297636035,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2018-07-29T15:38:58+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "c73fb32a-33c3-4158-a298-c11d2c7969f6",
+    "name": "Afsnis",
+    "latitude": 51.0569496154785,
+    "longitude": 3.72744297981262,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-07-28T20:07:37+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "d7e3efc4-d9b4-4d5a-b969-547b28599667",
+    "name": "Bowling Izegem",
+    "latitude": 50.9051425,
+    "longitude": 3.2193612,
+    "price": 2.2,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-09-20T12:33:13.178+00:00",
+    "creator": "jensdevos5"
+  },
+  {
+    "id": "01e11f73-3db1-4754-aaa4-7a06daf058eb",
+    "name": "Bowling De Goe Smete",
+    "latitude": 50.8565006,
+    "longitude": 2.7340323,
+    "price": 2.8,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Indelijks diere"
+      ]
+    },
+    "created": "2018-09-21T16:23:40.648+00:00",
+    "creator": "jensdevos5"
+  },
+  {
+    "id": "4d77e76c-1c8a-4e3f-a3a3-064bfcc3b785",
+    "name": "Ribbekotje",
+    "latitude": 50.8443689,
+    "longitude": 2.8757465,
+    "price": 2.2,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-09-22T16:18:15.473+00:00",
+    "creator": "Gilles V"
+  },
+  {
+    "id": "fa193ad9-08c4-4e1f-b4b4-6cf916be657a",
+    "name": "Het Ovenhuis",
+    "latitude": 50.8587188,
+    "longitude": 2.6208838,
+    "price": 2.6,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-09-23T11:41:50.716+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "66189e85-fc57-4bd8-972b-515a17cc0c95",
+    "name": "De Hanekamp",
+    "latitude": 50.8218551,
+    "longitude": 2.664888,
+    "price": 2.8,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-09-28T17:16:30.382+00:00",
+    "creator": "Bram B"
+  },
+  {
+    "id": "770c8a36-c028-40f8-9207-a1638282d077",
+    "name": "Aap ",
+    "latitude": 51.055868,
+    "longitude": 3.728081,
+    "price": 2.79999995231628,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Weinig Ronny glazen ??"
+      ]
+    },
+    "created": "2018-09-28T17:48:28.849+00:00",
+    "creator": "jensdevos5"
+  },
+  {
+    "id": "0dcb5dfd-d6ed-4239-9db7-a21b2fef4207",
+    "name": "Giraf",
+    "latitude": 51.0559439310234,
+    "longitude": 3.72811710255326,
+    "price": 2.8,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "??????"
+      ]
+    },
+    "created": "2018-09-28T20:11:54.712+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "7e2d63de-55d9-4bf6-b231-8c31fbc2a4a3",
+    "name": "'hellegat",
+    "latitude": 50.7861079,
+    "longitude": 2.763049,
+    "price": 2.4,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Ook grand cru voor 4.50 euro. "
+      ]
+    },
+    "created": "2018-09-29T15:56:49.922+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "764b3795-02d3-44d7-86ee-ab6d64e5d940",
+    "name": "Jeugdhuis den couter",
+    "latitude": 50.8564613736004,
+    "longitude": 2.73059673231292,
+    "price": 1.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-09-29T20:36:19.724+00:00",
+    "creator": "Wout B"
+  },
+  {
+    "id": "c35e25f1-9cd4-4196-841f-8791b623c6c9",
+    "name": "KSC Excelsior Mariakerke",
+    "latitude": 51.0835838317871,
+    "longitude": 3.67033457756042,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-09-30T08:34:03.255+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "0009e5a6-b3e3-4a6c-a6a1-b5a1fd8678be",
+    "name": "'t Snackhuisje",
+    "latitude": 50.8874453,
+    "longitude": 2.933888,
+    "price": 2.3,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "E goe frietkot"
+      ]
+    },
+    "created": "2018-09-30T14:52:59.932+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "1e71eb69-b9a8-4889-8d3c-2b3a2c587535",
+    "name": "De klok",
+    "latitude": 51.332171,
+    "longitude": 4.3648947,
+    "price": 2.9,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2018-09-30T16:40:55.089+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "7ef457b5-7a00-4f11-9dee-8355057c3035",
+    "name": "Twins Club ",
+    "latitude": 51.2468997118098,
+    "longitude": 2.95272397790783,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        ""
+      ]
+    },
+    "created": "2018-10-02T13:11:37.501+00:00",
+    "creator": "Wout B"
+  },
+  {
+    "id": "36a5bdec-9f87-4087-b9c6-2b55626f1d0c",
+    "name": "'t Hof van Vlaanderen",
+    "latitude": 50.9147338867188,
+    "longitude": 2.68815565109253,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-10-05T16:05:51.231+00:00",
+    "creator": "Bram B"
+  },
+  {
+    "id": "1093f8da-c6ba-4527-a27f-dcc570472d47",
+    "name": "'T sparhof",
+    "latitude": 50.7484267,
+    "longitude": 2.7925392,
+    "price": 2.8,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-10-05T17:51:57.159+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "7a755982-3d82-4d5c-b4cf-5e0c2b212198",
+    "name": "De Beste Plekke",
+    "latitude": 50.8966031,
+    "longitude": 2.6460544,
+    "price": 1.8,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Kantine TSC Proven"
+      ]
+    },
+    "created": "2018-10-07T11:01:19.472+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "6d90bfe7-45f0-4332-9116-f9d3a798f205",
+    "name": "De hollemeersch",
+    "latitude": 50.7751837408696,
+    "longitude": 2.81346559524536,
+    "price": 2.4,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-10-07T12:32:04.016+00:00",
+    "creator": "Gilles V"
+  },
+  {
+    "id": "9570822e-e11a-49d3-b027-c339b593cf15",
+    "name": "T' Gouden Mandeken",
+    "latitude": 51.0555883638766,
+    "longitude": 3.72135311365128,
+    "price": 2.8,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-10-12T12:15:03.201+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "783c1922-1a61-4155-b484-93bac72a5438",
+    "name": "Backdoor",
+    "latitude": 51.0434622,
+    "longitude": 3.7246291,
+    "price": 4.2,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Grand cru"
+      ]
+    },
+    "created": "2018-10-12T20:01:10.375+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "860754ce-7651-49d9-a887-6161a33eea17",
+    "name": "Ramses 2",
+    "latitude": 50.9205149,
+    "longitude": 3.2117172,
+    "price": 2.6,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Discotheka!"
+      ]
+    },
+    "created": "2018-10-12T20:55:45.401+00:00",
+    "creator": "jensdevos5"
+  },
+  {
+    "id": "abf617a1-0ff7-4b5c-8a17-0bd6dfc45862",
+    "name": "De Vismarkt",
+    "latitude": 50.8547917,
+    "longitude": 2.7254754,
+    "price": 2.1,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2018-10-13T17:20:50.071+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "032b9670-ebeb-4020-a168-e8930ff1da13",
+    "name": "De Gekroonde Hoofden",
+    "latitude": 51.0566132745197,
+    "longitude": 3.7195278500601,
+    "price": 3.2,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Nie goedkoop mo tis lekker bij een ribbe"
+      ]
+    },
+    "created": "2018-10-13T19:20:47.058+00:00",
+    "creator": "Mathieu R"
+  },
+  {
+    "id": "3328d2a9-80a2-4c54-9de6-d2f67c8e5278",
+    "name": "'t Kakelend kippenmuseum",
+    "latitude": 51.0832503,
+    "longitude": 2.8906154,
+    "price": 2.4,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Aje tijd over et, kuj nog goan kijkn na kiekjes en dergelijke. "
+      ]
+    },
+    "created": "2018-10-14T13:46:56.094+00:00",
+    "creator": "Gilles V"
+  },
+  {
+    "id": "105a1d7c-987e-4ca2-a575-c96df6cc3896",
+    "name": "Bar Julien",
+    "latitude": 50.9469787,
+    "longitude": 3.1242029,
+    "price": 2.9,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Fancy bar"
+      ]
+    },
+    "created": "2018-10-18T10:24:35.624+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "3f1f6bc4-7310-46cc-90e1-1079d3aaabbf",
+    "name": "Bij Ollie",
+    "latitude": 51.0728832,
+    "longitude": 3.6889171,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-10-18T18:44:14.043+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "27ed41d8-5671-466b-b65d-01333b98f129",
+    "name": "Herman Belgian Beer",
+    "latitude": 52.5323843,
+    "longitude": 13.4120953,
+    "price": 4.7,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Grand Cru"
+      ]
+    },
+    "created": "2018-10-25T16:48:52.979+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "8c3d7091-d0da-49e0-8c27-a8b980faed70",
+    "name": "Euro-Kart",
+    "latitude": 50.8535115,
+    "longitude": 2.743202,
+    "price": 2.4,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-10-27T14:45:28.58+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "2fb28768-19ac-4d95-9873-898f8e065dc6",
+    "name": "Hotsy totsy",
+    "latitude": 51.0543524,
+    "longitude": 3.7164286,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "??"
+      ]
+    },
+    "created": "2018-10-31T21:34:03.322+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "9b587898-3c58-436a-86fd-3382696b4671",
+    "name": "Vivaldi",
+    "latitude": 50.8511339,
+    "longitude": 2.887288,
+    "price": 3.6,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        ""
+      ]
+    },
+    "created": "2018-11-02T15:10:25.437+00:00",
+    "creator": "Gilles V"
+  },
+  {
+    "id": "7bacb64e-c570-4447-8b1c-aaf70c3d95e2",
+    "name": "Break@4 Eetkaffee",
+    "latitude": 50.7992968,
+    "longitude": 3.9280497,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Rodenbach Coupjes ipv klassieke glazen"
+      ]
+    },
+    "created": "2018-11-03T10:08:27.584+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "7bf374a6-cd94-4283-b235-78ac53e03973",
+    "name": "Commerce",
+    "latitude": 50.878,
+    "longitude": 4.7065473,
+    "price": 2.6,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-11-03T10:09:47.536+00:00",
+    "creator": "Gilles V"
+  },
+  {
+    "id": "9328bfe6-dd8a-443a-8e8a-2e65ad34ab0f",
+    "name": "'t Buitenbeentje",
+    "latitude": 50.8150078,
+    "longitude": 3.9169899,
+    "price": 1.8,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-11-03T11:03:17.57+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "0bf1345d-f30a-4afe-ac41-85f72eb77e28",
+    "name": "Atlantis Bowling ",
+    "latitude": 50.8443129,
+    "longitude": 2.8740429,
+    "price": 2.4,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-11-03T18:11:33.891+00:00",
+    "creator": "Tim D"
+  },
+  {
+    "id": "7a5aef04-e807-45c6-8f01-86c8dbef7e3f",
+    "name": "Worldkarts Flanders",
+    "latitude": 50.8315938,
+    "longitude": 3.2854629,
+    "price": 2.4,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-11-04T13:23:16.62+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "ca491e24-f2fa-4e91-9b09-737dd3920c71",
+    "name": "De Hems Dutch Cafe Bar",
+    "latitude": 51.512066101135,
+    "longitude": -0.131229758262634,
+    "price": 6.96,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Grand cru"
+      ]
+    },
+    "created": "2018-11-04T16:40:48.486+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "c15813bc-4d99-43b3-82f9-7f3ca38b26cd",
+    "name": "Draft house, Paddington",
+    "latitude": 51.5191936,
+    "longitude": -0.1702537,
+    "price": 8.35,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Grand Cru"
+      ]
+    },
+    "created": "2018-11-05T20:31:32.225+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "956e01c4-c886-45da-a3cc-34c1fb9dc79a",
+    "name": "Taverne Brasserie 't Zuid",
+    "latitude": 51.0484451,
+    "longitude": 3.7303947,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-11-10T14:32:02.263+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "b935f1f1-87bd-4981-a87b-dc13b7597d72",
+    "name": "Luttertap",
+    "latitude": 50.8319415,
+    "longitude": 2.683435,
+    "price": 2.7,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        ""
+      ]
+    },
+    "created": "2018-11-10T18:39:37.578+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "222d68ef-45a6-4a81-8a0c-3b4522bf7855",
+    "name": "The Rabbit - Restaurant-grill",
+    "latitude": 50.7862539,
+    "longitude": 2.7638171,
+    "price": 3.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-11-16T17:36:57.275+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "8f175154-964d-44b5-b12f-2095e6b2a871",
+    "name": "Redmonds Irish Pub",
+    "latitude": 50.7833742,
+    "longitude": 2.7712972,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-11-16T20:57:09.087+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "33a75193-d124-4e2f-9595-d69502f5f1d0",
+    "name": "In den eekhoorn",
+    "latitude": 50.9477996826172,
+    "longitude": 3.12964987754822,
+    "price": 2.20000004768372,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2018-11-17T14:19:59.336+00:00",
+    "creator": "Gilles V"
+  },
+  {
+    "id": "d0a0d250-54fb-4bea-95c1-c30671fd24c3",
+    "name": "Les fleurs malt du le bar",
+    "latitude": 45.7630529,
+    "longitude": 4.8290782,
+    "price": 5.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-11-17T21:54:06.395+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "8269f3f4-ac9d-4a87-8f87-9b7a7d8c77b4",
+    "name": "Ribs 'n Beer",
+    "latitude": 50.8253617,
+    "longitude": 3.2650162,
+    "price": 2.8,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-11-23T18:44:00.547+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "cf82a798-0a32-4720-aaf8-2484a3ee7d34",
+    "name": "The Old Fiddler",
+    "latitude": 50.8562824,
+    "longitude": 2.726668,
+    "price": 2.3,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-11-24T14:50:55.943+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "c33e044d-6092-47c2-97fd-8c6c91441743",
+    "name": "t' Ganzeke",
+    "latitude": 50.8510134,
+    "longitude": 2.8840836,
+    "price": 2.8,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-11-25T14:10:55.603+00:00",
+    "creator": "Gilles V"
+  },
+  {
+    "id": "b7f33fda-67d7-4b6a-b2fd-b4c5e31d8b57",
+    "name": "B'artiest",
+    "latitude": 50.8496113,
+    "longitude": 2.87649,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-11-25T18:37:13.825+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "9b051a6b-deff-499e-8a0c-f021e0f0c562",
+    "name": "Sporthal Poperinge",
+    "latitude": 50.8469133,
+    "longitude": 2.7378265,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-11-26T21:15:07.072+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "84751742-6708-46c2-8a3f-561f0109a072",
+    "name": "Bierhuis De Brouwzaele",
+    "latitude": 51.0401306152344,
+    "longitude": 3.72987985610962,
+    "price": 3.40000009536743,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2018-11-28T18:48:48.316+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "5c69f949-36f1-4338-92d5-2c273595eb9e",
+    "name": "Kantine Merkem Sport",
+    "latitude": 50.949071,
+    "longitude": 2.8593362,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-12-01T19:47:47.424+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "9ecac486-ee34-4db4-8c55-f77c5b19f4bb",
+    "name": "De ton",
+    "latitude": 51.0356372,
+    "longitude": 3.7531969,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-12-06T18:17:12.301+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "d45f4fca-ab94-4cc7-a4b7-581b8677ce35",
+    "name": "Salto ",
+    "latitude": 51.0409703,
+    "longitude": 3.7254183,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Bertje "
+      ]
+    },
+    "created": "2018-12-07T01:58:01.351+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "f003163e-825c-4626-8a16-66f774bfb1d1",
+    "name": "'t friethuisje ",
+    "latitude": 50.9390076,
+    "longitude": 3.1218834,
+    "price": 1.8,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-12-09T11:47:31.741+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "55a345c3-760d-4097-9593-dbda78b3810f",
+    "name": "La chiquetterie",
+    "latitude": 49.9253248,
+    "longitude": 4.9194281,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Lekkere barmoeder"
+      ]
+    },
+    "created": "2018-12-16T11:53:52.088+00:00",
+    "creator": "Gilles V"
+  },
+  {
+    "id": "9a92a118-151c-45b8-bacb-9ae81494614c",
+    "name": "Dulle Griet",
+    "latitude": 51.056657,
+    "longitude": 3.7253785,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-12-21T11:27:08.415+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "12186ff6-8d13-4b59-98bb-db339d250a32",
+    "name": "In den Trap",
+    "latitude": 50.9478702,
+    "longitude": 3.1296488,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2018-12-21T13:12:07.033+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "8c8b4716-5534-4879-b6a2-d682be6d7f47",
+    "name": "St Georges",
+    "latitude": 50.9478694,
+    "longitude": 3.1295219,
+    "price": 2.2,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2018-12-21T13:46:03.421+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "b1ed2cdf-687e-4109-ae09-bbef3e45be88",
+    "name": "Au Damier",
+    "latitude": 50.9484811040789,
+    "longitude": 3.12976562056815,
+    "price": 2.2,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-12-21T13:53:49.045+00:00",
+    "creator": "jensdevos5"
+  },
+  {
+    "id": "342693b1-53bf-45de-8d9e-f14e6a2d643d",
+    "name": "Groovy's pub",
+    "latitude": 50.9490948,
+    "longitude": 3.1297673,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-12-21T14:20:37.082+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "eb020d80-5ca2-4418-8cd8-0ad4572cfe95",
+    "name": "Vanilla",
+    "latitude": 50.9457186,
+    "longitude": 3.1285652,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2018-12-21T14:46:24.866+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "b5252c7f-9325-4ca6-ad4f-a8d0be9cd639",
+    "name": "Mojo",
+    "latitude": 50.948548,
+    "longitude": 3.1297797,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-12-21T15:11:53.865+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "ab25268c-fc86-48f3-8b76-1b9451055e18",
+    "name": "De Pub",
+    "latitude": 50.9453375,
+    "longitude": 3.127227,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2018-12-21T15:44:14.643+00:00",
+    "creator": "jensdevos5"
+  },
+  {
+    "id": "daac0f46-5d25-4157-99fa-ccdb6e40c448",
+    "name": "De arend",
+    "latitude": 50.945069,
+    "longitude": 3.1261294,
+    "price": 2.2,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2018-12-21T16:13:39.262+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "d7cb96b8-e681-4963-91ed-22573c38abe0",
+    "name": "Cafe Cirque",
+    "latitude": 50.9449262,
+    "longitude": 3.1260287,
+    "price": 2.2,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2018-12-21T16:45:25.243+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "e1e7b504-b55f-478a-b905-24fff9929690",
+    "name": "Bistro botanique",
+    "latitude": 50.9445525,
+    "longitude": 3.1264692,
+    "price": 2.2,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2018-12-21T17:04:20.215+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "e3e9f006-6a15-4e3a-a892-21cb2f0c2e2c",
+    "name": "Sjampetterke",
+    "latitude": 50.9444074,
+    "longitude": 3.1251945,
+    "price": 2.2,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2018-12-21T18:05:45.555+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "44ff70f9-726c-4ae1-ba98-a3706a244fa5",
+    "name": "Markt 19",
+    "latitude": 50.9453221,
+    "longitude": 3.1240537,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-12-21T18:41:15.076+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "50a61234-fef7-4aab-a038-c9a1e85f18c8",
+    "name": "Café moustache",
+    "latitude": 50.9453526,
+    "longitude": 3.1240152,
+    "price": 2.2,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2018-12-21T19:42:32.127+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "67ef8100-2056-412a-97c4-58cde6823f8f",
+    "name": "Vagant",
+    "latitude": 50.9443647364979,
+    "longitude": 3.12544673681259,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-12-21T19:50:39.685+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "a1054dcc-4f6e-4a2c-9bb2-aa01f1dbd5a1",
+    "name": "Beaux arts",
+    "latitude": 50.9452377,
+    "longitude": 3.1246964,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2018-12-21T20:24:13.221+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "f625c6e5-5d4b-4ec9-afbf-286b054ff6c4",
+    "name": "De zwaan",
+    "latitude": 51.3318584999179,
+    "longitude": 4.36503231525421,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-12-25T14:59:46.469+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "983f65d6-54f5-47da-85b8-b2387adc5e0c",
+    "name": "JOC Ieper",
+    "latitude": 50.8491574,
+    "longitude": 2.8764939,
+    "price": 1.8,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-12-25T19:36:14.246+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "12b0f0bd-4286-475b-9bc1-34333765acfa",
+    "name": "Missy Sippy",
+    "latitude": 51.0543174743652,
+    "longitude": 3.72266674041748,
+    "price": 3.2,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-12-27T17:29:40.542+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "56bb029a-6c0e-475b-bdd8-de980bc22c0a",
+    "name": "Peters spprtbar",
+    "latitude": 51.349189,
+    "longitude": 4.3158318,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-12-29T16:30:55.379+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "b9c7c3ff-0d33-4bd1-8795-bd291da51e41",
+    "name": "De Vage Belofte",
+    "latitude": 50.8497101,
+    "longitude": 2.8842684,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-12-29T23:18:15.311+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "cfdc57ab-0948-4d8a-885c-0c6a5942a3d9",
+    "name": "Punta Cana",
+    "latitude": 50.8497697,
+    "longitude": 2.8847877,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-12-30T00:26:13.718+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "bb2c0ee9-bf22-426d-88f9-339ab8c97b56",
+    "name": "Edelweiss",
+    "latitude": 50.7822133,
+    "longitude": 2.7428966,
+    "price": 2.4,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2018-12-30T14:10:27.512+00:00",
+    "creator": "Gilles V"
+  },
+  {
+    "id": "7c2b01f1-d565-4449-ba0e-b6a02816371d",
+    "name": "Charlie",
+    "latitude": 50.8496866,
+    "longitude": 2.8841452,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-01-05T00:28:43.175+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "6006e862-05cb-4007-9851-3d849d435398",
+    "name": "Sportcafé de pionier",
+    "latitude": 50.7839859,
+    "longitude": 3.0317266,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-01-06T13:12:00.824+00:00",
+    "creator": "Gilles V"
+  },
+  {
+    "id": "70f2a6fe-5477-4e2a-8f86-4d057b05242b",
+    "name": "Bottletaps",
+    "latitude": 37.6692724,
+    "longitude": -121.8566031,
+    "price": 13.96,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Grand cru 750ml.\nOok Rodenbach Alexander"
+      ]
+    },
+    "created": "2019-01-09T00:57:36.076+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "8a507f02-e634-4bac-a37a-9dd9e059c809",
+    "name": "Cafetaria zwembad Ieper",
+    "latitude": 50.8444137573242,
+    "longitude": 2.89488959312439,
+    "price": 2.40000009536743,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        ""
+      ]
+    },
+    "created": "2019-01-09T16:17:38.584+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "4974f0dc-8c69-4068-99e9-58c57fb8d6f6",
+    "name": "Borluut",
+    "latitude": 51.0546960784171,
+    "longitude": 3.72207181617802,
+    "price": 3.2,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-01-19T14:01:27.151+00:00",
+    "creator": "Mathieu R"
+  },
+  {
+    "id": "72a8cfe8-2b88-464c-b683-0fd06e54b498",
+    "name": "The Tip Tap Room",
+    "latitude": 42.3610534667969,
+    "longitude": -71.0639419555664,
+    "price": 8.78999996185303,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "33cl!"
+      ]
+    },
+    "created": "2019-01-19T14:51:26.172+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "171c054f-2431-4488-97a2-d6f0108c4b02",
+    "name": "Break Café",
+    "latitude": 50.8558413,
+    "longitude": 2.726666,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-01-19T17:18:01.633+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "326e64a0-2904-47f5-93a6-f77736e3d4a5",
+    "name": "Parish Cafe",
+    "latitude": 42.3517827,
+    "longitude": -71.0716681,
+    "price": 10.55,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "33cl"
+      ]
+    },
+    "created": "2019-01-20T00:38:32.665+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "c2046eb0-6343-41c6-8cd6-3a01a10e90dc",
+    "name": "Stoddard's Fine Food & Ale",
+    "latitude": 42.3551787,
+    "longitude": -71.0617764,
+    "price": 7.91,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Grand cru - 33 cl"
+      ]
+    },
+    "created": "2019-01-20T01:36:28.998+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "0da70061-922b-4123-a450-afb6b9620a71",
+    "name": "The Ginger Man",
+    "latitude": 42.3593486042112,
+    "longitude": -71.0541844367981,
+    "price": 8.79,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Grand Cru - 33cl"
+      ]
+    },
+    "created": "2019-01-20T02:31:01.308+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "f8c8e144-c5f8-4056-8c97-03a81f2fe3b9",
+    "name": "Saint-Georges",
+    "latitude": 50.8560096,
+    "longitude": 2.7265775,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Gi bier bestellen, tis primus. "
+      ]
+    },
+    "created": "2019-01-25T18:19:35.424+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "f465620e-de65-4ebd-9b07-216425bbeb55",
+    "name": "Geuzenhuis",
+    "latitude": 51.0413813,
+    "longitude": 3.7287865,
+    "price": 3.2,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2019-01-25T20:26:37.784+00:00",
+    "creator": "mattias.michaux"
+  },
+  {
+    "id": "4b4e68bb-456f-4eb8-91f9-79bb90415f9c",
+    "name": "'t Hemelrijck",
+    "latitude": 51.0549199,
+    "longitude": 3.7260728,
+    "price": 3.3,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-01-25T21:14:24.16+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "74350dd3-73d4-49d7-a8eb-ac1886e4238a",
+    "name": "Woody's",
+    "latitude": 51.054904,
+    "longitude": 3.7247908,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-01-25T22:28:42.728+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "4a18e26a-be0f-4041-94c3-35671c65676f",
+    "name": "Kaffee Plansjee",
+    "latitude": 51.0548455,
+    "longitude": 3.7252005,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-01-25T23:38:28.083+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "4c26d474-a25f-4b61-b293-b8a4bcfb7fab",
+    "name": "In de zwaan ",
+    "latitude": 50.7971981,
+    "longitude": 2.7463732,
+    "price": 2.2,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Primus café "
+      ]
+    },
+    "created": "2019-02-01T14:45:21.977+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "8bb69495-d84b-487d-9377-0913f445f2ab",
+    "name": "Cultuur café",
+    "latitude": 51.3433481,
+    "longitude": 3.2802489,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-02-03T12:26:14.929+00:00",
+    "creator": "mattias.michaux"
+  },
+  {
+    "id": "a7a7b9ce-e3ef-41f3-8908-6d55d50fb95b",
+    "name": "Brasserie amazonial",
+    "latitude": 51.3498015,
+    "longitude": 3.2809509,
+    "price": 4.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-02-03T13:32:56.772+00:00",
+    "creator": "mattias.michaux"
+  },
+  {
+    "id": "6ad7b287-87c7-482f-8bdb-b91e7fe4a36c",
+    "name": "Overpoort bowl",
+    "latitude": 51.0404697074905,
+    "longitude": 3.72540593147278,
+    "price": 2.6,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-02-06T18:57:28.73+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "3e12289b-1d0e-4e2c-951a-725aa9d91e16",
+    "name": "Latin Quarter",
+    "latitude": 51.0396256085113,
+    "longitude": 3.72559368610382,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-02-06T19:26:24.591+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "dcc6ffdc-2ec1-4dc9-bc5a-3e1f8e829e1a",
+    "name": "The Zone",
+    "latitude": 51.0313825167979,
+    "longitude": 3.70697875908616,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2019-02-08T19:41:48.443+00:00",
+    "creator": "jensdevos5"
+  },
+  {
+    "id": "dbdefd34-e98d-4185-84c2-fe5cbc69c4e4",
+    "name": "Het Swingcafé",
+    "latitude": 50.9188276,
+    "longitude": 2.9583884,
+    "price": 1.8,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-02-09T19:20:44.66+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "4c3b6ee0-bc81-4813-b5ee-9138be81037b",
+    "name": "KVE Drongen",
+    "latitude": 51.0436551,
+    "longitude": 3.6394234,
+    "price": 2.2,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-02-10T10:33:23.821+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "98db1db3-2607-4764-91b5-28981ee90252",
+    "name": "Kaffee Bazaar",
+    "latitude": 50.8499234839106,
+    "longitude": 2.88498401641846,
+    "price": 2.8,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2019-02-13T14:14:17.107+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "776e292e-fe21-41d7-a2f0-3b7d26b64826",
+    "name": "Ara hotel",
+    "latitude": 51.810173034668,
+    "longitude": 4.58124542236328,
+    "price": 3.45,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Maandag geen ronnies op de kaart tegen woensdag heeft de barman ze speciaal besteld. "
+      ]
+    },
+    "created": "2019-02-13T17:48:54.75+00:00",
+    "creator": "Wout B"
+  },
+  {
+    "id": "d15aa55c-0f6f-4f17-9086-9f67d645ecf8",
+    "name": "Jan Breydel Stadion",
+    "latitude": 51.1933572984426,
+    "longitude": 3.18060636520386,
+    "price": 2.2,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Ivan Leko's Potje Paté"
+      ]
+    },
+    "created": "2019-02-14T20:13:14.504+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "8c074e4b-449f-4444-b785-7498f2eae0f4",
+    "name": "Boerenhof",
+    "latitude": 50.8526164,
+    "longitude": 2.8346143,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-02-17T12:04:29.879+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "b64a5f30-063f-40f3-a412-bba1d873ea13",
+    "name": "Eetcafé De Hertog",
+    "latitude": 50.82225,
+    "longitude": 2.7313509,
+    "price": 2.8,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-02-17T18:09:18.358+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "780dec28-b931-43b4-88f0-14f1471468ca",
+    "name": "Herberg St. Joris",
+    "latitude": 50.8549471,
+    "longitude": 2.8207742,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Bij Inne Barroo"
+      ]
+    },
+    "created": "2019-02-23T14:50:23.787+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "abba41c6-3c62-4d02-b5d0-3ee06576ed63",
+    "name": "De Slachter",
+    "latitude": 50.8546580541434,
+    "longitude": 2.82157123088837,
+    "price": 1.8,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-02-23T15:41:23.519+00:00",
+    "creator": "jensdevos5"
+  },
+  {
+    "id": "9dccc78b-84b7-445d-89dd-763a3b16c889",
+    "name": "'t Projekt",
+    "latitude": 50.8554056184905,
+    "longitude": 2.82032534480095,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-02-23T15:58:25.053+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "94c60e11-4ad0-4cb2-8473-7d12dcad7db7",
+    "name": "Oud Veurne",
+    "latitude": 51.0721236,
+    "longitude": 2.6628129,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-02-23T21:43:39.935+00:00",
+    "creator": "Mathieu R"
+  },
+  {
+    "id": "f65288a3-cdcc-47d1-be22-6ceb1b26b6d5",
+    "name": "Bistro de neus",
+    "latitude": 51.3397405,
+    "longitude": 4.3816682,
+    "price": 2.9,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-02-24T18:03:25.711+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "abd217da-1243-48b8-b4ce-b084394632d8",
+    "name": "Chez mouche",
+    "latitude": 51.359829,
+    "longitude": 4.3081245,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-02-27T18:11:32.11+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "4f77e26f-548a-41fd-b511-06101b68eb39",
+    "name": "Café Breughel",
+    "latitude": 51.0369398,
+    "longitude": 3.7419526,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-02-28T19:28:12.806+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "3c2fdac7-0a55-4867-94b5-b9d915527872",
+    "name": "Obelisk",
+    "latitude": 51.0893656,
+    "longitude": 4.3646816,
+    "price": 2.7,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-03-01T12:03:39.355+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "b2238231-bb2c-4f34-bd79-899685633260",
+    "name": "My place ",
+    "latitude": 50.8551291,
+    "longitude": 2.7256097,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-03-01T22:48:00.006+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "d138a583-81e7-46b3-88eb-c94160ce2a7d",
+    "name": "Intermezzo",
+    "latitude": 50.8458764,
+    "longitude": 3.261185,
+    "price": 2.8,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-03-02T11:58:30.758+00:00",
+    "creator": "Gilles V"
+  },
+  {
+    "id": "c0fb3f7b-484f-4a33-b822-cb8792aa3dcf",
+    "name": "The lounge",
+    "latitude": 51.0600921,
+    "longitude": 4.3601275,
+    "price": 2.7,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-03-02T17:58:38.227+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "2d0e2edd-e6e6-4adf-b3e3-927c1c53475a",
+    "name": "Drei klaveren",
+    "latitude": 51.3601591,
+    "longitude": 4.3091882,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-03-02T23:07:09.019+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "503520c0-2b38-4278-8915-f7eebc4327f5",
+    "name": "Den Boer",
+    "latitude": 51.072855970757,
+    "longitude": 3.67559731006622,
+    "price": 2.4,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2019-03-03T11:01:24.507+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "d4f38bf6-6e38-43a4-b76a-124ec5faca96",
+    "name": "Chez Koen Kortrijk",
+    "latitude": 50.8241079,
+    "longitude": 3.2735954,
+    "price": 2.75,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        ""
+      ]
+    },
+    "created": "2019-03-05T17:31:42.96+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "1e5d93f2-8777-430e-b529-129f9878cae8",
+    "name": "Misterioso",
+    "latitude": 51.059034,
+    "longitude": 3.726441,
+    "price": 2.79999995231628,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-03-06T19:00:03.864+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "a9931fea-e0c7-452e-aa60-1de547076329",
+    "name": "Quinten Matsijs",
+    "latitude": 51.2213143573623,
+    "longitude": 4.40359711647034,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-03-07T15:30:12.124+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "eaacbe89-50e3-4605-b6fa-b5dc1f79c50b",
+    "name": "Hermanos",
+    "latitude": 50.8924439,
+    "longitude": 3.4266508,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-03-07T17:40:17.425+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "dc64e4a4-fe06-4cda-94e8-760a9dd6e637",
+    "name": "Den nieuwen hoek",
+    "latitude": 51.2016471,
+    "longitude": 4.4334534,
+    "price": 2.6,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-03-08T14:25:37.65+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "27bb1f84-1c50-4ef0-a262-7a3d8941ddaa",
+    "name": "Amfora",
+    "latitude": 50.8559463,
+    "longitude": 2.7271742,
+    "price": 2.6,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2019-03-10T17:33:05.302+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "83670bcb-9dbf-4508-aa4c-8006c9712b4d",
+    "name": "Bar Rustic",
+    "latitude": 50.8786215567892,
+    "longitude": 4.69960033893585,
+    "price": 2.8,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-03-12T18:44:35.987+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "cfdbb7d7-938c-4d73-88fd-609217354cf4",
+    "name": "Mezzomezzo",
+    "latitude": 50.8266296,
+    "longitude": 3.2701185,
+    "price": 2.8,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-03-16T16:06:13.446+00:00",
+    "creator": "Gilles V"
+  },
+  {
+    "id": "d62c74a0-1f74-45ad-9ecf-0872ced6282c",
+    "name": "'t Leetvermaak",
+    "latitude": 50.8517053,
+    "longitude": 2.8833102,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-03-20T19:46:48.309+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "a05c6954-019b-4a7c-bc1f-2c9334a5b782",
+    "name": "Romanhof",
+    "latitude": 50.8550927,
+    "longitude": 2.720182,
+    "price": 2.3,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-03-22T17:38:38.339+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "0c470e1b-e4f2-4f0e-a70d-dc600edbdc23",
+    "name": "Rust roest",
+    "latitude": 50.9195715484902,
+    "longitude": 2.63165995767213,
+    "price": 3.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-03-24T11:29:29.876+00:00",
+    "creator": "Gilles V"
+  },
+  {
+    "id": "cbfa725b-33aa-4405-a0aa-756026910912",
+    "name": "Jan van Gent",
+    "latitude": 51.0500247,
+    "longitude": 3.7170339,
+    "price": 2.4,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-03-28T18:45:09.376+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "2ce77fc8-a1bb-4e72-b014-6badad4b14f9",
+    "name": "St. Arnoldus",
+    "latitude": 50.8519256,
+    "longitude": 2.8895283,
+    "price": 4.5,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Grande Cru (vat) 5.5?\nCaractere Rouge (fles 75cl) 18?\nVintage (fles 37.5cl) 11?"
+      ]
+    },
+    "created": "2019-03-29T20:24:17.084+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "ebd6c7b9-74ff-4d98-ba69-af0afe33e432",
+    "name": "The Times",
+    "latitude": 50.8520035,
+    "longitude": 2.888454,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2019-03-29T21:34:05.487+00:00",
+    "creator": "jensdevos5"
+  },
+  {
+    "id": "5e4e8e6e-191e-43c4-a328-f797ff5d34e9",
+    "name": "Troubadourtje",
+    "latitude": 50.8520355224609,
+    "longitude": 2.88833403587341,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2019-03-29T21:38:47.234+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "3498c53e-7159-4317-8cb3-f2bec860383d",
+    "name": "Zwarte Leeuw",
+    "latitude": 50.8529736,
+    "longitude": 2.8833673,
+    "price": 2.2,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-03-29T22:14:58.381+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "e47a7493-cb56-4ec4-86d1-33b9f6aaf9a2",
+    "name": "Café Volkshuis",
+    "latitude": 51.0605692224816,
+    "longitude": 3.72545957565308,
+    "price": 2.7,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-03-29T22:22:49.236+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "2ba17ec2-04c5-4e15-8462-e7500bca5a5a",
+    "name": "Shellhole",
+    "latitude": 50.852249,
+    "longitude": 2.8821975,
+    "price": 1.8,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Rommelmarktwinkeltje"
+      ]
+    },
+    "created": "2019-03-29T23:56:17.567+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "1d066452-cfdd-47ad-8c39-8650ee96cc71",
+    "name": "Taverne Ambiance",
+    "latitude": 51.0472117,
+    "longitude": 3.7546752,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2019-03-31T10:21:22.865+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "4bee1640-d06e-4700-bb57-f87c22a75ff9",
+    "name": "L' aile et la cuisse",
+    "latitude": 50.7833295,
+    "longitude": 2.7449641,
+    "price": 2.2,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-03-31T14:20:20.336+00:00",
+    "creator": "Gilles V"
+  },
+  {
+    "id": "4230a42f-7ada-4948-9e64-1af751e70e0c",
+    "name": "'t Spoorke",
+    "latitude": 51.0413583,
+    "longitude": 3.7541196,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-04-02T17:55:15.985+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "e381ca69-b89c-400f-a757-8bfe336e8f9d",
+    "name": "Bellevie",
+    "latitude": 50.9511831,
+    "longitude": 3.1269084,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "En je kuj haar loatn doen"
+      ]
+    },
+    "created": "2019-04-13T12:42:48.462+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "1dd2014b-35a0-46fb-8389-1ead6a2d0714",
+    "name": "Kantine BS Geluveld",
+    "latitude": 50.8353704,
+    "longitude": 3.0018133,
+    "price": 2.3,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-04-13T15:35:01.518+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "a1da7703-ea97-4906-8fc8-f9f8c5e3e3a2",
+    "name": "Café Moderne",
+    "latitude": 50.8551073,
+    "longitude": 2.7225258,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-04-13T18:55:45.887+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "60a77abc-50b9-4f06-b9e1-55f09b5f1d4f",
+    "name": "Eetcafé 't Folk",
+    "latitude": 50.7674576,
+    "longitude": 2.7813519,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-04-14T15:32:49.438+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "e7e6e3b9-74d3-40ee-bcef-3e066e967f31",
+    "name": "Ariane",
+    "latitude": 50.8549255,
+    "longitude": 2.8828693,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-04-15T16:31:24.517+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "1cf9cdf4-873a-4cee-9eaa-0a3161165ff6",
+    "name": "Strandhotel",
+    "latitude": 51.2779599,
+    "longitude": 3.0299091,
+    "price": 2.7,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "HALVE LITER 5,4?"
+      ]
+    },
+    "created": "2019-04-22T14:38:12.292+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "b46e3a97-0f04-47e7-8261-2c23adbff43d",
+    "name": "Bistro jan yperman ziekenhuis",
+    "latitude": 50.8650133,
+    "longitude": 2.8973807,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-04-23T08:07:28.969+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "eb16ac18-6fff-4ab2-8e85-a7bc7739519f",
+    "name": "Aux Caves d'Artois",
+    "latitude": 51.1031413,
+    "longitude": 2.5920619,
+    "price": 2.4,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2019-04-27T07:51:27.587+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "9a10bd73-29d6-4e90-b5b4-c0b0c8fcb6a7",
+    "name": "De strandvisser",
+    "latitude": 51.1022354719375,
+    "longitude": 2.58722185940769,
+    "price": 2.8,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-04-27T09:32:35.039+00:00",
+    "creator": "jensdevos5"
+  },
+  {
+    "id": "9a79f456-c384-4745-a5d7-4c3449f0f228",
+    "name": "De kegel X-treme",
+    "latitude": 51.1778094842246,
+    "longitude": 2.80267238616943,
+    "price": 2.7,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-04-27T12:13:38.803+00:00",
+    "creator": "jensdevos5"
+  },
+  {
+    "id": "00fc0d0c-cd43-4aa1-964a-28d25b4ba35a",
+    "name": "De koerel",
+    "latitude": 51.3432529813518,
+    "longitude": 4.31431174278259,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Bruin cafeeke met de f\nGoedkoopste rodenbach"
+      ]
+    },
+    "created": "2019-04-28T16:20:22.048+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "d71ef0d7-9d6f-4828-8d17-dcdd1de9135c",
+    "name": "Café St. Joris",
+    "latitude": 50.8166594,
+    "longitude": 2.7639688,
+    "price": 2.2,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-05-01T11:08:35.455+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "bbcf9411-37d9-4fdf-82bf-63b46512ecb0",
+    "name": "Mosquito coast",
+    "latitude": 51.0552848,
+    "longitude": 3.7232924,
+    "price": 4.45,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Grand cru"
+      ]
+    },
+    "created": "2019-05-03T15:28:29.419+00:00",
+    "creator": "mattias.michaux"
+  },
+  {
+    "id": "5b664dcc-9d3d-4b5b-9678-2eb40fdde803",
+    "name": "Fritshop Joske",
+    "latitude": 50.9335032,
+    "longitude": 3.0149311,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-05-04T16:19:40.882+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "d76f201d-5246-4c77-8800-83a4ae311043",
+    "name": "Rodenbach brasserie",
+    "latitude": 50.8275304,
+    "longitude": 3.2664778,
+    "price": 3.5,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "33'ers vant vat\nOok grand cru en Rodenbach alexander op fles"
+      ]
+    },
+    "created": "2019-05-11T10:29:09.961+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "4c71e8c1-85ae-44ce-81eb-8417a6d01e30",
+    "name": "Cafe West-Vlaanderen",
+    "latitude": 50.8275101,
+    "longitude": 3.2665579,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-05-11T14:15:24.848+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "249756bc-b2e9-42a0-ab67-061d71b77fdc",
+    "name": "'t Lepelke",
+    "latitude": 50.9412015,
+    "longitude": 3.0587301,
+    "price": 1.7,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-05-11T15:25:00.107+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "602b7d03-d4fc-4358-8332-eda5bedc90d0",
+    "name": "Jeugdhuis 't Arsenaal ",
+    "latitude": 50.8072839,
+    "longitude": 3.2304358,
+    "price": 1.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-05-11T21:21:17.555+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "41fa06a9-9488-4d7b-b979-d9982ed7a008",
+    "name": "Taverne The Dixie",
+    "latitude": 51.0373698239906,
+    "longitude": 3.7116327881813,
+    "price": 2.7,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-05-22T15:04:46.958+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "4ed0fa71-571c-43e8-be0f-aff89f44a2c3",
+    "name": "Café Transport",
+    "latitude": 51.0329642,
+    "longitude": 3.7588202,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-05-29T17:01:10.922+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "379d3ec4-7b54-48cb-99f8-cacd2aed9e36",
+    "name": "Bottarga",
+    "latitude": 51.2302674,
+    "longitude": 2.9103681,
+    "price": 3.2,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-06-01T12:06:37.474+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "363a1286-eef0-4b07-becd-e76a2850fe83",
+    "name": "Passage",
+    "latitude": 50.8563885246116,
+    "longitude": 2.72680073976517,
+    "price": 4.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Tis wel een grand cru"
+      ]
+    },
+    "created": "2019-06-01T12:13:15.235+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "d98f4906-29cf-47e8-9a17-8ae8874d5bf6",
+    "name": "Café Bornhem",
+    "latitude": 51.0538228,
+    "longitude": 3.7183803,
+    "price": 3.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-06-01T13:23:55.101+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "f0af7847-2b7c-4f4a-8925-c552fc2fabb9",
+    "name": "De Weunwaegne",
+    "latitude": 50.9674949715472,
+    "longitude": 3.00516843795776,
+    "price": 1.6,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-06-01T13:34:57.031+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "fc6d86b9-3515-4465-8ff0-b1dc58ed2c84",
+    "name": "Carlito's",
+    "latitude": 51.2331587,
+    "longitude": 2.9153233,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-06-01T13:52:22.9+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "e1b6cb77-7328-4087-b642-779acfc9b124",
+    "name": "Brasserie Henry",
+    "latitude": 51.2301323,
+    "longitude": 2.909991,
+    "price": 2.9,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-06-01T15:38:58.425+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "8f7c59e2-a5ae-4d3c-b66e-03dfe4c4f403",
+    "name": "Café De La Paix ",
+    "latitude": 50.8559112548828,
+    "longitude": 2.72577548027039,
+    "price": 2.40000009536743,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Je kut ook e Grand Cru drinken voor 4 euro"
+      ]
+    },
+    "created": "2019-06-02T11:32:23.766+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "4e3ac600-84a9-4285-bcd4-a114cbc3e805",
+    "name": "Vannestes",
+    "latitude": 50.7786759,
+    "longitude": 2.6371889,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Is ook gekend als bakkerij tea-room Denys"
+      ]
+    },
+    "created": "2019-06-09T09:24:31.793+00:00",
+    "creator": "jensdevos5"
+  },
+  {
+    "id": "f22fcc4a-be53-4cee-b36d-65da9d3a443f",
+    "name": "Hartig",
+    "latitude": 50.8559169,
+    "longitude": 2.7231794,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-06-14T18:48:52.012+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "ae20fe88-cbf7-4e17-af44-3fa5545b8209",
+    "name": "Jeugdheem 'n westouterik",
+    "latitude": 50.7979758,
+    "longitude": 2.745613,
+    "price": 1.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-06-15T21:26:04.119+00:00",
+    "creator": "jurgenlogie"
+  },
+  {
+    "id": "1eb1d819-fe4f-42c4-be66-91553a7e053a",
+    "name": "Pacific",
+    "latitude": 50.8464441,
+    "longitude": 2.8817192,
+    "price": 3.7,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Afzetters ! 3,70 vo e ronny !!!"
+      ]
+    },
+    "created": "2019-06-16T13:15:54.539+00:00",
+    "creator": "Gilles V"
+  },
+  {
+    "id": "b81ea22b-584b-4c00-8e54-4d59a0d3ae31",
+    "name": "Legends",
+    "latitude": 51.122423,
+    "longitude": 3.1511469,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-06-21T19:04:51.918+00:00",
+    "creator": "Bram B"
+  },
+  {
+    "id": "343601f4-54c6-4413-a18c-4c4626fa5642",
+    "name": "Brasserie De Gilde",
+    "latitude": 50.9195420671922,
+    "longitude": 3.21088335166735,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2019-06-22T12:19:26.238+00:00",
+    "creator": "jensdevos5"
+  },
+  {
+    "id": "9eb81d28-3199-45e8-b581-70461031cd9f",
+    "name": "Café 't stil ende",
+    "latitude": 50.9223355424984,
+    "longitude": 3.216472864151,
+    "price": 2.2,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-06-22T13:54:04.616+00:00",
+    "creator": "jensdevos5"
+  },
+  {
+    "id": "93537350-755e-413c-bf7f-c198e209944f",
+    "name": "'T pleintje",
+    "latitude": 51.3047064419791,
+    "longitude": 4.28999215364456,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-06-22T15:11:34.484+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "1508280f-74c9-4b20-9543-44fc9fc2b881",
+    "name": "Albert 1",
+    "latitude": 51.1034882583947,
+    "longitude": 2.59061694145203,
+    "price": 3.9,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "25cl = 3,90?\n33cl = 5,00?\n50cl = 7,40?\nNie goedkoop ??\n"
+      ]
+    },
+    "created": "2019-06-22T15:38:03.172+00:00",
+    "creator": "Bram B"
+  },
+  {
+    "id": "3788ed2e-38e3-422e-b9db-6bb61d9bdee6",
+    "name": "Oud vlaanderen",
+    "latitude": 50.8556976987001,
+    "longitude": 2.72602558135986,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-06-23T09:31:03.761+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "3316d048-8137-4cfd-a911-12afa2c15a69",
+    "name": "Microbar",
+    "latitude": 64.1485963602904,
+    "longitude": -21.9407594203949,
+    "price": 10.58,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Grand Cru"
+      ]
+    },
+    "created": "2019-06-23T16:48:13.531+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "f751e9f9-b32d-4a83-ad91-db96f1d9cf11",
+    "name": "De beurs",
+    "latitude": 51.0725182175883,
+    "longitude": 2.66224312680333,
+    "price": 3.3,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-06-23T17:18:36.068+00:00",
+    "creator": "Mathieu R"
+  },
+  {
+    "id": "7e28b30e-473b-4d69-9d26-dcd3e920579e",
+    "name": "Chips",
+    "latitude": 50.804492,
+    "longitude": 3.2830309,
+    "price": 2.2,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2019-06-24T08:46:10.881+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "e452a7a9-c68b-446c-b4c1-ab2079d455d0",
+    "name": "Hazekasteel",
+    "latitude": 50.743441686018,
+    "longitude": 2.82357215881348,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-06-27T16:18:43.358+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "5e23bc81-cedf-4b7e-b940-6acb8aa7c936",
+    "name": "Grand café Godot",
+    "latitude": 51.0553977,
+    "longitude": 3.7216364,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-07-01T17:55:28.045+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "d33b9d5c-96a3-434c-abb9-41b44a7bc308",
+    "name": "Leopold I brasserie",
+    "latitude": 51.1003213,
+    "longitude": 2.5825216,
+    "price": 3.7,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Grand cru voor 4.3?"
+      ]
+    },
+    "created": "2019-07-04T15:51:10.813+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "03a4799f-72b5-4cec-822d-ba8e882cee1d",
+    "name": "Brasserie Royal",
+    "latitude": 50.8781648,
+    "longitude": 4.355113,
+    "price": 2.6,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-07-06T11:33:40.642+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "370d133c-51a0-4402-a1bf-ccb62b755434",
+    "name": "Le Corbeau",
+    "latitude": 50.8524387,
+    "longitude": 4.3547221,
+    "price": 2.7,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-07-06T15:09:38.676+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "177e51d7-5b43-4fdb-bdd3-b90dd00c5ce5",
+    "name": "Café De Zot",
+    "latitude": 51.0372399549216,
+    "longitude": 3.71066719293594,
+    "price": 2.8,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-07-06T22:10:03.129+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "e6618ac2-edd1-4e1e-97c3-8101215a7377",
+    "name": "Markt 38",
+    "latitude": 50.855815797511,
+    "longitude": 2.72715726472154,
+    "price": 2.9,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-07-08T18:31:59.303+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "2000e924-830b-43bf-9347-d1dbca17770e",
+    "name": "Kollebloeme",
+    "latitude": 50.8516913839542,
+    "longitude": 2.88638949394226,
+    "price": 3.9,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Je kut ook e grand Cru drinken voor ?6.40 "
+      ]
+    },
+    "created": "2019-07-16T12:13:47.268+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "f90519cf-1741-47ca-a759-8cd88cbd080f",
+    "name": "Smilies",
+    "latitude": 51.0283107,
+    "longitude": 3.7244172,
+    "price": 2.2,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-07-19T12:12:52.951+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "d023e635-48d9-4aa0-930a-bd055106125a",
+    "name": "The times",
+    "latitude": 50.8519993,
+    "longitude": 2.8883859,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-07-19T18:49:57.518+00:00",
+    "creator": "Gilles V"
+  },
+  {
+    "id": "89406b75-2448-4578-9425-bf6acc9b1aa9",
+    "name": "In 't Klein Stadhuis",
+    "latitude": 50.8516517,
+    "longitude": 2.8860557,
+    "price": 2.7,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2019-07-24T17:08:04.518+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "c8eac46a-9c33-495f-bc4d-a6a3584cb667",
+    "name": "Taverne",
+    "latitude": 51.0541863,
+    "longitude": 3.7311205,
+    "price": 2.8,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-07-25T19:01:53.68+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "9b8e63df-a175-4dd0-bd2c-7883ec0073d2",
+    "name": "Amen & Uit",
+    "latitude": 50.7412613,
+    "longitude": 4.0065909,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2019-07-27T13:35:14.844+00:00",
+    "creator": "Bram B"
+  },
+  {
+    "id": "a94db2e2-31cd-4b3f-868a-16787fc41039",
+    "name": "De kroon",
+    "latitude": 50.8176669,
+    "longitude": 2.8744212,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-07-27T13:48:46.522+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "0cdfa379-d615-42ae-a7e6-c323eebc7b13",
+    "name": "Relais du Spiru",
+    "latitude": 50.5042426305988,
+    "longitude": 4.17785167694092,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-07-31T17:24:56.391+00:00",
+    "creator": "jensdevos5"
+  },
+  {
+    "id": "d976e012-4817-42df-8209-12e73b13fcf4",
+    "name": "Den heksenstoel",
+    "latitude": 50.7804376,
+    "longitude": 2.7726304,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-08-04T13:12:22.873+00:00",
+    "creator": "Gilles V"
+  },
+  {
+    "id": "06c709fe-0ec1-42a3-9eb2-9296dd472cff",
+    "name": "Au Lion Belge",
+    "latitude": 50.6354641827068,
+    "longitude": 3.07059421995041,
+    "price": 2.6,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-08-14T10:13:20.352+00:00",
+    "creator": "jensdevos5"
+  },
+  {
+    "id": "7d410da1-1994-4e78-9bb2-5e5db9a26ee5",
+    "name": "Café de platse",
+    "latitude": 50.8902563,
+    "longitude": 2.6565575,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-08-18T07:02:38.906+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "5b77352f-5f38-417b-b286-a7b6c069fc10",
+    "name": "De verbeelding",
+    "latitude": 51.1335026385417,
+    "longitude": 2.67386995726133,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2019-08-21T17:24:30.238+00:00",
+    "creator": "Gilles V"
+  },
+  {
+    "id": "f9b0ccd6-a9a8-4e02-9208-ae63584fc03b",
+    "name": "De ark",
+    "latitude": 51.1348340800798,
+    "longitude": 2.76793777942657,
+    "price": 2.8,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-08-25T15:25:19.741+00:00",
+    "creator": "Wout B"
+  },
+  {
+    "id": "07c84b30-9fd3-436b-a81f-532e10d724e2",
+    "name": "L'apéro",
+    "latitude": 51.2297692,
+    "longitude": 2.909346,
+    "price": 3.2,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-08-31T08:56:22.688+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "2067a41c-318a-4c57-aeaf-feaef0eba6e8",
+    "name": "Café Britannia",
+    "latitude": 50.8547316,
+    "longitude": 2.7345291,
+    "price": 1.9,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Mauve kot"
+      ]
+    },
+    "created": "2019-09-05T18:33:53.376+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "19ec0e60-fc29-4146-9617-d154defd97d5",
+    "name": "Café 't hoekske",
+    "latitude": 50.9941372,
+    "longitude": 2.6549408,
+    "price": 1.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Goedkoopste café dak kennen voor ronnys\nOok supporters van club"
+      ]
+    },
+    "created": "2019-09-06T18:30:56.801+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "e6c2aa6f-8033-418a-acc3-8797acecfdc5",
+    "name": "Den hommelzak",
+    "latitude": 50.8555369548851,
+    "longitude": 2.7291582519764,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-09-08T12:49:05.916+00:00",
+    "creator": "Wout B"
+  },
+  {
+    "id": "2318db13-0228-4db6-ba4f-1c3826d4121f",
+    "name": "Aldis",
+    "latitude": 51.2245261,
+    "longitude": 2.8973262,
+    "price": 2.6,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "?2.60 van't vat\n?3.80 grand cru"
+      ]
+    },
+    "created": "2019-09-11T11:28:13.315+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "bdac1b44-54c7-4717-a02d-e93abb5a963c",
+    "name": "Gusta",
+    "latitude": 50.8530504,
+    "longitude": 2.8902618,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-09-20T17:02:34.448+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "f282c390-81db-465e-a544-18a6b6d02693",
+    "name": "Walrave",
+    "latitude": 51.1992269,
+    "longitude": 2.8502474,
+    "price": 2.7,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-09-21T12:04:34.181+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "383bba73-271a-4059-be97-0b44fe8aaa68",
+    "name": "De Klok",
+    "latitude": 51.037266,
+    "longitude": 3.7097686,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Stoatje pintje "
+      ]
+    },
+    "created": "2019-10-03T15:06:05.571+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "c81e3464-af89-443d-b7b0-0b08811460a6",
+    "name": "The twins ",
+    "latitude": 51.0725575,
+    "longitude": 2.5951875,
+    "price": 2.2,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-10-04T19:14:52.488+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "044cd10b-4c86-4d01-bce3-2dc92a8ad603",
+    "name": "Jeugdhuis De Voenke",
+    "latitude": 51.0127346,
+    "longitude": 2.709095,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-10-04T21:02:05.741+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "32499875-6510-4cda-a593-d829399e86e4",
+    "name": "Aba-jour",
+    "latitude": 51.0579864,
+    "longitude": 3.7242709,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-10-05T15:10:37.592+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "ab7712d7-3488-4bbb-8b64-f44f5b5a0c1b",
+    "name": "Brasserie 't Vosken",
+    "latitude": 51.0534643,
+    "longitude": 3.7261147,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Zebn Ook 33ers"
+      ]
+    },
+    "created": "2019-10-08T16:28:51.794+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "71d8900e-bb9a-4dd3-bd8b-66f3513b7012",
+    "name": "Bridge Brasserie",
+    "latitude": 51.0523426,
+    "longitude": 3.7178923,
+    "price": 3.2,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-10-08T17:35:24.547+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "c01f4f63-94d8-47d0-b412-8b7044070916",
+    "name": "'t Galgenhuisje",
+    "latitude": 51.0560153,
+    "longitude": 3.7221254,
+    "price": 3.3,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-10-08T19:49:02.613+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "19ae9dae-f98a-4bdc-bf44-a1e683ef4d76",
+    "name": "Smak & Saga",
+    "latitude": 51.1480257,
+    "longitude": 2.7140127,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-10-13T12:25:31.946+00:00",
+    "creator": "Gilles V"
+  },
+  {
+    "id": "f5997b3b-242b-4ee4-bf93-e45987aaa17d",
+    "name": "Zum Bierjohann",
+    "latitude": 47.5676628,
+    "longitude": 7.5807903,
+    "price": 7.71,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Grand cru"
+      ]
+    },
+    "created": "2019-10-15T17:33:16.381+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "6d8ba2dc-3c97-434f-b68a-155c432f29cb",
+    "name": "Den Bros ",
+    "latitude": 50.8046618,
+    "longitude": 3.2825003,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2019-10-18T12:14:12.474+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "4c97149c-8f9e-46c8-bacf-5efaeb11f1df",
+    "name": "Jilles",
+    "latitude": 51.0389632,
+    "longitude": 3.7315835,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Ook vintage & grand cru"
+      ]
+    },
+    "created": "2019-10-23T13:54:31.328+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "12693d2d-c10d-4683-ab9b-c7315e6412a9",
+    "name": "L'Ecuyer",
+    "latitude": 50.8494903,
+    "longitude": 4.3532334,
+    "price": 3.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-10-24T18:39:06.328+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "5824f432-691d-4946-ad47-595467db8dfc",
+    "name": "Bowl Inn De Panne",
+    "latitude": 51.0836962,
+    "longitude": 2.6005076,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-10-25T17:20:47.097+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "1cd71c2e-81fb-4fb2-a0ff-38cdc02d659c",
+    "name": "La Bourse Du Commerce",
+    "latitude": 50.7474995,
+    "longitude": 3.6030623,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-10-27T15:14:08.565+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "35c19924-77f8-45b7-a02a-7a122649c45e",
+    "name": "Le Cadran",
+    "latitude": 50.9053678,
+    "longitude": 2.6168676,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-11-02T12:47:31.138+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "e3c88637-397f-439e-9a16-ae9db555aac1",
+    "name": "Resto Bazil",
+    "latitude": 50.9183946,
+    "longitude": 2.6990465,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-11-02T18:49:53.147+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "2eb7d18d-e3b0-432e-b633-9bb5093a48ae",
+    "name": "Milano Italian Food",
+    "latitude": 50.8519405,
+    "longitude": 2.887611,
+    "price": 4.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-11-10T18:43:11.231+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "bfad04b2-46c3-4e26-9ed4-0bbfd1a4d50b",
+    "name": "Bellegem's Friethuisje",
+    "latitude": 50.7776758,
+    "longitude": 3.3039399,
+    "price": 2.3,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-11-13T16:57:11.242+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "b260c5f8-2c9e-4634-934d-809faa9c97d5",
+    "name": "Café de hovenier",
+    "latitude": 51.2204358,
+    "longitude": 4.4111161,
+    "price": 2.6,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Schoon bruin café "
+      ]
+    },
+    "created": "2019-11-14T20:10:24.303+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "02f67385-0c39-4e37-9552-b1dd1e995b7b",
+    "name": "Café de kat",
+    "latitude": 51.2213238,
+    "longitude": 4.4047421,
+    "price": 2.7,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-11-14T20:42:42.468+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "6780c785-01e8-4c1d-971a-870ecd628fba",
+    "name": "The northerner",
+    "latitude": 51.2211364,
+    "longitude": 4.4030306,
+    "price": 2.8,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-11-14T21:04:33.666+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "476dc414-1f08-4763-8c3e-206b3ab158df",
+    "name": "Café den engel",
+    "latitude": 51.2214445,
+    "longitude": 4.399856,
+    "price": 2.9,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-11-14T22:08:11.501+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "78458c4d-ef82-4dff-b72e-986843960b20",
+    "name": "Den bengel",
+    "latitude": 51.2217066,
+    "longitude": 4.399593,
+    "price": 2.9,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-11-14T22:34:06.688+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "1c6809e1-7afc-4deb-a5f7-4c2101aa5816",
+    "name": "De muze",
+    "latitude": 51.2211412,
+    "longitude": 4.4025793,
+    "price": 2.8,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-11-14T23:40:34.215+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "db0e3fba-49a0-4d90-ba9c-a5c73ac6e4ca",
+    "name": "De Brasserie",
+    "latitude": 50.9202708,
+    "longitude": 3.2153971,
+    "price": 2.6,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-11-16T09:37:49.257+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "a9384855-dff9-4402-a0c5-6050fffe132e",
+    "name": "Rosa",
+    "latitude": 51.1179132,
+    "longitude": 2.6354051,
+    "price": 2.9,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-11-16T16:12:45.108+00:00",
+    "creator": "Gilles V"
+  },
+  {
+    "id": "34513b83-f2dc-4b1c-8273-3057a08e4b0f",
+    "name": "VVE Hansbeke",
+    "latitude": 51.0714254,
+    "longitude": 3.5073438,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-11-17T10:47:09.475+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "a57963ee-985d-4d2c-b008-60814d72f945",
+    "name": "Beerhouse & craft kitchen ",
+    "latitude": 54.679705,
+    "longitude": 25.283126,
+    "price": 5.3,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-11-17T17:26:04.335+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "4e53d7a8-bad0-4502-8470-8704ec3f578e",
+    "name": "Toezes",
+    "latitude": 50.9200356635703,
+    "longitude": 3.21520969528092,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2019-11-22T15:31:21.672+00:00",
+    "creator": "jensdevos5"
+  },
+  {
+    "id": "39b2b166-d88f-4e3d-a2d1-b95154affbd9",
+    "name": "Frituur De Lekkerbek",
+    "latitude": 50.8858344,
+    "longitude": 2.8170099,
+    "price": 2.2,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        ""
+      ]
+    },
+    "created": "2019-11-22T17:43:38.296+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "b7e7d3d2-4031-4003-b223-4a7572c41b73",
+    "name": "Rootz",
+    "latitude": 52.0758703,
+    "longitude": 4.309873,
+    "price": 5.35,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Tis de Grand Cru"
+      ]
+    },
+    "created": "2019-11-23T16:21:36.118+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "4df7763e-f4d5-4098-9903-f11a1bc2cd4d",
+    "name": "Parcaf",
+    "latitude": 51.2210703,
+    "longitude": 4.3971239,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-11-23T17:49:55.246+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "28ee71ca-2d77-4c09-b9d2-beeb4357f879",
+    "name": "De volle ton",
+    "latitude": 51.3620737,
+    "longitude": 4.3076715,
+    "price": 2.2,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-11-24T14:09:50.585+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "182379fa-4680-4922-bd7a-272342bd6e4b",
+    "name": "Kasteelhof",
+    "latitude": 50.9022027786669,
+    "longitude": 2.78747395140249,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-11-30T21:56:51.513+00:00",
+    "creator": "Gilles V"
+  },
+  {
+    "id": "cf2d7931-eed7-4944-a1bf-27101e38b663",
+    "name": "Fort Liefkenshoek",
+    "latitude": 51.294522,
+    "longitude": 4.285602,
+    "price": 2.09999990463257,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2019-12-04T10:35:14.186+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "a69476e0-91d6-4d3d-9a80-59cdfa0c2bc6",
+    "name": "Sporthal Ogierlande",
+    "latitude": 50.9974295,
+    "longitude": 3.0978851,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2020-01-07T18:50:47.067+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "d99f0236-2776-43d1-8e22-a4abc2d29e70",
+    "name": "Picolo",
+    "latitude": 51.3302726,
+    "longitude": 4.3624088,
+    "price": 2.7,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2020-01-10T12:12:35.499+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "d637ea36-9bd6-4137-b324-eef29c6d2d69",
+    "name": "Pelgrom",
+    "latitude": 51.2195465,
+    "longitude": 4.3997542,
+    "price": 3.65,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "En alle soorten ronnies verkrijgbaar"
+      ]
+    },
+    "created": "2020-01-10T21:17:35.882+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "1191991c-9b88-4eaf-bbae-165b5f6f5995",
+    "name": "Pelikaan",
+    "latitude": 51.2205744,
+    "longitude": 4.4026778,
+    "price": 2.6,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2020-01-10T22:07:19.215+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "2df2fba4-5747-4ed8-8758-4a67d485b568",
+    "name": "De leeuw van vlaanderen",
+    "latitude": 51.2208628,
+    "longitude": 4.4028706,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2020-01-10T22:49:30.858+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "4b3b2ca2-ce17-47ee-b8d7-8e63f144dd70",
+    "name": "Mary's Irish Pub",
+    "latitude": 50.8276944,
+    "longitude": 3.2664828,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2020-01-12T15:44:09.225+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "dc6429a6-476d-4fcd-96f9-e6431629017d",
+    "name": "In de Zon",
+    "latitude": 50.7962245,
+    "longitude": 2.7818417,
+    "price": 3.2,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2020-01-25T18:34:56.035+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "ec522a94-d76b-483f-b777-4abc452562d5",
+    "name": "Kantine Sparta Dikkebus",
+    "latitude": 50.8169121,
+    "longitude": 2.8332955,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2020-01-26T14:39:47.257+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "4263f93e-b62a-4893-b51e-16d4ddac8894",
+    "name": "Oud Clooster",
+    "latitude": 51.0521792562236,
+    "longitude": 3.71906250715256,
+    "price": 2.8,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2020-02-01T16:39:37.797+00:00",
+    "creator": "mattias.michaux"
+  },
+  {
+    "id": "81e7ed18-3fd8-4201-bb96-f280ce60541f",
+    "name": "Amadeus",
+    "latitude": 50.9452784,
+    "longitude": 3.1241418,
+    "price": 2.75,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2020-02-08T20:34:39.904+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "85028357-1c49-4ab7-8758-57e7eef2f126",
+    "name": "Extra time",
+    "latitude": 51.1781158,
+    "longitude": 4.3465529,
+    "price": 2.6,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2020-02-15T13:01:15.727+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "dc69e4b3-26e1-4d60-92f1-6e26159d39e7",
+    "name": "Barrazza",
+    "latitude": 51.0569136,
+    "longitude": 3.7228573,
+    "price": 4.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "CLASSIC (oud bruin)\\nGrand Cru\\nAlexander"
+      ]
+    },
+    "created": "2020-07-17T13:57:54+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "9b75c3c6-8823-4b59-a164-93b72ad0ed56",
+    "name": "Vol pension",
+    "latitude": 51.0588086,
+    "longitude": 3.7271744,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2020-07-20T16:00:29+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "1b0fca7d-284e-428d-adca-782f5ddb6d1a",
+    "name": "Boteca",
+    "latitude": 51.0492372,
+    "longitude": 3.7444696,
+    "price": 5.0,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": {
+      "case": "Some",
+      "fields": [
+        "Grand Cru"
+      ]
+    },
+    "created": "2020-08-07T17:28:19.726+00:00",
+    "creator": "svenbeddeleem"
+  },
+  {
+    "id": "c757c7fe-7679-4db7-ad37-b6e2b50a3a19",
+    "name": "De Tramstatie",
+    "latitude": 50.890188,
+    "longitude": 2.6568025,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2020-08-08T15:43:33.54+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "6e3f0a8a-2da7-4366-a297-9ddeaa752f30",
+    "name": "St.-Martinus Snooker/Pool",
+    "latitude": 51.0517622,
+    "longitude": 3.7029225,
+    "price": 2.7,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2020-08-11T19:57:15.179+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "0f6f7453-4ae5-41d6-8298-cd59303c63d6",
+    "name": "Tennisclub Koksijde",
+    "latitude": 51.1074734,
+    "longitude": 2.6489583,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2020-08-20T14:37:46.24+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "fd05d869-0386-4d06-89f3-179e46525a70",
+    "name": "Zeveren Sportief",
+    "latitude": 50.99690941179883,
+    "longitude": 3.488080257669587,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2020-08-30T10:46:49.72+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "80450de9-2858-4493-8def-36e9b36823af",
+    "name": "Café Primus",
+    "latitude": 51.044563,
+    "longitude": 3.7592607,
+    "price": 2.2,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2020-09-13T18:00:17.565+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "d03a9785-95a1-463e-b237-b70191e021c7",
+    "name": "Sint Annaplas",
+    "latitude": 51.0403499,
+    "longitude": 3.8037351,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2021-05-30T18:53:49.799+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "5134a122-1737-4026-96c0-8548267b8045",
+    "name": "Café ZeeZicht",
+    "latitude": 51.2073923,
+    "longitude": 4.4308846,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2021-06-24T18:44:07.542+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "4c122e37-9e73-45d2-95d4-a442fe5defbf",
+    "name": "'t Rozenhof",
+    "latitude": 50.8936528,
+    "longitude": 2.6517274,
+    "price": 2.8,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2021-06-25T17:41:44.545+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "c36f35a6-0f66-4063-9665-08a0c5eff6b9",
+    "name": "Herberg de havermuis",
+    "latitude": 50.8475894,
+    "longitude": 2.7215584,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2021-07-02T10:23:39.201+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "65827f72-96c3-41f5-bda7-dc40b53fbc2d",
+    "name": "Arena Snooker",
+    "latitude": 51.0315302,
+    "longitude": 3.7239652,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2021-07-16T18:18:58.451+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "49e2fe03-37ae-4b30-85de-9a4dcd0bcf4a",
+    "name": "Vontjesboer",
+    "latitude": 50.73607044306568,
+    "longitude": 4.236554168230584,
+    "price": 2.4,
+    "currency": "EUR",
+    "isDraft": true,
+    "remark": null,
+    "created": "2021-07-28T17:53:34.416+00:00",
+    "creator": "Ewoud N"
+  },
+  {
+    "id": "b4b401af-cb34-4cb0-8e3d-846b21aaa3e3",
+    "name": "'t Hoeveke",
+    "latitude": 51.1549004,
+    "longitude": 2.7649956,
+    "price": 2.8,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2021-08-04T16:54:16.294+00:00",
+    "creator": "siebe_devos"
+  },
+  {
+    "id": "99f96f45-d449-4790-9c5b-8a273b9b1d5e",
+    "name": "Britannia",
+    "latitude": 51.0286723,
+    "longitude": 3.800664,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2021-08-09T20:38:17.979+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "d6fc37aa-42f3-477b-b3cb-86f8b86349ad",
+    "name": "Kvv Laarne-Kalken",
+    "latitude": 51.0298561,
+    "longitude": 3.8758417,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2021-08-22T11:35:52.975+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "bfb5f8c2-fa05-4dda-8edf-d2a1a724846f",
+    "name": "Wit paard",
+    "latitude": 51.0290555,
+    "longitude": 3.7668103,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2021-08-26T19:47:27.089+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "41929728-1323-4776-b863-ec785395921c",
+    "name": "Kapitein Cravate",
+    "latitude": 51.047465475226886,
+    "longitude": 3.7218543030843176,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2021-09-16T19:51:56.287+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "0af35596-6735-4f0b-983d-787a79c440bc",
+    "name": "Bon Appétit",
+    "latitude": 50.9477757,
+    "longitude": 3.128447,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2021-09-18T16:57:32.872+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "862b202b-1845-4eb9-8a9a-998fa6b22e47",
+    "name": "In Den Ouden Tijd",
+    "latitude": 50.8817168,
+    "longitude": 4.7143705,
+    "price": 2.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2021-09-26T08:44:07.998+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "11cd44a4-0892-4eba-b4b9-453c08b5227e",
+    "name": "Snooker Evergreen",
+    "latitude": 51.0611074,
+    "longitude": 3.7265144,
+    "price": 2.5,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2021-10-16T17:56:22.835+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "2dd1dfab-074d-49f0-a401-b947d0110e08",
+    "name": "T.C De Krijte",
+    "latitude": 51.0784646,
+    "longitude": 3.7699974,
+    "price": 2.7,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2021-10-21T18:13:48.235+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "b937d523-8a5f-4ccb-a383-e6b531c81b50",
+    "name": "Bidon",
+    "latitude": 50.7363316,
+    "longitude": 4.2359862,
+    "price": 3.0,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2021-11-06T20:28:51.741+00:00",
+    "creator": "Florian V"
+  },
+  {
+    "id": "3a0782a4-58af-49d4-b1dd-7126f48ebc22",
+    "name": "Brasserie La Grand'Place",
+    "latitude": 51.098556,
+    "longitude": 2.5917737,
+    "price": 3.7,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2022-03-23T10:01:55.687+00:00",
+    "creator": "Nelis D"
+  },
+  {
+    "id": "750147ae-28aa-4751-8b78-adcc6316e0d8",
+    "name": "Hobs",
+    "latitude": 51.219467777567324,
+    "longitude": 4.400938829334112,
+    "price": 3.7,
+    "currency": "EUR",
+    "isDraft": false,
+    "remark": null,
+    "created": "2022-04-23T15:43:29.157+00:00",
+    "creator": "Mathieu R"
+  }
+]
