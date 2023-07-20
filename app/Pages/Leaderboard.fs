@@ -62,11 +62,15 @@ let LeaderboardPage () =
     )
 
     let rows =
+        let highestScore = if scores.Length = 0 then 0 else scores.[0].score
+
         scores
-        |> Array.mapi (fun idx highScore ->
+        |> Array.map (fun highScore ->
+            let hasHighestScore = highScore.score = highestScore
+
             tr [ Key highScore.uid ] [
-                td [ ClassName (if idx = 0 then "highscore" else "") ] [
-                    if idx = 0 then
+                td [ ClassName (if hasHighestScore then "highscore" else "") ] [
+                    if hasHighestScore then
                         Icon [ IconProp.Icon "mdi:crown" ; IconProp.Height 24 ; IconProp.Width 24 ]
                     str highScore.displayName
                 ]
