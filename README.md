@@ -25,6 +25,18 @@ dotnet fsi seed.fsx
 dotnet fable watch ./App.fsproj -e .js -o ./out --fableLib fable-library --noReflection --run bun run dev
 ```
 
+## Build application
+
+```bash
+dotnet fable ./App.fsproj -e .js -o ./out --fableLib fable-library --noReflection --run bun run build
+```
+
+## Deploy frontend
+
+```bash
+firebase deploy --only hosting
+```
+
 ## Format code
 
 ```bash

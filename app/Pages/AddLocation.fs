@@ -18,7 +18,7 @@ type Firestore = Firebase.FireStore.Exports
 
 open ReactMapGL
 open Iconify
-open ReactWebcam
+open UseFilePicker
 open Components
 
 type LatLng = float * float
@@ -315,14 +315,11 @@ type Model =
         Errors : Errors
         Users : API.User array
         OtherUsers : string Set
-        HidePhoto : bool
-        Photo : string
+        Photos : string array
         ExistingLocations : RonnyLocation array
         SubmitError : string
         CurrentState : State
     }
-
-    member this.HasPhoto = String.IsNullOrWhiteSpace this.Photo |> not
 
 type Msg =
     | UpdateUserId of string
@@ -337,8 +334,7 @@ type Msg =
     | Submit
     | UsersLoaded of API.User array
     | ToggleUser of uid : string
-    | UpdatePhoto of string
-    | HidePhoto
+    | UpdatePhotos of string array
     | ExistingLocationsLoaded of RonnyLocation array
     | SubmitFailed of error : string
 
@@ -367,8 +363,7 @@ let init _ : Model * Cmd<Msg> =
         Errors = Errors.Empty
         Users = Array.empty
         OtherUsers = Set.empty
-        HidePhoto = false
-        Photo = ""
+        Photos = Array.empty
         SubmitError = ""
         // Loading the logged in user and the list of users
         CurrentState = State.Loading
@@ -378,22 +373,56 @@ let init _ : Model * Cmd<Msg> =
 
 let isValidNumber (v : string) : bool = emitJsExpr v "!isNaN($0)"
 
+/// Source: https://gist.github.com/ORESoftware/ba5d03f3e1826dc15d5ad2bcec37f7bf?permalink_comment_id=3518821#gistcomment-3518821
+let resizeImage base64String maxWidth maxHeight =
+    Promise.create (fun resolve reject ->
+        let img = Browser.Dom.Image.Create ()
+        img.src <- base64String
+
+        img.addEventListener (
+            "load",
+            fun _ ->
+                let canvas =
+                    Browser.Dom.document.createElement "canvas" :?> Browser.Types.HTMLCanvasElement
+
+                let mutable width = img.width
+                let mutable height = img.height
+
+                if width > height then
+                    if width > maxWidth then
+                        height <- height * (float maxWidth / float width)
+                        width <- float maxWidth
+                else if height > maxHeight then
+                    width <- width * (float maxHeight / float height)
+                    height <- float maxHeight
+
+                canvas.width <- width
+                canvas.height <- height
+                let ctx = canvas.getContext "2d"
+                ctx?drawImage (img, 0, 0, width, height)
+                resolve (canvas.toDataURL ())
+        )
+    )
+
 let submitLocation (navigate : string -> unit) (model : Model) (dispatch : Msg -> unit) =
     let storagePromise =
-        if not model.HasPhoto then
-            Promise.lift None
-        else
+        let uploadPhoto base64Photo =
+            promise {
+                let fileName = emitJsExpr () "`locations/${Date.now()}.png`"
+                let! resized = resizeImage base64Photo 1024 640
+                let imageRef = Storage.ref (storage, fileName)
+                let! res = Fetch.fetch resized []
+                let! blob = res.blob ()
+                let! _snapShot = Storage.uploadBytes (imageRef, blob)
+                return Some imageRef.name
+            }
 
-        promise {
-            let fileName = emitJsExpr () "`locations/${Date.now()}.png`"
-            let imageRef = Storage.ref (storage, fileName)
-            let! res = Fetch.fetch model.Photo []
-            let! blob = res.blob ()
-            let! snapShot = Storage.uploadBytes (imageRef, blob)
-            return Some imageRef.name
-        }
+        model.Photos
+        |> Array.map uploadPhoto
+        |> Promise.all
+        |> Promise.map (Array.choose id)
 
-    let addLocation (photoName : string option) : unit =
+    let addLocation (photoNames : string array) : unit =
         let locations = Firestore.collection (firestore, Constants.Locations)
 
         let locationData =
@@ -406,7 +435,7 @@ let submitLocation (navigate : string -> unit) (model : Model) (dispatch : Msg -
                 isDraft = model.IsDraft
                 userId = model.UserId
                 otherUserIds = Seq.toArray model.OtherUsers
-                photoName = emitJsExpr photoName "$0 ?? null"
+                photoNames = photoNames
                 remark = model.Remark
                 date = JS.Constructors.Date.Create () |> FireStore.TimestampStatic.fromDate
             |}
@@ -419,7 +448,8 @@ let submitLocation (navigate : string -> unit) (model : Model) (dispatch : Msg -
                 dispatch (Msg.SubmitFailed err.Message)
             )
 
-    storagePromise |> Promise.eitherEnd addLocation (fun err -> addLocation None)
+    storagePromise
+    |> Promise.eitherEnd addLocation (fun err -> addLocation Array.empty)
 
 let update (navigate : string -> unit) msg model =
     match msg with
@@ -506,8 +536,7 @@ let update (navigate : string -> unit) msg model =
                 OtherUsers = Set.add uid model.OtherUsers
             },
             Cmd.none
-    | UpdatePhoto base64String -> { model with Photo = base64String }, Cmd.none
-    | HidePhoto -> { model with HidePhoto = true }, Cmd.none
+    | UpdatePhotos base64Strings -> { model with Photos = base64Strings }, Cmd.none
     | ExistingLocationsLoaded existingLocations ->
         { model with
             ExistingLocations = existingLocations
@@ -562,16 +591,21 @@ let AddLocationPage () =
         , [| box tokenResult ; box user |]
     )
 
-    let webcamRef = React.useRef<WebcamRef> null
-
-    let capture =
-        React.useCallback (
-            fun () ->
-                if not (isNullOrUndefined webcamRef.current) then
-                    let screenShot = webcamRef.current.getScreenshot ()
-                    dispatch (Msg.UpdatePhoto screenShot)
-            , [| !!webcamRef ; dispatch |]
-        )
+    let filePickerResult =
+        useFilePicker
+            {|
+                readAs = "DataURL"
+                accept = "image/*"
+                multiple = true
+                limitFilesConfig = {| max = 3 |}
+                maxFileSize = 10
+                onFilesSuccessfullySelected =
+                    fun files ->
+                        files.filesContent
+                        |> Array.map (fun f -> f.content)
+                        |> Msg.UpdatePhotos
+                        |> dispatch
+            |}
 
     let updateOnChange msg =
         fun (ev : Browser.Types.Event) -> ev.Value |> msg |> dispatch
@@ -634,11 +668,7 @@ let AddLocationPage () =
 
     let onTakePicture (ev : Browser.Types.MouseEvent) =
         ev.preventDefault ()
-
-        if model.HasPhoto then
-            dispatch (Msg.UpdatePhoto "")
-        else
-            capture ()
+        filePickerResult.openFilePicker ()
 
     main [ Id "add-location" ] [
         h1 [] [ str "E nieuwen toevoegen" ]
@@ -714,36 +744,16 @@ let AddLocationPage () =
                     div [ Id "others" ] [ ofArray coPatronsOptions ]
                     ul [ Id "selectedOthers" ] [ ofArray coPatronsSelected ]
                 ]
-                if not model.HidePhoto then
-                    div [ Id "take-picture" ] [
-                        label [] [ str "Foto" ]
-                        p [] [ str "Niet verplicht, kan wel leutig zijn." ]
-                        if model.HasPhoto then
-                            img [ Src model.Photo ; HTMLAttr.Width "100%" ]
-                        else
-                            Webcam [
-                                WebcamProp.Audio false :> IProp
-                                HTMLAttr.Width "100%"
-                                Ref webcamRef
-                                WebcamProp.ScreenshotFormat "image/png"
-                                WebcamProp.VideoConstraints
-                                    {|
-                                        facingMode = {| ideal = "environment" |}
-                                    |}
-                                WebcamProp.OnUserMediaError (fun () -> dispatch Msg.HidePhoto)
-                            ]
-                        button [ OnClick onTakePicture ] [
-                            span [] [
-                                str (
-                                    if String.IsNullOrWhiteSpace model.Photo then
-                                        "Neem foto"
-                                    else
-                                        "Herneem foto"
-                                )
-                            ]
-                            Icon [ IconProp.Icon "ph:camera-duotone" ; IconProp.Height 24 ; IconProp.Width 24 ]
-                        ]
+                div [ Id "take-picture" ] [
+                    label [] [ str "Foto" ]
+                    p [] [ str "Niet verplicht, kan wel leutig zijn." ]
+                    for photo in model.Photos do
+                        img [ Src photo ; HTMLAttr.Width "100%" ]
+                    button [ OnClick onTakePicture ] [
+                        span [] [ str "Voeg foto toe" ]
+                        Icon [ IconProp.Icon "ph:camera-duotone" ; IconProp.Height 24 ; IconProp.Width 24 ]
                     ]
+                ]
                 div [] [
                     label [] [ str "Opmerking" ]
                     textarea [ DefaultValue model.Remark ; updateOnChange UpdateRemark ; Rows 2 ] []

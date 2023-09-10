@@ -24,7 +24,7 @@ let HomePage () =
 
     let (routeParams : {| id : string option |}) = useParams ()
     let isModalOpen, setIsModalOpen = React.useState<bool> (routeParams.id.IsSome)
-    let detailImageUrl, setDetailImageUrl = React.useState<string option> (None)
+    let detailImageUrls, setDetailImageUrls = React.useState<string array> Array.empty
 
     React.useEffect (
         (fun () ->
@@ -64,14 +64,13 @@ let HomePage () =
                         |}
                     )
 
-                    match location.photoName with
-                    | None -> setDetailImageUrl None
-                    | Some photoName ->
-
-                    let storageRef = Storage.Exports.ref (storage, $"locations/{photoName}")
-
-                    Storage.Exports.getDownloadURL (storageRef)
-                    |> Promise.iter (Some >> setDetailImageUrl)
+                    location.photoNames
+                    |> Array.map (fun photoName ->
+                        let storageRef = Storage.Exports.ref (storage, $"locations/{photoName}")
+                        Storage.Exports.getDownloadURL (storageRef)
+                    )
+                    |> Promise.all
+                    |> Promise.iter setDetailImageUrls
                 )
         , [| box queryLoading ; box routeParams.id |]
     )
@@ -122,9 +121,11 @@ let HomePage () =
         |> Option.map (fun snapshot ->
             let detailLocation = snapshot.data ()
 
-            let image =
-                detailImageUrl
-                |> Option.map (fun imgUrl -> img [ Src imgUrl ; Alt $"Foto van {detailLocation.name}" ])
+            let images =
+                detailImageUrls
+                |> Array.mapi (fun idx imgUrl ->
+                    img [ Key $"img-%i{idx}" ; Src imgUrl ; Alt $"Foto van {detailLocation.name}" ]
+                )
 
             let priceText =
                 if detailLocation.currency = "EUR" then
@@ -142,7 +143,7 @@ let HomePage () =
                         Icon [ IconProp.Icon "ic:outline-close" ; IconProp.Height 36 ; IconProp.Width 36 ]
                     ]
                     h1 [] [ str detailLocation.name ]
-                    ofOption image
+                    yield! images
                     p [] [ strong [] [ str priceText ] ]
                     if detailLocation.isDraft then
                         p [] [ str "Vant vat matje! 🥳" ]

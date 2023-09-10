@@ -14,7 +14,7 @@
     <Compile Include="Bindings\Iconify.fs" />
     <Compile Include="Bindings\ReactRouterDom.fs" />
     <Compile Include="Bindings\ReactMapGL.fs" />
-    <Compile Include="Bindings\ReactWebcam.fs" />
+    <Compile Include="Bindings\UseFilePicker.fs" />
     <Compile Include="Types.fs" />
     <Compile Include="API.fs" />
     <Compile Include="Components.fs" />

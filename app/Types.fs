@@ -19,7 +19,7 @@ type RonnyLocation =
         isDraft : bool
         userId : uid
         otherUserIds : uid array
-        photoName : string option
+        photoNames : string array
         remark : string
         date : Timestamp
     |}
