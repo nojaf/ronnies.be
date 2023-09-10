@@ -1,12 +1,11 @@
 # Ronnies.be
 
+## Prerequisites
+
+- firebase SDK
+- bun.sh (`curl -fsSL https://bun.sh/install | bash`)
+
 ## Init
-
-### Local CDN server
-
-```bash
-docker run -p 9004:8080 -d --name esm ghcr.io/esm-dev/esm.sh:latest
-```
 
 ## Run emulators
 
@@ -14,10 +13,16 @@ docker run -p 9004:8080 -d --name esm ghcr.io/esm-dev/esm.sh:latest
 firebase emulators:start --project=ronnies-210509
 ```
 
+## Seed
+
+```bash
+dotnet fsi seed.fsx
+```
+
 ## Run application
 
 ```bash
-dotnet fsi app/dev-server.fsx
+dotnet fable watch ./App.fsproj -e .js -o ./out --fableLib fable-library --noReflection --run bun run dev
 ```
 
 ## Format code
@@ -26,12 +31,6 @@ dotnet fsi app/dev-server.fsx
 dotnet fantomas app build.fsx
 ```
 
-## Seed
-
-```bash
-dotnet fsi seed.fsx
-exit
-```
 ## View in use port in Ubuntu
 
 ```bash

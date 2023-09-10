@@ -64,9 +64,12 @@ type React =
     [<Import("useRef", "react")>]
     static member useRef<'T when 'T : null> (?initialValue : 'T) : {| current : 'T |} = jsNative
 
+type ReactRoot =
+    abstract render : ReactElement -> unit
+
 type ReactDom =
-    [<Import("render", "react-dom")>]
-    static member render (reactNode : ReactElement, domNode : Element, ?callback : unit -> unit) = jsNative
+    [<Import("createRoot", "react-dom/client")>]
+    static member createRoot (domNode : Element) : ReactRoot = jsNative
 
 /// Instantiate an imported React component. The first two arguments must be string literals, "default" can be used for the first one.
 /// Example: `ofImport "Map" "leaflet" { x = 10; y = 50 } []`

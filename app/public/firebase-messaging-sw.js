@@ -1,5 +1,5 @@
-import {initializeApp} from "https://esm.sh/firebase@10.0.0/app";
-import { getMessaging, onBackgroundMessage } from 'https://esm.sh/firebase@10.0.0/messaging/sw';
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+import { getMessaging, onBackgroundMessage } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-messaging-sw.js';
 
 const firebaseConfig = {
     apiKey: "AIzaSyDq-c1-HDDAQqNbFZgeWQ8VA8tAPSTwXxo",

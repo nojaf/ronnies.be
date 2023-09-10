@@ -12,10 +12,6 @@ open ReactRouterDom
 open UseHooksTs
 open Iconify
 
-#if DEBUG
-importSideEffects "./out/WebSocketClient.js"
-#endif
-
 [<ReactComponent>]
 let LogoutComponent () =
     let navigate = useNavigate ()
@@ -115,4 +111,5 @@ let App () =
         ]
     ]
 
-ReactDom.render (App (), document.querySelector "body")
+let root = ReactDom.createRoot (document.querySelector "app")
+root.render (App ())

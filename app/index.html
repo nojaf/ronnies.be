@@ -11,6 +11,7 @@
     <link href='https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.css' rel='stylesheet' />
 </head>
 <body>
+<app></app>
 <noscript>You need to enable JavaScript to run this app.</noscript>
 <script>
     if (navigator && navigator.serviceWorker && navigator.serviceWorker.register){
@@ -19,31 +20,6 @@
             options.type = "module";
             return originalRegister.call(navigator.serviceWorker, scriptURL, options);
         };
-    }
-</script>
-<script type="importmap">
-    {
-        "imports": {
-            "fable-library/": "http://localhost:9004/fable-library@1.1.1/",
-            "react": "http://localhost:9004/react@18.2.0",
-            "react-dom": "http://localhost:9004/react-dom@18.2.0",
-            "usehooks-ts": "http://localhost:9004/usehooks-ts@2.9.1?exports=useCopyToClipboard,useMediaQuery",
-            "firebase": "http://localhost:9004/firebase@10.0.0",
-            "firebase/app": "http://localhost:9004/firebase@10.0.0/app",
-            "firebase/auth": "http://localhost:9004/firebase@10.0.0/auth",
-            "firebase/firestore": "http://localhost:9004/firebase@10.0.0/firestore",
-            "firebase/storage": "http://localhost:9004/firebase@10.0.0/storage",
-            "firebase/functions": "http://localhost:9004/firebase@10.0.0/functions",
-            "firebase/messaging": "http://localhost:9004/firebase@10.0.0/messaging",
-            "react-firehooks/auth": "http://localhost:9004/react-firehooks@2.5.0/auth",
-            "react-firehooks/firestore": "http://localhost:9004/react-firehooks@2.5.0/firestore",
-            "@iconify/react": "http://localhost:9004/@iconify/react@4.1.1",
-            "react-router-dom": "http://localhost:9004/react-router-dom@6.14.1",
-            "use-sync-external-store/shim": "http://localhost:9004/use-sync-external-store@1.2.0/shim",
-            "react-map-gl": "http://localhost:9004/react-map-gl@7.1.1",
-            "react-use": "http://localhost:9004/react-use@17.4.0?exports=useGeolocation",
-            "react-webcam": "http://localhost:9004/react-webcam@7.1.1"
-        }
     }
 </script>
 <script type="module" src="/out/App.js"></script>
