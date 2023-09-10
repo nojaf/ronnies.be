@@ -21,12 +21,16 @@ type SortOrder =
 
 [<ReactComponent>]
 let OverviewPage () =
-    let querySnapshot, _, _ = Hooks.Exports.useQuery allRonniesQuery
+    let querySnapshot, isLoading, _ = Hooks.Exports.useQuery allRonniesQuery
 
     let sortOrder, setSortOrder =
         React.useState<SortOrder * bool> (SortOrder.ByDate, false)
 
     let overviewTable =
+        if isLoading then
+            None
+        else
+
         querySnapshot
         |> Option.map (fun querySnapshot ->
             let rows =
