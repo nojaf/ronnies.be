@@ -5,9 +5,10 @@
     "serve": "firebase emulators:start --only functions",
     "shell": "firebase functions:shell",
     "start": "npm run shell",
+    "predeploy": "dotnet fable -e .js Functions.fsproj --noCache",
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log",
-    "format": "prettier --write index.js"
+    "format": "dotnet fantomas ."
   },
   "engines": {
     "node": "18"
