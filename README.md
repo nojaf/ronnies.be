@@ -7,6 +7,12 @@
 
 ## Init
 
+## Compile functions
+
+```bash
+dotnet fable -e .js Functions.fsproj --watch --noCache
+```
+
 ## Run emulators
 
 ```bash

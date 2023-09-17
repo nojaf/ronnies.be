@@ -481,7 +481,8 @@ label {
 
 #add-location #others button {
     display: inline-block;
-    margin: 0 calc(var(--unit) / 2);
+    margin-right: calc(var(--unit) / 2);
+    margin-top: calc(var(--unit) / 2);
 }
 
 #add-location #others button:first-child {
