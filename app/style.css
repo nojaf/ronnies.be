@@ -475,6 +475,11 @@ label {
     border: 1px solid var(--danger);
 }
 
+#locationPickerContainer button {
+    display: block;
+    margin-top: var(--unit-2);
+}
+
 #add-location #others {
     margin-top: var(--unit);
 }

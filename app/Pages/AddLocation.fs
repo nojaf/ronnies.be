@@ -83,32 +83,50 @@ let LocationPicker
             ]
         )
 
-    ReactMapGL [
-        ReactMapGLProp.OnMove (fun ev -> setViewport ev.viewState) :> IProp
-        ReactMapGLProp.OnClick onMapClick
-        Style [ CSSProp.Height "30vh" ; CSSProp.Width "100%" ]
-        ReactMapGLProp.Latitude viewport.latitude
-        ReactMapGLProp.Longitude viewport.longitude
-        ReactMapGLProp.Zoom viewport.zoom
-        ReactMapGLProp.MapStyle "mapbox://styles/nojaf/ck0wtbppf0jal1cq72o8i8vm1"
-    ] [
-        ofArray existingRonnies
-        Marker [
-            Key "ronny"
-            MarkerLatitude ronnyLatitude
-            MarkerLongitude ronnyLongitude
-            OffsetTop 0
-            OffsetLeft 0
-        ] [ img [ Src "/images/ronny.png" ; HTMLAttr.Width 24 ; HTMLAttr.Height 24 ] ]
-        Marker [
-            Key "user"
-            MarkerLatitude userLatitude
-            MarkerLongitude userLongitude
-            OffsetTop 0
-            OffsetLeft 0
+    let refreshLocation (ev : Browser.Types.Event) =
+        ev.preventDefault ()
+
+        Browser.Navigator.navigator.geolocation
+        |> Option.iter (fun geolocation ->
+            geolocation.getCurrentPosition (
+                fun position ->
+                    JS.console.log ("Got position", position)
+                    setUserLatitude position.coords.latitude
+                    setUserLongitude position.coords.longitude
+                , (fun error -> JS.console.error (error))
+                , (!!{| enableHighAccuracy = true |})
+            )
+        )
+
+    fragment [] [
+        ReactMapGL [
+            ReactMapGLProp.OnMove (fun ev -> setViewport ev.viewState) :> IProp
+            ReactMapGLProp.OnClick onMapClick
+            Style [ CSSProp.Height "30vh" ; CSSProp.Width "100%" ]
+            ReactMapGLProp.Latitude viewport.latitude
+            ReactMapGLProp.Longitude viewport.longitude
+            ReactMapGLProp.Zoom viewport.zoom
+            ReactMapGLProp.MapStyle "mapbox://styles/nojaf/ck0wtbppf0jal1cq72o8i8vm1"
         ] [
-            Icon [ IconProp.Icon "clarity:user-line" ; IconProp.Height 24 ; IconProp.Width 24 ]
+            ofArray existingRonnies
+            Marker [
+                Key "ronny"
+                MarkerLatitude ronnyLatitude
+                MarkerLongitude ronnyLongitude
+                OffsetTop 0
+                OffsetLeft 0
+            ] [ img [ Src "/images/ronny.png" ; HTMLAttr.Width 24 ; HTMLAttr.Height 24 ] ]
+            Marker [
+                Key "user"
+                MarkerLatitude userLatitude
+                MarkerLongitude userLongitude
+                OffsetTop 0
+                OffsetLeft 0
+            ] [
+                Icon [ IconProp.Icon "clarity:user-line" ; IconProp.Height 24 ; IconProp.Width 24 ]
+            ]
         ]
+        button [ OnClick refreshLocation ] [ str "Refresh locatie" ]
     ]
 
 let currencies =
