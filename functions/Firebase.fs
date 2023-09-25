@@ -27,40 +27,40 @@ module App =
 
 module Auth =
     /// https://firebase.google.com/docs/reference/admin/node/firebase-admin.auth.userrecord.md#userrecord_class
-    type UserRecord =
+    type UserRecord<'Claims> =
         abstract uid : string
         abstract displayName : string
         abstract email : string
-        abstract customClaims : obj
+        abstract customClaims : 'Claims
 
     /// https://firebase.google.com/docs/reference/admin/node/firebase-admin.auth.listusersresult.md#listusersresult_interface
-    type ListUserResult =
+    type ListUserResult<'Claims> =
         abstract pageToken : string
-        abstract users : UserRecord array
+        abstract users : UserRecord<'Claims> array
 
     /// https://firebase.google.com/docs/reference/admin/node/firebase-admin.auth.auth.md#auth_class
     type Auth =
         abstract app : App.App
 
         /// https://firebase.google.com/docs/reference/admin/node/firebase-admin.auth.baseauth.md#baseauthcreateuser
-        abstract createUser :
+        abstract createUser<'Claims> :
             {|
                 email : string
                 displayName : string
                 password : string
             |} ->
-                JS.Promise<UserRecord>
+                JS.Promise<UserRecord<'Claims>>
 
         /// https://firebase.google.com/docs/reference/admin/node/firebase-admin.auth.baseauth.md#baseauthsetcustomuserclaims
-        abstract setCustomUserClaims : string * customUserClaims : obj -> JS.Promise<unit>
+        abstract setCustomUserClaims<'Claims> : string * customUserClaims : 'Claims -> JS.Promise<unit>
         /// https://firebase.google.com/docs/reference/admin/node/firebase-admin.auth.baseauth.md#baseauthgetuserbyemail
-        abstract getUserByEmail : string -> JS.Promise<UserRecord>
+        abstract getUserByEmail<'Claims> : string -> JS.Promise<UserRecord<'Claims>>
         /// https://firebase.google.com/docs/reference/admin/node/firebase-admin.auth.baseauth.md#baseauthlistusers
-        abstract listUsers : int -> JS.Promise<ListUserResult>
+        abstract listUsers<'Claims> : int -> JS.Promise<ListUserResult<'Claims>>
         /// https://firebase.google.com/docs/reference/admin/node/firebase-admin.auth.baseauth.md#baseauthdeleteuser
         abstract deleteUser : string -> JS.Promise<unit>
         /// https://firebase.google.com/docs/reference/admin/node/firebase-admin.auth.baseauth.md#baseauthgetuser
-        abstract getUser : string -> JS.Promise<UserRecord>
+        abstract getUser<'Claims> : string -> JS.Promise<UserRecord<'Claims>>
 
     type Exports =
         /// https://firebase.google.com/docs/reference/admin/node/firebase-admin.auth.md#getauth
@@ -144,16 +144,16 @@ module V2 =
                 allowedCors : string option
             |}
 
-        type RequestAuth =
+        type RequestAuth<'Claims> =
             abstract uid : string
-            abstract token : obj option
+            abstract token : 'Claims option
 
-        type Request =
+        type Request<'Claims> =
             abstract baseUrl : string
             abstract method : string
             abstract headers : obj
             abstract body : obj
-            abstract auth : RequestAuth option
+            abstract auth : RequestAuth<'Claims> option
 
         type Response =
             abstract status : int -> Response
@@ -168,8 +168,8 @@ module V2 =
             interface
             end
 
-        type CallableRequest<'TData> =
-            abstract auth : RequestAuth option
+        type CallableRequest<'TData, 'Claims> =
+            abstract auth : RequestAuth<'Claims> option
             abstract data : 'TData
 
         [<Import("HttpsError", "firebase-functions/v2/https")>]
@@ -179,10 +179,10 @@ module V2 =
         type Exports =
             /// https://firebase.google.com/docs/reference/functions/2nd-gen/node/firebase-functions.https.md#httpsonrequest
             [<Import("onRequest", "firebase-functions/v2/https")>]
-            static member onRequest
+            static member onRequest<'Claims>
                 (
                     options : HttpsOptions,
-                    handler : System.Func<Request, Response, JS.Promise<Response>>
+                    handler : System.Func<Request<'Claims>, Response, JS.Promise<Response>>
                 )
                 : HttpsFunction
                 =
@@ -190,10 +190,10 @@ module V2 =
 
             /// https://firebase.google.com/docs/reference/functions/2nd-gen/node/firebase-functions.https.md#httpsoncall
             [<Import("onCall", "firebase-functions/v2/https")>]
-            static member onCall<'TData, 'TResponse>
+            static member onCall<'TData, 'Claims, 'TResponse>
                 (
                     options : HttpsOptions,
-                    handler : CallableRequest<'TData> -> JS.Promise<'TResponse>
+                    handler : CallableRequest<'TData, 'Claims> -> JS.Promise<'TResponse>
                 )
                 : CallableFunction
                 =

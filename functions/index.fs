@@ -36,14 +36,14 @@ let private auth = Auth.Exports.getAuth app
 let private firestore = FireStore.Exports.getFirestore app
 let private messaging = Messaging.Exports.getMessaging app
 
-let private getSecretHeader (request : Https.Request) : string =
+let private getSecretHeader (request : Https.Request<_>) : string =
     emitJsExpr (request, SECRET_HEADER) "$0.headers && $0.headers[$1]"
 
 let private secretRequest
     verb
-    (request : Https.Request)
+    (request : Https.Request<_>)
     (response : Https.Response)
-    (f : Https.Request -> Https.Response -> JS.Promise<Https.Response>)
+    (f : Https.Request<_> -> Https.Response -> JS.Promise<Https.Response>)
     : JS.Promise<Https.Response>
     =
     promise {
@@ -59,47 +59,50 @@ type User =
     abstract displayName : string
     abstract email : string
 
+type CustomClaims = {| ``member`` : bool ; admin : bool |}
+
+let isAdmin (auth : Https.RequestAuth<CustomClaims> option) =
+    match auth with
+    | None -> false
+    | Some auth ->
+        match auth.token with
+        | None -> false
+        | Some token -> token.admin
+
 let user =
-    Https.Exports.onRequest (
+    Https.Exports.onCall<User, CustomClaims, Auth.UserRecord<CustomClaims>> (
         {|
             region = "europe-west1"
             allowedCors = None
         |},
-        fun request response ->
-            secretRequest
-                "POST"
-                request
-                response
-                (fun request response ->
-                    promise {
-                        try
-                            let user = request.body :?> User
+        fun request ->
+            promise {
+                if not (isAdmin request.auth) then
+                    return raise (new Https.HttpsError ("Invalid permissions"))
 
-                            if
-                                (String.IsNullOrWhiteSpace user.displayName
-                                 || String.IsNullOrWhiteSpace user.email
-                                 || not (user.email.Contains ("@")))
-                            then
-                                Logger.logger.warn ($"Invalid user or email: ${user.displayName} ${user.email}")
-                                return response.sendStatus (400)
-                            else
-                                let! result =
-                                    auth.createUser (
-                                        {|
-                                            email = user.email
-                                            displayName = user.displayName
-                                            password = "ronalds"
-                                        |}
-                                    )
+                let user = request.data
 
-                                do! auth.setCustomUserClaims (result.uid, {| ``member`` = true |})
+                if
+                    (String.IsNullOrWhiteSpace user.displayName
+                     || String.IsNullOrWhiteSpace user.email
+                     || not (user.email.Contains ("@")))
+                then
+                    Logger.logger.warn ($"Invalid user or email: ${user.displayName} ${user.email}")
+                    return raise (new Https.HttpsError ("Invalid user or email"))
+                else
+                    let! result =
+                        auth.createUser (
+                            {|
+                                email = user.email
+                                displayName = user.displayName
+                                password = "ronalds"
+                            |}
+                        )
 
-                                return response.status(200).send (result)
-                        with ex ->
-                            Logger.logger.error ("Error while creating user", ex, {| structuredData = true |})
-                            return response.sendStatus (500)
-                    }
-                )
+                    do! auth.setCustomUserClaims (result.uid, {| ``member`` = true |})
+
+                    return result
+            }
     )
 
 let sudo =
@@ -118,7 +121,13 @@ let sudo =
                         try
                             let email : string = request.body?email
                             let! user = auth.getUserByEmail email
-                            do! auth.setCustomUserClaims (user.uid, {| ``member`` = true ; admin = true |})
+
+                            do!
+                                auth.setCustomUserClaims<CustomClaims> (
+                                    user.uid,
+                                    {| ``member`` = true ; admin = true |}
+                                )
+
                             return response.status(200).send (user)
                         with ex ->
                             Logger.logger.error ("Error while elevating user", ex, {| structuredData = true |})
@@ -128,15 +137,13 @@ let sudo =
 
     )
 
-let private hasMember v = emitJsExpr v "$0 && $0.member"
-
-let private (|HasMemberClaim|_|) (requestAuth : Https.RequestAuth option) =
+let private (|HasMemberClaim|_|) (requestAuth : Https.RequestAuth<CustomClaims> option) =
     match requestAuth with
     | None -> None
     | Some requestAuth ->
         match requestAuth.token with
         | None -> None
-        | Some token -> if hasMember token then Some requestAuth.uid else None
+        | Some token -> if token.``member`` then Some requestAuth.uid else None
 
 let users =
     Https.Exports.onCall (
@@ -148,12 +155,12 @@ let users =
             promise {
                 match request.auth with
                 | HasMemberClaim currentId ->
-                    let! listUsersResult = auth.listUsers 1000
+                    let! listUsersResult = auth.listUsers<CustomClaims> 1000
 
                     let users =
                         listUsersResult.users
                         |> Array.choose (fun userRecord ->
-                            if userRecord.uid <> currentId && hasMember userRecord.customClaims then
+                            if userRecord.uid <> currentId && userRecord.customClaims.``member`` then
                                 Some
                                     {|
                                         displayName = userRecord.displayName
@@ -188,8 +195,7 @@ let cleanUpUsers =
                         let! listUserResult = auth.listUsers 1000
 
                         let nonMembers =
-                            listUserResult.users
-                            |> Array.filter (fun user -> not (hasMember user.customClaims))
+                            listUserResult.users |> Array.filter (fun user -> not (user.customClaims))
 
                         for nonMember in nonMembers do
                             do! auth.deleteUser (nonMember.uid)
@@ -246,3 +252,25 @@ let locationCreated =
 
             }
     )
+
+emitJsStatement
+    ()
+    """
+if (process.env.FUNCTIONS_EMULATOR === "true") {
+  auth.getUserByEmail("florian.verdonck@outlook.com").catch((err) => {
+    auth
+      .createUser({
+        displayName: "nojaf",
+        email: "florian.verdonck@outlook.com",
+        password: "ronalds",
+      })
+      .then((user) => {
+        console.log("admin seeded");
+        auth.setCustomUserClaims(user.uid, {
+          admin: true,
+          member: true,
+        });
+      });
+  });
+}
+"""
