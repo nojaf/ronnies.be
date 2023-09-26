@@ -36,8 +36,8 @@ module Auth =
         abstract member isAnonymous : bool
 
     /// https://firebase.google.com/docs/reference/js/auth.idtokenresult
-    type IdTokenResult =
-        abstract member claims : obj
+    type IdTokenResult<'Claims> =
+        abstract member claims : 'Claims
 
     /// https://firebase.google.com/docs/reference/js/auth.auth
     type Auth =
@@ -419,8 +419,8 @@ module Hooks =
 
         /// https://github.com/andipaetzold/react-firehooks#useauthidtoken
         [<Import("useAuthIdTokenResult", "react-firehooks/auth")>]
-        static member useAuthIdTokenResult
+        static member useAuthIdTokenResult<'Claims>
             (auth : Auth.Auth)
-            : Auth.IdTokenResult option * bool * FirestoreError option
+            : Auth.IdTokenResult<'Claims> option * bool * FirestoreError option
             =
             jsNative

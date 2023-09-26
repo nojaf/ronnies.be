@@ -24,6 +24,8 @@ type RonnyLocation =
         date : Timestamp
     |}
 
+type CustomClaims = {| ``member`` : bool ; admin : bool |}
+
 let Constants = {| Locations = "locations" |}
 
 let auth : Auth.Auth = import "auth" "./firebase.config.js"

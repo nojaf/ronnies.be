@@ -4,6 +4,7 @@
 
 - firebase SDK
 - bun.sh (`curl -fsSL https://bun.sh/install | bash`)
+- `sudo apt install parallel`
 
 ## Init
 

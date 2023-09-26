@@ -28,6 +28,7 @@
     <Compile Include="Pages\Settings.fsi" />
     <Compile Include="Pages\Settings.fs" />
     <Compile Include="Pages\Legacy.fs" />
+    <Compile Include="Pages\Admin.fs" />
     <Compile Include="App.fs" />
   </ItemGroup>
   <ItemGroup>

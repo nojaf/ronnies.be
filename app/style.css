@@ -415,7 +415,7 @@ label {
     display: block;
 }
 
-#add-location {
+#add-location, #admin {
     margin: 0 var(--unit-4);
 }
 
@@ -427,7 +427,7 @@ label {
     margin-top: calc(2 * var(--unit-10));
 }
 
-#add-location form > div {
+form > div {
     margin-bottom: var(--unit-2);
 }
 
@@ -435,7 +435,7 @@ label {
     margin: 0;
 }
 
-#add-location form label {
+form > label {
     margin-bottom: var(--unit);
 
 }
@@ -455,7 +455,7 @@ label {
 }
 
 
-#add-location input[type=submit] {
+#add-location input[type=submit], #admin input[type=submit] {
     width: initial;
     margin-bottom: var(--unit-2);
 }
@@ -563,7 +563,7 @@ label {
 }
 
 @media screen and (min-width: 600px) {
-    #add-location {
+    #add-location, #admin {
         max-width: 600px;
         margin: auto;
     }
@@ -713,4 +713,17 @@ dd {
 
 #settings h2 {
     margin: var(--unit-4) 0;
+}
+
+#admin {
+    & h1, h2 {
+        margin-bottom: var(--unit-2);
+    }
+
+    .success {
+        background-color: var(--success);
+        border-radius: var(--radius);
+        padding: var(--unit-2);
+        color: var(--white);
+    }
 }

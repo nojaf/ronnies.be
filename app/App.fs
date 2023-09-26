@@ -27,6 +27,7 @@ let App () =
     let isTablet = useMediaQuery "screen and (min-width: 960px)"
     let isMenuOpen, setIsMenuOpen = React.useState false
     let user, _, _ = useAuthState auth
+    let tokenResult, _, _ = useAuthIdTokenResult<CustomClaims> auth
 
     React.useEffect (
         fun () ->
@@ -67,6 +68,11 @@ let App () =
                     yield mkNavLink "/add-location" "E nieuwen toevoegen"
                     yield mkNavLink "/leaderboard" "Klassement"
                     yield mkNavLink "/rules" "Manifesto"
+
+                    match tokenResult with
+                    | Some tokenResult when tokenResult.claims.admin -> yield mkNavLink "/admin" "Admin"
+                    | _ -> ()
+
                     yield li [ OnClick (fun _ -> setIsMenuOpen false) ] [ LogoutComponent () ]
 
                     yield
@@ -108,6 +114,7 @@ let App () =
                 ReactRouterProp.Path "/detail/:id"
                 ReactRouterProp.Element (Home.HomePage ())
             ]
+            Route [ ReactRouterProp.Path "/admin" ; ReactRouterProp.Element (Admin.AdminPage ()) ]
         ]
     ]
 

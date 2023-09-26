@@ -69,6 +69,11 @@ let isAdmin (auth : Https.RequestAuth<CustomClaims> option) =
         | None -> false
         | Some token -> token.admin
 
+let tryFindUserByEmail email =
+    auth.getUserByEmail email
+    |> Promise.map (fun user -> Some user)
+    |> Promise.catch (fun _ -> None)
+
 let user =
     Https.Exports.onCall<User, CustomClaims, Auth.UserRecord<CustomClaims>> (
         {|
@@ -90,18 +95,27 @@ let user =
                     Logger.logger.warn ($"Invalid user or email: ${user.displayName} ${user.email}")
                     return raise (new Https.HttpsError ("Invalid user or email"))
                 else
-                    let! result =
-                        auth.createUser (
-                            {|
-                                email = user.email
-                                displayName = user.displayName
-                                password = "ronalds"
-                            |}
+                    let! existingUser = tryFindUserByEmail user.email
+
+                    let! user =
+                        match existingUser with
+                        | Some existingUser -> Promise.lift existingUser
+                        | None ->
+                            auth.createUser (
+                                {|
+                                    email = user.email
+                                    displayName = user.displayName
+                                    password = "ronalds"
+                                |}
+                            )
+
+                    do!
+                        auth.setCustomUserClaims (
+                            user.uid,
+                            JS.Constructors.Object.assign (obj (), user.customClaims, {| ``member`` = true |})
                         )
 
-                    do! auth.setCustomUserClaims (result.uid, {| ``member`` = true |})
-
-                    return result
+                    return user
             }
     )
 

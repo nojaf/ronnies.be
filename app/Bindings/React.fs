@@ -48,6 +48,9 @@ type React =
     [<Import("useState", "react")>]
     static member useState<'T> (initial : 'T) : 'T * ('T -> unit) = jsNative
 
+    [<Import("useState", "react")>]
+    static member useStateByFunction<'T> (initial : 'T) : 'T * (('T -> 'T) -> unit) = jsNative
+
     [<Import("useEffect", "react")>]
     static member useEffect (callback : unit -> unit, deps : obj array) : unit = jsNative
 
