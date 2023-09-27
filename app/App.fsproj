@@ -7,7 +7,6 @@
     <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="WebSocketClient.fs" />
     <Compile Include="Bindings\Firebase.fs" />
     <Compile Include="Bindings\UseHooksTs.fs" />
     <Compile Include="Bindings\React.fs" />
