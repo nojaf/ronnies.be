@@ -35,7 +35,7 @@ dotnet fable watch ./App.fsproj -e .js -o ./out --fableLib fable-library --noRef
 ## Build application
 
 ```bash
-dotnet fable ./App.fsproj -e .js -o ./out --fableLib fable-library --noReflection --run bun run build
+dotnet fable ./App.fsproj --cwd ./app -e .js -o ./out --fableLib fable-library --noReflection --run bun run build
 ```
 
 ## Deploy frontend
