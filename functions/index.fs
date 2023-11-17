@@ -7,21 +7,19 @@ open Firebase.Admin
 open Firebase.Functions
 open Firebase.Functions.V2
 
-let private isEmulator : bool =
-    emitJsExpr () "process.env.FUNCTIONS_EMULATOR === \"true\""
+let isEmulator : bool = emitJsExpr () "process.env.FUNCTIONS_EMULATOR === \"true\""
 
-let private allowedCors =
+let allowedCors =
     if isEmulator then
         "http://localhost:4000"
     else
         "https://ronnies.be"
 
-let private SECRET_HEADER : string = emitJsExpr () "process.env.SECRET_HEADER"
+let SECRET_HEADER : string = emitJsExpr () "process.env.SECRET_HEADER"
 
-let private SECRET_HEADER_VALUE : string =
-    emitJsExpr () "process.env.SECRET_HEADER_VALUE"
+let SECRET_HEADER_VALUE : string = emitJsExpr () "process.env.SECRET_HEADER_VALUE"
 
-let private firebaseConfig : App.AppOptions =
+let firebaseConfig : App.AppOptions =
     {|
         apiKey = "AIzaSyDq-c1-HDDAQqNbFZgeWQ8VA8tAPSTwXxo"
         authDomain = "ronnies-210509.firebaseapp.com"
@@ -31,15 +29,15 @@ let private firebaseConfig : App.AppOptions =
         appId = "1:566310710121:web:1bc67dddf5834127e7ebf8"
     |}
 
-let private app = App.Exports.initializeApp firebaseConfig
-let private auth = Auth.Exports.getAuth app
-let private firestore = FireStore.Exports.getFirestore app
-let private messaging = Messaging.Exports.getMessaging app
+let app = App.Exports.initializeApp firebaseConfig
+let auth = Auth.Exports.getAuth app
+let firestore = FireStore.Exports.getFirestore app
+let messaging = Messaging.Exports.getMessaging app
 
-let private getSecretHeader (request : Https.Request<_>) : string =
+let getSecretHeader (request : Https.Request<_>) : string =
     emitJsExpr (request, SECRET_HEADER) "$0.headers && $0.headers[$1]"
 
-let private secretRequest
+let secretRequest
     verb
     (request : Https.Request<_>)
     (response : Https.Response)
@@ -99,7 +97,7 @@ let user =
 
                     let! user =
                         match existingUser with
-                        | Some existingUser -> Promise.lift existingUser
+                        | Some existingUser -> auth.updateUser (existingUser.uid, {| displayName = user.displayName |})
                         | None ->
                             auth.createUser (
                                 {|
@@ -151,7 +149,7 @@ let sudo =
 
     )
 
-let private (|HasMemberClaim|_|) (requestAuth : Https.RequestAuth<CustomClaims> option) =
+let (|HasMemberClaim|_|) (requestAuth : Https.RequestAuth<CustomClaims> option) =
     match requestAuth with
     | None -> None
     | Some requestAuth ->
@@ -174,15 +172,20 @@ let users =
                     let users =
                         listUsersResult.users
                         |> Array.choose (fun userRecord ->
-                            if userRecord.uid <> currentId && userRecord.customClaims.``member`` then
-                                Some
-                                    {|
-                                        displayName = userRecord.displayName
-                                        uid = userRecord.uid
-
-                                    |}
-                            else
+                            if userRecord.uid = currentId then
                                 None
+                            else
+                                userRecord.customClaims
+                                |> Option.bind (fun customClaims ->
+                                    if not customClaims.``member`` then
+                                        None
+                                    else
+                                        Some
+                                            {|
+                                                displayName = userRecord.displayName
+                                                uid = userRecord.uid
+                                            |}
+                                )
 
                         )
 
@@ -209,7 +212,8 @@ let cleanUpUsers =
                         let! listUserResult = auth.listUsers 1000
 
                         let nonMembers =
-                            listUserResult.users |> Array.filter (fun user -> not (user.customClaims))
+                            listUserResult.users
+                            |> Array.filter (fun user -> Option.isNone (user.customClaims))
 
                         for nonMember in nonMembers do
                             do! auth.deleteUser (nonMember.uid)
@@ -222,7 +226,7 @@ let cleanUpUsers =
 
 type FCMTokenData = {| tokens : string array |}
 
-let private broadCastNotification data =
+let broadCastNotification data =
     promise {
         let fcmCollection = firestore.collection<FCMTokenData> ("fcmTokens")
         let! tokenSnapshots = fcmCollection.get ()
@@ -233,8 +237,8 @@ let private broadCastNotification data =
             for token in tokenData.tokens do
                 try
                     do! messaging.send {| token = token ; data = data |}
-                with _ ->
-                    ()
+                with ex ->
+                    Firebase.Functions.Logger.logger.error ex
     }
 
 // There are more properties present here, I'm only using the data I'm interested in
@@ -288,3 +292,46 @@ if (process.env.FUNCTIONS_EMULATOR === "true") {
   });
 }
 """
+
+let testNotification =
+    Https.Exports.onRequest (
+        {|
+            region = "europe-west1"
+            allowedCors = None
+        |},
+        fun request response ->
+            secretRequest
+                "POST"
+                request
+                response
+                (fun request response ->
+                    promise {
+                        try
+                            let! user = auth.getUserByEmail "florian.verdonck@outlook.com"
+
+                            let data =
+                                {|
+                                    locationId = "Emwzg2aIXFjESlL0RB66"
+                                    userName = "Sie Nojaf"
+                                    locationName = "Test notification"
+                                |}
+
+                            let fcmCollection = firestore.collection<FCMTokenData> ("fcmTokens")
+                            let fcmDocumentReference = fcmCollection.doc user.uid
+                            let! fcmDocumentSnapshot = fcmDocumentReference.get ()
+                            let tokenData = fcmDocumentSnapshot.data ()
+
+                            for token in tokenData.tokens do
+                                try
+                                    do! messaging.send {| token = token ; data = data |}
+                                with ex ->
+                                    Firebase.Functions.Logger.logger.error ex
+
+                            return response.status(200).send (tokenData)
+                        with ex ->
+                            Logger.logger.error ("Error while elevating user", ex, {| structuredData = true |})
+                            return response.sendStatus (500)
+                    }
+                )
+
+    )

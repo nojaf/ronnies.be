@@ -31,7 +31,7 @@ module Auth =
         abstract uid : string
         abstract displayName : string
         abstract email : string
-        abstract customClaims : 'Claims
+        abstract customClaims : 'Claims option
 
     /// https://firebase.google.com/docs/reference/admin/node/firebase-admin.auth.listusersresult.md#listusersresult_interface
     type ListUserResult<'Claims> =
@@ -61,6 +61,8 @@ module Auth =
         abstract deleteUser : string -> JS.Promise<unit>
         /// https://firebase.google.com/docs/reference/admin/node/firebase-admin.auth.baseauth.md#baseauthgetuser
         abstract getUser<'Claims> : string -> JS.Promise<UserRecord<'Claims>>
+        /// https://firebase.google.com/docs/reference/admin/node/firebase-admin.auth.baseauth.md#baseauthupdateuser
+        abstract updateUser<'Claims> : uid : string * properties : obj -> JS.Promise<UserRecord<'Claims>>
 
     type Exports =
         /// https://firebase.google.com/docs/reference/admin/node/firebase-admin.auth.md#getauth
@@ -73,6 +75,8 @@ module rec FireStore =
         abstract member id : string
         abstract member parent : CollectionReference<'T>
         abstract member path : string
+        /// https://googleapis.dev/nodejs/firestore/latest/DocumentReference.html#get
+        abstract member get : unit -> JS.Promise<DocumentSnapshot<'T>>
 
     /// https://googleapis.dev/nodejs/firestore/latest/DocumentSnapshot.html
     type DocumentSnapshot<'T> =
@@ -107,8 +111,12 @@ module rec FireStore =
     /// https://googleapis.dev/nodejs/firestore/latest/CollectionReference.html
     type CollectionReference<'T> =
         inherit Query<'T>
+        /// https://googleapis.dev/nodejs/firestore/latest/CollectionReference.html#doc
+        abstract doc<'T> : documentPath : string -> DocumentReference<'T>
 
+    /// https://googleapis.dev/nodejs/firestore/latest/Firestore.html
     type FireStore =
+        /// https://googleapis.dev/nodejs/firestore/latest/Firestore.html#collection
         abstract collection<'T> : string -> CollectionReference<'T>
 
     type Exports =
