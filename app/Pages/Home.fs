@@ -1,24 +1,35 @@
 module Home
 
 open System
-open Feliz
+open Fable.Core
 open React
-open React.Props
+open React.DSL
+open React.DSL.Props
 open Firebase
 open ReactMapGL
 open Iconify
 open ReactRouterDom
 
-[<ReactComponent>]
+[<ExportDefault>]
 let HomePage () =
     let querySnapshot, queryLoading, _ = Hooks.Exports.useQuery allRonniesQuery
     let geolocation = useGeolocation {| enableHighAccuracy = true |}
 
     let viewport, setViewport =
-        React.useState<Viewport>
+        React.useStateByFunction<Viewport>
             {|
-                latitude = 50.946143
-                longitude = 3.138635
+                latitude =
+#if DEBUG
+                    50.88848984137849
+#else
+                    50.946143
+#endif
+                longitude =
+#if DEBUG
+                    2.812351584135115
+#else
+                    3.138635
+#endif
                 zoom = 16
             |}
 
@@ -33,14 +44,14 @@ let HomePage () =
                 && Option.isNone geolocation.error
                 && Option.isNone routeParams.id
             then
-                setViewport (
+                setViewport (fun viewport ->
                     {| viewport with
                         latitude = geolocation.latitude
                         longitude = geolocation.longitude
                     |}
                 )
         ),
-        [| box geolocation.loading |]
+        [| box geolocation.loading ; box geolocation.error ; box routeParams.id |]
     )
 
     let tryFindDetail detailId =
@@ -57,7 +68,7 @@ let HomePage () =
                 |> Option.iter (fun snapshot ->
                     let location = snapshot.data ()
 
-                    setViewport (
+                    setViewport (fun viewport ->
                         {| viewport with
                             latitude = location.latitude
                             longitude = location.longitude
@@ -82,16 +93,18 @@ let HomePage () =
         |> Array.map (fun snapshot ->
             let location = snapshot.data ()
 
-            Marker [
+            marker [
                 Key snapshot.id
                 MarkerLatitude location.latitude
                 MarkerLongitude location.longitude
                 OffsetLeft 0
                 OffsetTop 0
             ] [
-                Link [ To ($"/detail/%s{snapshot.id}") ; OnClick (fun _ -> setIsModalOpen true) ] [
-                    img [ Src "/images/ronny.png" ; HTMLAttr.Height "20" ; HTMLAttr.Width "20" ]
-                ]
+                link [
+                    Key $"link-%s{snapshot.id}"
+                    To ($"/detail/%s{snapshot.id}")
+                    OnClick (fun _ -> setIsModalOpen true)
+                ] [ img [ Src "/images/ronny.png" ; Height "20" ; Width "20" ] ]
             ]
         )
 
@@ -100,14 +113,19 @@ let HomePage () =
             None
         else
 
-        Marker [
+        marker [
             Key "user"
             MarkerLatitude geolocation.latitude
             MarkerLongitude geolocation.longitude
             OffsetTop 0
             OffsetLeft 0
         ] [
-            Icon [ IconProp.Icon "clarity:user-line" ; IconProp.Height 24 ; IconProp.Width 24 ]
+            icon [
+                Key "user-icon"
+                IconProp.Icon "clarity:user-line"
+                IconProp.Height 24
+                IconProp.Width 24
+            ]
         ]
         |> Some
 
@@ -139,30 +157,41 @@ let HomePage () =
 
             div [ Id "detail" ] [
                 div [] [
-                    span [ ClassName "close" ; OnClick (fun _ -> setIsModalOpen false) ] [
-                        Icon [ IconProp.Icon "ic:outline-close" ; IconProp.Height 36 ; IconProp.Width 36 ]
+                    span [ Key "close" ; ClassName "close" ; OnClick (fun _ -> setIsModalOpen false) ] [
+                        icon [
+                            Key "close-icon"
+                            IconProp.Icon "ic:outline-close"
+                            IconProp.Height 36
+                            IconProp.Width 36
+                        ]
                     ]
-                    h1 [] [ str detailLocation.name ]
+                    h1 [ Key "detail-title" ] [ str detailLocation.name ]
                     yield! images
-                    p [] [ strong [] [ str priceText ] ]
-                    if detailLocation.isDraft then
-                        p [] [ str "Vant vat matje! 🥳" ]
-                    else
-                        p [] [ str "Niet vant vat 😔" ]
+                    p [ Key "detail-price" ] [ strong [] [ str priceText ] ]
+                    p [ Key "draft" ] [
+
+                        str (
+                            if detailLocation.isDraft then
+                                "Vant vat matje! 🥳"
+                            else
+                                "Niet vant vat 😔"
+                        )
+                    ]
                     if not (String.IsNullOrWhiteSpace detailLocation.remark) then
-                        blockquote [] [ str detailLocation.remark ]
+                        blockquote [ Key "remark" ] [ str detailLocation.remark ]
                 ]
             ]
         )
 
     main [ Id "world-map" ] [
         ofOption detail
-        ReactMapGL [
-            ReactMapGLProp.OnMove (fun ev -> setViewport ev.viewState) :> IProp
-            Style [ CSSProp.Height "100vh" ; CSSProp.Width "100vw" ] :> IProp
+        reactMapGL [
+            ReactMapGLProp.MapboxAccessToken mapboxApiAccessToken
+            ReactMapGLProp.OnMove (fun ev -> setViewport (fun _ -> ev.viewState))
+            Style {| height = "100vh" ; width = "100vw" |}
             ReactMapGLProp.Latitude viewport.latitude
             ReactMapGLProp.Longitude viewport.longitude
             ReactMapGLProp.Zoom viewport.zoom
             ReactMapGLProp.MapStyle "mapbox://styles/nojaf/ck0wtbppf0jal1cq72o8i8vm1"
-        ] [ ofOption userIcon ; ofArray icons ]
+        ] [ ofOption userIcon ; yield! icons ]
     ]

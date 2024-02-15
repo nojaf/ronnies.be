@@ -1,13 +1,13 @@
 module Rules
 
-open Feliz
-open React
-open React.Props
+open React.DSL
+open React.DSL.Props
 
-[<ReactComponent>]
 let RulesPage () =
     let lis text = li [] [ span [] [ str text ] ]
-    let faqItem q a = [ dt [] [ str q ] ; dd [] [ str a ] ]
+
+    let faqItem q a =
+        [ dt [ Key $"dt=%s{q}" ] [ str q ] ; dd [ Key $"dd-{q}" ] [ str a ] ]
 
     main [ Id "manifesto" ] [
         h1 [] [ str "Manifesto" ]

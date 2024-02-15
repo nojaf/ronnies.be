@@ -1,6 +1,9 @@
 ﻿module Iconify
 
+open Fable.Core.JsInterop
 open React
+open React.Plugin
+open React.DSL
 
 #nowarn "1182"
 
@@ -12,5 +15,7 @@ type IconProp =
 
     interface IProp
 
-let inline Icon (props : IProp seq) =
-    ofImportWithoutChildren "Icon" "@iconify/react" props
+[<JSX("Icon", "@iconify/react")>]
+
+let icon (props : IProp seq) : ReactElement =
+    jsxTransformFallback (import "Icon" "@iconify/react") props Seq.empty

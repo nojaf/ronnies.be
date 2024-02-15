@@ -2,18 +2,18 @@
 
 open Fable.Core.JsInterop
 open React
-open React.Props
+open React.Plugin
 
 #nowarn "1182"
 
-let inline BrowserRouter (children : ReactElement seq) =
-    ofImportWithoutProps "BrowserRouter" "react-router-dom" children
+[<JSX("BrowserRouter", "react-router-dom")>]
+let browserRouter (props : #IProp seq) (children : ReactElement seq) : ReactElement = null
 
-let inline Routes (routes : ReactElement seq) =
-    ofImportWithoutProps "Routes" "react-router-dom" routes
+[<JSX("Routes", "react-router-dom")>]
+let routes (props : #IProp seq) (routes : ReactElement seq) : ReactElement = null
 
-let inline Route (props : IProp seq) =
-    ofImportWithoutChildren "Route" "react-router-dom" props
+[<JSX("Route", "react-router-dom")>]
+let route (props : IProp seq) : ReactElement = null
 
 type ReactRouterProp =
     | To of string
@@ -23,16 +23,14 @@ type ReactRouterProp =
 
     interface IProp
 
-let inline Navigate (props : IProp seq) =
-    ofImportWithoutChildren "Navigate" "react-router-dom" props
+[<JSX("Navigate", "react-router-dom")>]
+let navigate (props : IProp seq) : ReactElement = null
 
-let inline Link (props : IProp seq) (children : ReactElement seq) =
-    ofImport "Link" "react-router-dom" props children
+[<JSX("Link", "react-router-dom")>]
+let link (props : IProp seq) (children : ReactElement seq) : ReactElement = null
 
-let inline NavLink (props : IProp seq) (children : ReactElement seq) =
-    let className (prop : {| isActive : bool |}) = if prop.isActive then "active" else ""
-
-    ofImport "NavLink" "react-router-dom" [| yield! props ; DOMAttr.Custom ("className", !!className) |] children
+[<JSX("NavLink", "react-router-dom")>]
+let navLink (props : IProp seq) (children : ReactElement seq) : ReactElement = null
 
 let useNavigate () : string -> unit = import "useNavigate" "react-router-dom"
 

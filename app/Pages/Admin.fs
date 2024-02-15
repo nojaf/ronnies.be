@@ -1,8 +1,8 @@
 module Admin
 
-open Feliz
 open React
-open React.Props
+open React.DSL
+open React.DSL.Props
 open Firebase
 open type Firebase.Auth.Exports
 open type Firebase.Hooks.Exports
@@ -16,7 +16,6 @@ type AddUserState =
     | Loading
     | Success of string
 
-[<ReactComponent>]
 let AddUser () =
     let name, setName = React.useState<string> ("")
     let email, setEmail = React.useState<string> ("")
@@ -36,16 +35,16 @@ let AddUser () =
 
     let fields =
         [
-            div [] [
+            div [ Key "name-container" ] [
                 label [] [ str "Naam*" ]
                 input [
                     Name "name"
                     Required true
                     DefaultValue name
-                    OnChange (fun ev -> setName ev.Value)
+                    OnChange (fun (ev : Browser.Types.Event) -> setName ev.Value)
                 ]
             ]
-            div [] [
+            div [ Key "email-container" ] [
                 label [] [ str "Email*" ]
                 input [
                     Name "email"
@@ -58,7 +57,9 @@ let AddUser () =
         ]
 
     let submitButton =
-        div [ ClassName "align-right" ] [ input [ Type "submit" ; Value "Toevoegen!" ; ClassName "primary" ] ]
+        div [ ClassName "align-right" ; Key "submit-container" ] [
+            input [ Type "submit" ; Value "Toevoegen!" ; ClassName "primary" ]
+        ]
 
     form [ OnSubmit onSubmit ] [
         match state with
@@ -76,7 +77,6 @@ let AddUser () =
             yield p [ ClassName "success" ] [ str msg ]
     ]
 
-[<ReactComponent>]
 let AdminPage () =
     let tokenResult, loading, _ = useAuthIdTokenResult<CustomClaims> auth
 
@@ -87,8 +87,8 @@ let AdminPage () =
 
         match tokenResult with
         | Some tokenResult when tokenResult.claims.admin ->
-            h1 [] [ str "Admin" ]
-            h2 [] [ str "Add user" ]
-            AddUser ()
-        | _ -> h1 [] [ str "Unauthorized" ]
+            h1 [ Key "title" ] [ str "Admin" ]
+            h2 [ Key "add-user-title" ] [ str "Add user" ]
+            ofComponentWithProps AddUser {| key = "add-user" |}
+        | _ -> h1 [ Key "unauthorized" ] [ str "Unauthorized" ]
     ]

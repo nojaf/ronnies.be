@@ -1,8 +1,9 @@
 ﻿module ReactMapGL
 
-open Fable.Core
 open Fable.Core.JsInterop
 open React
+open React.Plugin
+open React.DSL
 
 let useGeolocation
     : {| enableHighAccuracy : bool |}
@@ -46,16 +47,17 @@ type ReactMapGLProp =
 let mapboxApiAccessToken : string =
     "pk.eyJ1Ijoibm9qYWYiLCJhIjoiY2p6eHV4ODkwMWNoaTNidXRqeGlrb2JpMSJ9.x6fTQsfCfGMKwxpdKxjhMQ"
 
-// https://visgl.github.io/react-map-gl/docs/upgrade-guide#map
-let inline ReactMapGL (props : #IProp seq) (children : ReactElement seq) : ReactElement =
-    let allProps =
-        [|
-            yield ReactMapGLProp.MapboxAccessToken mapboxApiAccessToken :> IProp
-            for p in props do
-                yield p :> IProp
-        |]
+/// https://visgl.github.io/react-map-gl/docs/upgrade-guide#map
+[<JSX("default", "react-map-gl")>]
+let reactMapGL (props : IProp seq) (children : ReactElement seq) : ReactElement = null
+// let allProps =
+//     [|
+//         yield ReactMapGLProp.MapboxAccessToken mapboxApiAccessToken :> IProp
+//         for p in props do
+//             yield p :> IProp
+//     |]
 
-    ofImport "default" "react-map-gl" allProps children
+// ofImport "default" "react-map-gl" allProps children
 
 type MarkerProp =
     | [<CompiledName("latitude")>] MarkerLatitude of float
@@ -65,5 +67,6 @@ type MarkerProp =
 
     interface IProp
 
-let inline Marker (props : IProp list) (children : ReactElement seq) : ReactElement =
-    ofImport "Marker" "react-map-gl" props children
+[<JSX("Marker", "react-map-gl")>]
+let marker (props : IProp list) (children : ReactElement seq) : ReactElement =
+    jsxTransformFallback (import "Marker" "react-map-gl") props children

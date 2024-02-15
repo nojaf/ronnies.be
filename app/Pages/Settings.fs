@@ -6,11 +6,12 @@ open Browser
 open Browser.Types
 open Feliz
 open React
-open React.Props
+open React.DSL
+open React.DSL.Props
 open type Firebase.Hooks.Exports
 open type Firebase.FireStore.Exports
 open type Firebase.Messaging.Exports
-open Components
+open ComponentsDSL
 
 [<Literal>]
 let VAPID_KEY =
@@ -102,7 +103,6 @@ and saveMessagineDeviceToken (uid : uid) : JS.Promise<EnableNotifications> =
         console.error ("Unable to get messaging token.", ex)
         Promise.lift EnableNotifications.No
 
-[<ReactComponent>]
 let SettingsPage () =
     let user, isUserLoading, _ = useAuthState auth
     let tokenResult, _, _ = useAuthIdTokenResult auth
@@ -174,19 +174,19 @@ let SettingsPage () =
     )
 
     main [ Id "settings" ] [
-        h1 [] [ str "Settings" ]
+        h1 [ Key "title" ] [ str "Settings" ]
         if browserSupportsNotifications && value <> EnableNotifications.Unknown then
-            h2 [] [ str "Notificaties?" ]
+            h2 [ Key "notifications-title" ] [ str "Notificaties?" ]
 
             if not browserSupportsNotifications then
-                p [] [ em [] [ str "Je browser ondersteunt geen notificaties." ] ]
+                p [ Key "no-notifications-support" ] [ em [] [ str "Je browser ondersteunt geen notificaties." ] ]
 
-            Toggle
-                {|
-                    TrueLabel = "Aan"
-                    FalseLabel = "Uit"
-                    OnChange = onChange
-                    Value = value = EnableNotifications.Yes
-                    Disabled = false
-                |}
+            toggle [
+                ToggleProp.TrueLabel "Aan" :> IProp
+                ToggleProp.FalseLabel "Uit"
+                ToggleProp.OnChange onChange
+                ToggleProp.Value (value = EnableNotifications.Yes)
+                ToggleProp.Disabled false
+                Key "toggle-notifications"
+            ]
     ]

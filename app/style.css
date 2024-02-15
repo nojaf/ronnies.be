@@ -36,6 +36,10 @@
     --radius: var(--radius);
 }
 
+* {
+    box-sizing: border-box;
+}
+
 html,
 body {
     height: 100%;
@@ -47,6 +51,7 @@ body {
 body > app {
     height: 100%;
     width: 100%;
+    display: block;
 }
 
 h1,
@@ -102,79 +107,91 @@ input.error {
     list-style: none;
     padding: 6px 16px;
     position: relative;
-    transition: background-color .2s cubic-bezier(.3, 0, .5, 1);
+    transition: background-color .2s cubic-bezier(.3, 0, .5, 1), transform 100ms;
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
     vertical-align: middle;
     white-space: nowrap;
-    word-wrap: break-word
-}
+    word-wrap: break-word;
 
-.btn:hover, button:hover {
-    background-color: #f3f4f6;
-    text-decoration: none;
-    transition-duration: .1s;
-    transform: translateY(1px)
-}
+    &:hover {
+        background-color: #f3f4f6;
+        text-decoration: none;
+        transition-duration: .1s;
+        transform: translateY(1px)
+    }
 
-.btn:disabled, button:disabled {
-    background-color: #fafbfc;
-    border-color: #1b1f2326;
-    color: #959da5;
-    cursor: default
-}
+    &:disabled {
+        background-color: #fafbfc;
+        border-color: #1b1f2326;
+        color: #959da5;
+        cursor: default
+    }
 
-.btn:active, button:active {
-    background-color: #edeff2;
-    box-shadow: #e1e4e833 0 1px inset;
-    transition: none 0s
-}
+    &:active {
+        background-color: #edeff2;
+        box-shadow: #e1e4e833 0 1px inset;
+        transition: none 0s;
+    }
 
-.btn:focus, button:focus {
-    outline: 1px transparent
-}
+    &:focus {
+        outline: 1px transparent;
+    }
 
-.btn:before, button:before {
-    display: none
-}
+    &::before {
+        display: none;
+    }
 
-.btn::-webkit-details-marker {
-    display: none
-}
+    &::-webkit-details-marker {
+        display: none;
+    }
 
-.btn i, button i {
-    margin-right: var(--unit)
-}
+    & i {
+        margin-right: var(--unit);
+    }
 
-.btn.primary, button.primary, input[type=submit].primary {
-    background-color: var(--primary);
-    border-color: var(--primary-border);
-    color: var(--white)
-}
+    &.primary{
+        background-color: var(--primary);
+        border-color: var(--primary-border);
+        color: var(--white);
 
-.btn.primary:hover, button.primary:hover, input[type=submit].primary:hover {
-    background-color: var(--primary-hover)
-}
+        &:hover {
+            background-color: var(--primary-hover);
+        }
+    }
 
-.btn.danger, button.danger {
-    background-color: var(--danger);
-    border-color: var(--danger-border);
-    color: var(--white)
-}
+    &.danger {
+        background-color: var(--danger);
+        border-color: var(--danger-border);
+        color: var(--white);
 
-.btn.danger:hover, button.danger:hover {
-    background-color: var(--danger-hover)
-}
+        &:hover {
+            background-color: var(--danger-hover);
+        }
+    }
 
-.btn.warning, button.warning {
-    background-color: var(--warning);
-    border-color: var(--warning-border);
-    color: var(--white)
-}
+    &.warning {
+        background-color: var(--warning);
+        border-color: var(--warning-border);
+        color: var(--white);
 
-.btn.warning:hover, button.warning:hover {
-    background-color: var(--warning-hover)
+        &:hover {
+            background-color: var(--warning-hover);
+        }
+    }
+
+    &.ghost {
+        background-color: var(--white);
+        border-color: var(--primary);
+        color: var(--primary);
+    
+        &:hover {
+            background-color: var(--primary-hover);
+            border-color: var(--primary-hover);
+            color: var(--white);
+        }
+    }
 }
 
 /* Toggle */
@@ -411,7 +428,7 @@ main {
 }
 
 label {
-    font-weight: bold;
+    font-weight: 500;
     display: block;
 }
 
@@ -428,7 +445,11 @@ label {
 }
 
 form > div {
-    margin-bottom: var(--unit-2);
+    margin-top: var(--unit-4);
+
+    & label {
+        margin-bottom: var(--unit);
+    }
 }
 
 #add-location form > div > p {
@@ -523,29 +544,34 @@ form > label {
     display: flex;
 }
 
-#add-location #take-picture button {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+#add-location #take-picture {
+    & button {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-#add-location #take-picture button svg {
-    margin-left: var(--unit-2);
-}
+        & svg {
+            margin-left: var(--unit-2);
+        }
 
-#add-location #take-picture button span {
-    line-height: var(--unit-4);
-    font-size: var(--unit-2);
-}
+        & span {
+            line-height: var(--unit-4);
+            font-size: var(--unit-2);
+        }
+    }
 
-#add-location #take-picture video {
-    margin: var(--unit-2) auto;
-    display: block;
-}
+    & img {
+        margin: var(--unit) 0;
+    }
 
-#add-location #take-picture img {
-    margin: var(--unit) 0;
+    & p {
+        margin-bottom: var(--unit);
+    }
+
+    &:has(img) p {
+        margin-bottom: 0;
+    }
 }
 
 #add-location pre {
@@ -572,6 +598,8 @@ form > label {
 #world-map {
     margin: 0;
     padding: 0;
+    max-width: initial;
+    height: 100%;
 }
 
 #detail {
@@ -699,12 +727,17 @@ table a:hover {
 
 #manifesto ol {
     list-style: upper-roman;
+
+    & li {
+        padding: calc(var(--unit) / 2) 0;
+    }
 }
 
 
 dt {
     font-weight: bold;
-    margin-top: var(--unit-2);
+    margin-top: var(--unit-3);
+    margin-bottom: var(--unit);
 }
 
 dd {
@@ -712,7 +745,7 @@ dd {
 }
 
 #settings h2 {
-    margin: var(--unit-4) 0;
+    margin: var(--unit-4) 0 var(--unit-2) 0;
 }
 
 #admin {

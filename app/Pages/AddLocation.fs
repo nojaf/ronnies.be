@@ -1,34 +1,32 @@
 ﻿module AddLocation
 
 open System
+open ComponentsDSL
 open Fable.Core
 open Fable.Core.JsInterop
-open Fable.Import
-open Feliz
 open Feliz.UseElmish
 open Elmish
 open React
-open React.Props
+open React.DSL
+open React.DSL.Props
 open ReactRouterDom
 open Firebase
 open type Firebase.Hooks.Exports
 
-type Storage = Firebase.Storage.Exports
-type Firestore = Firebase.FireStore.Exports
+type Storage = Storage.Exports
+type Firestore = FireStore.Exports
 
 open ReactMapGL
 open Iconify
 open UseFilePicker
-open Components
 
 type LatLng = float * float
 
-[<ReactComponent>]
 let LocationPicker
     (props :
         {|
-            OnChange : LatLng -> LatLng -> unit
-            ExistingLocations : (string * LatLng) array
+            onChange : LatLng -> LatLng -> unit
+            existingLocations : (string * LatLng) array
         |})
     =
     let geolocation = useGeolocation {| enableHighAccuracy = true |}
@@ -61,7 +59,7 @@ let LocationPicker
                 setRonnyLatitude geolocation.latitude
                 setRonnyLongitude geolocation.longitude
 
-                props.OnChange
+                props.onChange
                     (geolocation.latitude, geolocation.longitude)
                     (geolocation.latitude, geolocation.longitude)
         ),
@@ -72,14 +70,24 @@ let LocationPicker
         let lngLat = ev.lngLat
         setRonnyLatitude lngLat.lat
         setRonnyLongitude lngLat.lng
-        props.OnChange (userLatitude, userLongitude) (lngLat.lat, lngLat.lng)
+        props.onChange (userLatitude, userLongitude) (lngLat.lat, lngLat.lng)
 
     let existingRonnies =
-        props.ExistingLocations
+        props.existingLocations
         |> Array.map (fun (name, (lat, lng)) ->
-            Marker [ MarkerLatitude lat ; MarkerLongitude lng ; Key name ] [
-                img [ Src "/images/r-black.png" ; HTMLAttr.Width 24 ; HTMLAttr.Height 24 ]
-                strong [] [ str name ]
+            marker [
+                Key $"existing-%f{lat}-%f{lng}"
+                MarkerLatitude lat
+                MarkerLongitude lng
+                Key name
+            ] [
+                img [
+                    Key $"existing-img-%f{lat}-%f{lng}"
+                    Src "/images/r-black.png"
+                    Width 24
+                    Height 24
+                ]
+                strong [ Key $"existing-name-%f{lat}-%f{lng}" ] [ str name ]
             ]
         )
 
@@ -93,40 +101,48 @@ let LocationPicker
                     JS.console.log ("Got position", position)
                     setUserLatitude position.coords.latitude
                     setUserLongitude position.coords.longitude
-                , (fun error -> JS.console.error (error))
+                , (fun error -> JS.console.error error)
                 , (!!{| enableHighAccuracy = true |})
             )
         )
 
     fragment [] [
-        ReactMapGL [
+        reactMapGL [
+            ReactMapGLProp.MapboxAccessToken mapboxApiAccessToken
             ReactMapGLProp.OnMove (fun ev -> setViewport ev.viewState) :> IProp
             ReactMapGLProp.OnClick onMapClick
-            Style [ CSSProp.Height "30vh" ; CSSProp.Width "100%" ]
+            Style {| height = "30vh" ; width = "100%" |}
             ReactMapGLProp.Latitude viewport.latitude
             ReactMapGLProp.Longitude viewport.longitude
             ReactMapGLProp.Zoom viewport.zoom
             ReactMapGLProp.MapStyle "mapbox://styles/nojaf/ck0wtbppf0jal1cq72o8i8vm1"
         ] [
-            ofArray existingRonnies
-            Marker [
+            yield! existingRonnies
+            marker [
                 Key "ronny"
                 MarkerLatitude ronnyLatitude
                 MarkerLongitude ronnyLongitude
                 OffsetTop 0
                 OffsetLeft 0
-            ] [ img [ Src "/images/ronny.png" ; HTMLAttr.Width 24 ; HTMLAttr.Height 24 ] ]
-            Marker [
+            ] [
+                img [ Key "marker-ronny-image" ; Src "/images/ronny.png" ; Width 24 ; Height 24 ]
+            ]
+            marker [
                 Key "user"
                 MarkerLatitude userLatitude
                 MarkerLongitude userLongitude
                 OffsetTop 0
                 OffsetLeft 0
             ] [
-                Icon [ IconProp.Icon "clarity:user-line" ; IconProp.Height 24 ; IconProp.Width 24 ]
+                icon [
+                    Key "user-icon"
+                    IconProp.Icon "clarity:user-line"
+                    IconProp.Height 24
+                    IconProp.Width 24
+                ]
             ]
         ]
-        button [ OnClick refreshLocation ] [ str "Refresh locatie" ]
+        button [ ClassName "ghost" ; OnClick refreshLocation ] [ str "Refresh locatie" ]
     ]
 
 let currencies =
@@ -393,7 +409,7 @@ let isValidNumber (v : string) : bool = emitJsExpr v "!isNaN($0)"
 
 /// Source: https://gist.github.com/ORESoftware/ba5d03f3e1826dc15d5ad2bcec37f7bf?permalink_comment_id=3518821#gistcomment-3518821
 let resizeImage base64String maxWidth maxHeight =
-    Promise.create (fun resolve reject ->
+    Promise.create (fun resolve _reject ->
         let img = Browser.Dom.Image.Create ()
         img.src <- base64String
 
@@ -467,7 +483,7 @@ let submitLocation (navigate : string -> unit) (model : Model) (dispatch : Msg -
             )
 
     storagePromise
-    |> Promise.eitherEnd addLocation (fun err -> addLocation Array.empty)
+    |> Promise.eitherEnd addLocation (fun _err -> addLocation Array.empty)
 
 let update (navigate : string -> unit) msg model =
     match msg with
@@ -588,7 +604,6 @@ let distanceBetweenTwoPoints (latA, lngA) (latB, lngB) =
 
         dist
 
-[<ReactComponent>]
 let AddLocationPage () =
     let navigate = useNavigate ()
     let user, isUserLoading, _ = useAuthState auth
@@ -627,7 +642,6 @@ let AddLocationPage () =
 
     let updateOnChange msg =
         fun (ev : Browser.Types.Event) -> ev.Value |> msg |> dispatch
-        |> OnChange
 
     let onLocationChanges userLocation ronnyLocation =
         dispatch (UpdateLocation ronnyLocation)
@@ -639,7 +653,7 @@ let AddLocationPage () =
     let inputError error =
         error |> Option.map (fun error -> p [] [ str error ]) |> ofOption
 
-    let errorClass error : IHTMLProp seq =
+    let errorClass error : IProp seq =
         match error with
         | None -> []
         | Some _ -> [ ClassName "error" ]
@@ -675,7 +689,7 @@ let AddLocationPage () =
                         dispatch (Msg.ToggleUser uid)
                     )
                 ] [
-                    Icon [
+                    icon [
                         IconProp.Icon "iconamoon:trash-duotone"
                         IconProp.Width 16
                         IconProp.Height 16
@@ -689,54 +703,64 @@ let AddLocationPage () =
         filePickerResult.openFilePicker ()
 
     main [ Id "add-location" ] [
-        h1 [] [ str "E nieuwen toevoegen" ]
+        h1 [ Key "add-location-title" ] [ str "E nieuwen toevoegen" ]
         match model.CurrentState with
-        | State.Loading -> Loader ()
-        | State.Submit -> fragment [] [ Loader () ; p [ ClassName "center" ] [ str "Ant opsloan..." ] ]
+        | State.Loading -> loader [ Key "loader" ]
+        | State.Submit -> fragment [ Key "submit" ] [ loader [] ; p [ ClassName "center" ] [ str "Ant opsloan..." ] ]
         | State.UnAuthorized ->
-            span [] [
+            span [ Key "unauthorized" ] [
                 str "Sorry matje, je bent geen patron of niet "
-                Link [ To "/login" ] [ str "ingelogd" ]
+                link [ To "/login" ] [ str "ingelogd" ]
             ]
         | State.SubmitFailed ->
-            div [ Id "submit-failed" ] [
+            div [ Key "submit-failed" ; Id "submit-failed" ] [
                 h2 [] [ str "Butter, zwoar mislukt zeg 😸!" ]
                 code [] [ pre [] [ str model.SubmitError ] ]
                 p [] [ str "Je kan later nog eens proberen, maar rekent er niet op 😅" ]
             ]
         | State.Enter ->
             form [
+                Key "form-enter"
                 OnSubmit (fun ev ->
                     ev.preventDefault ()
                     dispatch Submit
                 )
             ] [
-                div [ yield! errorClass model.Errors.Name ] [
-                    label [] [ str "Naam*" ]
-                    input [ Name "name" ; DefaultValue model.Name ; updateOnChange UpdateName ]
+                div [ yield Key "container-name" :> IProp ; yield! errorClass model.Errors.Name ] [
+                    label [ Key "label-name" ] [ str "Naam*" ]
+                    input [
+                        Key "input-name"
+                        Name "name"
+                        DefaultValue model.Name
+                        OnChange (updateOnChange UpdateName)
+                        AutoComplete "off"
+                    ]
                     inputError model.Errors.Name
                 ]
-                div [ yield! errorClass model.Errors.Price ] [
-                    label [] [ str "Prijs*" ]
-                    div [ ClassName "price" ] [
+                div [ yield Key "container-price" :> IProp ; yield! errorClass model.Errors.Price ] [
+                    label [ Key "label-price" ] [ str "Prijs*" ]
+                    div [ Key "price-input-container" ; ClassName "price" ] [
                         input [
+                            Key "input-price"
                             Name "price"
                             Type "number"
                             Step "0.01"
                             DefaultValue model.Price
-                            updateOnChange UpdatePrice
+                            OnChange (updateOnChange UpdatePrice)
                         ]
-                        select [ updateOnChange UpdateCurrency ] [ ofList (List.map mapToCurrencyItem currencies) ]
+                        select [ OnChange (updateOnChange UpdateCurrency) ] (List.map mapToCurrencyItem currencies)
                     ]
                     inputError model.Errors.Price
                 ]
-                div [ yield! errorClass model.Errors.Location ] [
-                    label [] [ str "Locatie*" ]
-                    div [ Id "locationPickerContainer" ] [
-                        LocationPicker
+                div [ Key "container-location" :> IProp ; yield! errorClass model.Errors.Location ] [
+                    label [ Key "label-location" ] [ str "Locatie*" ]
+                    div [ Key "location-picker-container" ; Id "locationPickerContainer" ] [
+                        ofComponentWithProps
+                            LocationPicker
                             {|
-                                OnChange = onLocationChanges
-                                ExistingLocations =
+                                key = "location-picker"
+                                onChange = onLocationChanges
+                                existingLocations =
                                     model.ExistingLocations
                                     |> Array.map (fun exisingLocation ->
                                         exisingLocation.name, (exisingLocation.latitude, exisingLocation.longitude)
@@ -745,39 +769,40 @@ let AddLocationPage () =
                     ]
                     inputError model.Errors.Location
                 ]
-                div [] [
+                div [ Key "container-is-draft" ] [
                     label [] [ str "Ist van vat?" ]
-                    Toggle
-                        {|
-                            TrueLabel = "Joat"
-                            FalseLabel = "Nint"
-                            OnChange = (UpdateIsDraft >> dispatch)
-                            Value = model.IsDraft
-                            Disabled = false
-                        |}
-                ]
-                div [] [
-                    label [] [ str "Co-patrons?" ]
-                    p [] [ str "Zin der nog matjes aanwezig?" ]
-                    div [ Id "others" ] [ ofArray coPatronsOptions ]
-                    ul [ Id "selectedOthers" ] [ ofArray coPatronsSelected ]
-                ]
-                div [ Id "take-picture" ] [
-                    label [] [ str "Foto" ]
-                    p [] [ str "Niet verplicht, kan wel leutig zijn." ]
-                    for photo in model.Photos do
-                        img [ Src photo ; HTMLAttr.Width "100%" ]
-                    button [ OnClick onTakePicture ] [
-                        span [] [ str "Voeg foto toe" ]
-                        Icon [ IconProp.Icon "ph:camera-duotone" ; IconProp.Height 24 ; IconProp.Width 24 ]
+                    toggle [
+                        ToggleProp.TrueLabel "Joat"
+                        ToggleProp.FalseLabel "Nint"
+                        ToggleProp.OnChange (UpdateIsDraft >> dispatch)
+                        ToggleProp.Value model.IsDraft
+                        ToggleProp.Disabled false
                     ]
                 ]
-                div [] [
-                    label [] [ str "Opmerking" ]
-                    textarea [ DefaultValue model.Remark ; updateOnChange UpdateRemark ; Rows 2 ] []
+                div [ Key "container-copatrons" ] [
+                    label [ Key "label-copatrons" ] [ str "Co-patrons?" ]
+                    p [] [ str "Zin der nog matjes aanwezig?" ]
+                    div [ Id "others" ] coPatronsOptions
+                    ul [ Id "selectedOthers" ] coPatronsSelected
                 ]
-                div [ ClassName "align-right" ] [ input [ Type "submit" ; Class "primary" ; Value "Save!" ] ]
-            // if Browser.Dom.window.location.host.StartsWith ("localhost") then
-            //     pre [] [ str (Fable.Core.JS.JSON.stringify (model, space = 4)) ]
+                div [ Key "container-take-picture" ; Id "take-picture" ] [
+                    label [ Key "take-photo" ] [ str "Foto" ]
+                    p [ Key "take-photo-info" ] [ str "Niet verplicht, kan wel leutig zijn." ]
+                    for photo in model.Photos do
+                        img [ Key $"photo-%s{photo}" ; Src photo ; Width "100%" ]
+                    button [ Key "take-photo-btn" ; OnClick onTakePicture ] [
+                        span [] [ str "Voeg foto toe" ]
+                        icon [ IconProp.Icon "ph:camera-duotone" ; IconProp.Height 24 ; IconProp.Width 24 ]
+                    ]
+                ]
+                div [ Key "container-remarks" ] [
+                    label [] [ str "Opmerking" ]
+                    textarea [ DefaultValue model.Remark ; OnChange (updateOnChange UpdateRemark) ; Rows 2 ] []
+                ]
+                div [ Key "container-save" ; ClassName "align-right" ] [
+                    input [ Type "submit" ; Class "primary" ; Value "Save!" ]
+                ]
+                if Browser.Dom.window.location.host.StartsWith "localhost" then
+                    pre [ Key "debug" ] [ str (JS.JSON.stringify (model, space = 4)) ]
             ]
     ]

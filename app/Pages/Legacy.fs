@@ -1,9 +1,9 @@
 module Legacy
 
 open System
-open Feliz
 open React
-open React.Props
+open React.DSL
+open React.DSL.Props
 open ReactMapGL
 
 type LegacyLocation =
@@ -20,7 +20,6 @@ type LegacyLocation =
         creator : string
     |}
 
-[<ReactComponent>]
 let LegacyPage () =
     let viewport, setViewport =
         React.useState<Viewport>
@@ -44,25 +43,32 @@ let LegacyPage () =
     let icons =
         data
         |> Array.map (fun location ->
-            Marker [
+            marker [
                 Key location.id
                 MarkerLatitude location.latitude
                 MarkerLongitude location.longitude
                 OffsetLeft 0
                 OffsetTop 0
             ] [
-                img [ Src "/images/ronny.png" ; HTMLAttr.Height "20" ; HTMLAttr.Width "20" ]
-
+                img [
+                    Key $"%s{location.id}-image"
+                    Src "/images/ronny.png"
+                    Height "20"
+                    Width "20"
+                ]
             ]
         )
 
     main [ Id "world-map" ] [
-        ReactMapGL [
-            ReactMapGLProp.OnMove (fun ev -> setViewport ev.viewState) :> IProp
-            Style [ CSSProp.Height "100vh" ; CSSProp.Width "100vw" ] :> IProp
-            ReactMapGLProp.Latitude viewport.latitude
-            ReactMapGLProp.Longitude viewport.longitude
-            ReactMapGLProp.Zoom viewport.zoom
-            ReactMapGLProp.MapStyle "mapbox://styles/mapbox/light-v11"
-        ] [ ofArray icons ]
+        reactMapGL
+            [
+                ReactMapGLProp.MapboxAccessToken mapboxApiAccessToken
+                ReactMapGLProp.OnMove (fun ev -> setViewport ev.viewState) :> IProp
+                Style {| height = "100vh" ; width = "100vw" |}
+                ReactMapGLProp.Latitude viewport.latitude
+                ReactMapGLProp.Longitude viewport.longitude
+                ReactMapGLProp.Zoom viewport.zoom
+                ReactMapGLProp.MapStyle "mapbox://styles/mapbox/light-v11"
+            ]
+            icons
     ]

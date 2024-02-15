@@ -2,14 +2,14 @@ module Overview
 
 open System
 open Fable.Core.JsInterop
-open Feliz
 open React
-open React.Props
+open React.DSL
+open React.DSL.Props
 open Firebase
 open ReactRouterDom
 open Components
 
-let formatDate (d : DateTime) : string =
+let private formatDate (d : DateTime) : string =
     emitJsExpr
         d
         "`${$0.getDate().toString().padStart(2, '0')}/${($0.getMonth() + 1).toString().padStart(2, '0')}/${$0.getFullYear()}`;"
@@ -19,7 +19,6 @@ type SortOrder =
     | ByPrice = 1
     | ByDate = 2
 
-[<ReactComponent>]
 let OverviewPage () =
     let querySnapshot, isLoading, _ = Hooks.Exports.useQuery allRonniesQuery
 
@@ -67,7 +66,7 @@ let OverviewPage () =
                         else $"{location.price} {location.currency}"
 
                     tr [ Key id ] [
-                        td [] [ Link [ To $"/detail/{id}" ] [ str location.name ] ]
+                        td [] [ link [ To $"/detail/{id}" ] [ str location.name ] ]
                         td [] [ str $"%s{priceText}" ]
                         td [] [ str (formatDate (location.date.toDate ())) ]
                     ]
@@ -79,7 +78,7 @@ let OverviewPage () =
                 else
                     fun _ -> setSortOrder (nextSortOrder, true)
 
-            table [] [
+            table [ Key "overviewTable" ] [
                 thead [] [
                     tr [] [
                         th [ OnClick (onHeaderClick SortOrder.ByName) ] [ str "Naam" ]
@@ -87,12 +86,12 @@ let OverviewPage () =
                         th [ OnClick (onHeaderClick SortOrder.ByDate) ] [ str "Datum toegevoegd" ]
                     ]
                 ]
-                tbody [] [ ofArray rows ]
+                tbody [] rows
             ]
         )
 
     main [ Id "overview" ] [
-        h1 [] [ str "Overzicht" ]
+        h1 [ Key "overview-title" ] [ str "Overzicht" ]
         match overviewTable with
         | None -> Loader ()
         | Some overviewTable -> overviewTable

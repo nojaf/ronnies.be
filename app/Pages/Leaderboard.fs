@@ -6,12 +6,13 @@ open Browser
 open Browser.Types
 open Feliz
 open React
-open React.Props
+open React.DSL
+open React.DSL.Props
 open Iconify
 open Firebase
 open type Firebase.Auth.Exports
 open ReactRouterDom
-open Components
+open ComponentsDSL
 
 type HighScore =
     {|
@@ -20,7 +21,6 @@ type HighScore =
         score : int
     |}
 
-[<ReactComponent>]
 let LeaderboardPage () =
     let querySnapshot, snapShotIsLoading, _ = Hooks.Exports.useQuery allRonniesQuery
     let user, isUserLoading, _ = Hooks.Exports.useAuthState auth
@@ -71,7 +71,12 @@ let LeaderboardPage () =
             tr [ Key highScore.uid ] [
                 td [ ClassName (if hasHighestScore then "highscore" else "") ] [
                     if hasHighestScore then
-                        Icon [ IconProp.Icon "mdi:crown" ; IconProp.Height 24 ; IconProp.Width 24 ]
+                        icon [
+                            Key "crown"
+                            IconProp.Icon "mdi:crown"
+                            IconProp.Height 24
+                            IconProp.Width 24
+                        ]
                     str highScore.displayName
                 ]
                 td [] [ ofInt highScore.score ]
@@ -79,12 +84,12 @@ let LeaderboardPage () =
         )
 
     main [] [
-        h1 [] [ str "Klassement" ]
+        h1 [ Key "title" ] [ str "Klassement" ]
         if snapShotIsLoading || isUserLoading then
-            Loader ()
+            loader [ Key "loader" ]
         else
-            table [] [
+            table [ Key "table" ] [
                 thead [] [ tr [] [ th [] [ str "Naam" ] ; th [] [ str "Score" ] ] ]
-                tbody [] [ ofArray rows ]
+                tbody [] rows
             ]
     ]

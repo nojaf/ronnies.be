@@ -1,44 +1,43 @@
 module Components
 
-open Feliz
-open React
-open React.Props
+open React.DSL
+open React.DSL.Props
 
-[<ReactComponent>]
-let inline Loader () =
-    div [ ClassName "loading" ] [ div [] [] ]
+let Loader () =
+    div [ ClassName "loading" ; Key "loader" ] [ div [] [] ]
 
 type ToggleProps =
     {|
-        TrueLabel : string
-        FalseLabel : string
-        OnChange : (bool -> unit)
-        Value : bool
-        Disabled : bool
+        trueLabel : string
+        falseLabel : string
+        onChange : (bool -> unit)
+        value : bool
+        disabled : bool
     |}
 
-[<ReactComponent>]
-let inline Toggle (props : ToggleProps) =
+let Toggle (props : ToggleProps) =
 
-    div [ ClassName "toggle" ] [
+    div [ ClassName "toggle" ; Key "toggle-container" ] [
         button [
-            if not props.Value then
+            Key "true-button"
+            if not props.value then
                 OnClick (fun ev ->
                     ev.preventDefault ()
-                    props.OnChange true
+                    props.onChange true
                 )
             else
                 ClassName "active"
-            Disabled props.Disabled
-        ] [ str props.TrueLabel ]
+            Disabled props.disabled
+        ] [ str props.trueLabel ]
         button [
-            if props.Value then
+            Key "false-button"
+            if props.value then
                 OnClick (fun ev ->
                     ev.preventDefault ()
-                    props.OnChange false
+                    props.onChange false
                 )
             else
                 ClassName "active"
-            Disabled props.Disabled
-        ] [ str props.FalseLabel ]
+            Disabled props.disabled
+        ] [ str props.falseLabel ]
     ]

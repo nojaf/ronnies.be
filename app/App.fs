@@ -2,17 +2,16 @@
 
 open Fable.Core.JsInterop
 open Browser.Dom
-open Feliz
 open Firebase
 open type Firebase.Auth.Exports
 open type Firebase.Hooks.Exports
 open React
-open React.Props
+open React.DSL
+open React.DSL.Props
 open ReactRouterDom
 open UseHooksTs
 open Iconify
 
-[<ReactComponent>]
 let LogoutComponent () =
     let navigate = useNavigate ()
 
@@ -22,7 +21,8 @@ let LogoutComponent () =
 
     a [ Href "#" ; OnClick logoutHandler ] [ str "uitloggen" ]
 
-[<ReactComponent>]
+let private HomePage = React.``lazy`` (fun () -> importDynamic<obj> "./Pages/Home")
+
 let App () =
     let isTablet = useMediaQuery "screen and (min-width: 960px)"
     let isMenuOpen, setIsMenuOpen = React.useState false
@@ -40,23 +40,29 @@ let App () =
 
     let mkNavLinkAux too id content =
         li [
+            Key too
             OnClick (fun _ -> setIsMenuOpen false)
             if not (System.String.IsNullOrWhiteSpace id) then
                 Id id
-        ] [ NavLink [ To too ] [ content ] ]
+        ] [ navLink [ To too ; Key too ] [ content ] ]
 
     let mkNavLink too text = mkNavLinkAux too "" (str text)
 
-    BrowserRouter [
+    browserRouter [] [
         nav [] [
-            Link [ To "/" ; OnClick (fun _ -> setIsMenuOpen false) ] [ img [ Src "/images/r-white.png" ] ]
+            link [ To "/" ; OnClick (fun _ -> setIsMenuOpen false) ] [ img [ Src "/images/r-white.png" ] ]
             button [
                 OnClick (fun ev ->
                     ev.preventDefault ()
                     setIsMenuOpen (not isMenuOpen)
                 )
             ] [
-                Icon [ IconProp.Icon "ic:baseline-menu" ; IconProp.Width 24 ; IconProp.Height 24 ]
+                icon [
+                    Key "mobile-menu-icon"
+                    IconProp.Icon "ic:baseline-menu"
+                    IconProp.Width 24
+                    IconProp.Height 24
+                ]
             ]
             ul [ ClassName menuClass ] [
                 yield mkNavLink "/overview" "Overzicht"
@@ -73,50 +79,66 @@ let App () =
                     | Some tokenResult when tokenResult.claims.admin -> yield mkNavLink "/admin" "Admin"
                     | _ -> ()
 
-                    yield li [ OnClick (fun _ -> setIsMenuOpen false) ] [ LogoutComponent () ]
+                    yield li [ Key "logout" ; OnClick (fun _ -> setIsMenuOpen false) ] [ ofComponent LogoutComponent ]
 
                     yield
                         mkNavLinkAux
                             "/settings"
                             "user"
                             (fragment [] [
-                                Icon [ IconProp.Icon "clarity:user-line" ; IconProp.Height 24 ; IconProp.Width 24 ]
+                                icon [ IconProp.Icon "clarity:user-line" ; IconProp.Height 24 ; IconProp.Width 24 ]
                                 str user.displayName
                             ])
             ]
         ]
-        Routes [
-            Route [ ReactRouterProp.Index true ; ReactRouterProp.Element (Home.HomePage ()) ]
-            Route [
+        routes [] [
+            route [
+                ReactRouterProp.Index true
+                ReactRouterProp.Element (suspense [ Fallback (p [] [ str "fallback" ]) ] [ (ofComponent HomePage) ])
+            ]
+            route [
                 ReactRouterProp.Path "/overview"
                 ReactRouterProp.Element (Overview.OverviewPage ())
             ]
-            Route [
+            route [
                 ReactRouterProp.Path "/add-location"
-                ReactRouterProp.Element (AddLocation.AddLocationPage ())
+                ReactRouterProp.Element (ofComponent AddLocation.AddLocationPage)
             ]
-            Route [
+            route [
                 ReactRouterProp.Path "/leaderboard"
-                ReactRouterProp.Element (Leaderboard.LeaderboardPage ())
+                ReactRouterProp.Element (ofComponent Leaderboard.LeaderboardPage)
             ]
-            Route [ ReactRouterProp.Path "/rules" ; ReactRouterProp.Element (Rules.RulesPage ()) ]
-            Route [
+            route [
+                ReactRouterProp.Path "/rules"
+                ReactRouterProp.Element (ofComponent Rules.RulesPage)
+            ]
+            route [
                 ReactRouterProp.Path "/legacy"
-                ReactRouterProp.Element (Legacy.LegacyPage ())
+                ReactRouterProp.Element (ofComponent Legacy.LegacyPage)
             ]
-            Route [ ReactRouterProp.Path "/login" ; ReactRouterProp.Element (Login.LoginPage ()) ]
-            Route [
+            route [
+                ReactRouterProp.Path "/login"
+                ReactRouterProp.Element (ofComponent Login.LoginPage)
+            ]
+            route [
                 ReactRouterProp.Path "/settings"
-                ReactRouterProp.Element (Settings.SettingsPage ())
+                ReactRouterProp.Element (ofComponent Settings.SettingsPage)
             ]
-            Route [ ReactRouterProp.Path "*" ; ReactRouterProp.Element (Navigate [ To "/" ]) ]
-            Route [
+            route [
                 ReactRouterProp.Path "/detail/:id"
-                ReactRouterProp.Element (Home.HomePage ())
+                ReactRouterProp.Element (suspense [ Fallback (p [] [ str "fallback" ]) ] [ (ofComponent HomePage) ])
             ]
-            Route [ ReactRouterProp.Path "/admin" ; ReactRouterProp.Element (Admin.AdminPage ()) ]
+            route [
+                ReactRouterProp.Path "/admin"
+                ReactRouterProp.Element (ofComponent Admin.AdminPage)
+            ]
+            // route [ ReactRouterProp.Path "*" ; ReactRouterProp.Element (navigate [ To "/" ]) ]
         ]
     ]
 
-let root = ReactDom.createRoot (document.querySelector "app")
-root.render (App ())
+document.addEventListener (
+    "DOMContentLoaded",
+    fun _ ->
+        let root = ReactDom.createRoot (document.querySelector "app")
+        root.render (strictMode [] [ ofComponent App ])
+)

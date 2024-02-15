@@ -5,14 +5,13 @@ open Fable.Core.JsInterop
 open Fable.Core
 open Browser
 open Browser.Types
-open Feliz
 open React
-open React.Props
+open React.DSL
+open React.DSL.Props
 open Firebase
 open type Firebase.Auth.Exports
 open ReactRouterDom
 
-[<ReactComponent>]
 let LoginPage () =
     let email, setEmail =
         let emailFromLocalStorage = window.localStorage.getItem "email"
@@ -75,9 +74,10 @@ let LoginPage () =
 
     main [] [
         form [ Id "login" ; OnSubmit onSubmit ] [
-            h1 [] [ str "Inloggen" ]
+            h1 [ Key "login-title" ] [ str "Inloggen" ]
             if not emailSent then
                 input [
+                    Key "email"
                     Type "email"
                     Placeholder "email"
                     AutoComplete "email"
@@ -86,8 +86,8 @@ let LoginPage () =
                     ClassName emailClass
                 ]
 
-                input [ Type "submit" ; Class "btn primary" ]
+                input [ Key "submit" ; Type "submit" ; Class "btn primary" ]
             else
-                p [] [ str $"Er werd een email verstuurd naar {email}. Via deze log je in." ]
+                p [ Key "msg" ] [ str $"Er werd een email verstuurd naar {email}. Via deze log je in." ]
         ]
     ]
