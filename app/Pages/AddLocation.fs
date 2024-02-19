@@ -516,7 +516,9 @@ let AddLocationPage () =
     let updateOnChange msg =
         fun (ev : Browser.Types.Event) -> ev.Value |> msg |> dispatch
 
-    let onLocationChanges userLocation ronnyLocation =
+    let onLocationChanges (userLocation, ronnyLocation) =
+        JS.console.log (userLocation)
+        JS.console.log (ronnyLocation)
         dispatch (UpdateLocation ronnyLocation)
 
         let isTooFar = distanceBetweenTwoPoints userLocation ronnyLocation > 0.25

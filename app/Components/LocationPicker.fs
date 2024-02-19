@@ -9,7 +9,7 @@ open Iconify
 
 type LocationPickerProps =
     {|
-        onChange : LatLng -> LatLng -> unit
+        onChange : LatLng * LatLng -> unit
         existingLocations : (string * LatLng) array
     |}
 
@@ -44,9 +44,10 @@ let LocationPicker (props : LocationPickerProps) =
                 setRonnyLatitude geolocation.latitude
                 setRonnyLongitude geolocation.longitude
 
-                props.onChange
+                props.onChange (
+                    (geolocation.latitude, geolocation.longitude),
                     (geolocation.latitude, geolocation.longitude)
-                    (geolocation.latitude, geolocation.longitude)
+                )
         ),
         [| box geolocation.loading |]
     )
@@ -55,7 +56,7 @@ let LocationPicker (props : LocationPickerProps) =
         let lngLat = ev.lngLat
         setRonnyLatitude lngLat.lat
         setRonnyLongitude lngLat.lng
-        props.onChange (userLatitude, userLongitude) (lngLat.lat, lngLat.lng)
+        props.onChange ((userLatitude, userLongitude), (lngLat.lat, lngLat.lng))
 
     let existingRonnies =
         props.existingLocations

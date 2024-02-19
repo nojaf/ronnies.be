@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- firebase SDK
+- firebase cli (https://firebase.google.com/docs/cli)
 - bun.sh (`curl -fsSL https://bun.sh/install | bash`)
 - `sudo apt install parallel`
 

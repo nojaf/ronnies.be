@@ -304,7 +304,7 @@ let testNotification =
                 "POST"
                 request
                 response
-                (fun request response ->
+                (fun _request response ->
                     promise {
                         try
                             let! user = auth.getUserByEmail "florian.verdonck@outlook.com"

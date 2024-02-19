@@ -31,7 +31,7 @@ let toggle (props : JSX.Prop seq) : JSX.Element = null
 [<RequireQualifiedAccess>]
 type LocationPickerProp =
     [<Emit "onChange">]
-    static member OnChange (value : LatLng -> LatLng -> unit) : JSX.Prop = "onChange", box value
+    static member OnChange (value : LatLng * LatLng -> unit) : JSX.Prop = "onChange", box value
 
     [<Emit "existingLocations">]
     static member ExistingLocations (value : (string * LatLng) array) : JSX.Prop = "existingLocations", box value
