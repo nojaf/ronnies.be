@@ -3,8 +3,7 @@ module Home
 open System
 open Fable.Core
 open React
-open React.DSL
-open React.DSL.Props
+open type React.DSL.DOMProps
 open Firebase
 open ReactMapGL
 open Iconify
@@ -34,7 +33,7 @@ let HomePage () =
             |}
 
     let (routeParams : {| id : string option |}) = useParams ()
-    let isModalOpen, setIsModalOpen = React.useState<bool> (routeParams.id.IsSome)
+    let isModalOpen, setIsModalOpen = React.useState<bool> routeParams.id.IsSome
     let detailImageUrls, setDetailImageUrls = React.useState<string array> Array.empty
 
     React.useEffect (
@@ -78,7 +77,7 @@ let HomePage () =
                     location.photoNames
                     |> Array.map (fun photoName ->
                         let storageRef = Storage.Exports.ref (storage, $"locations/{photoName}")
-                        Storage.Exports.getDownloadURL (storageRef)
+                        Storage.Exports.getDownloadURL storageRef
                     )
                     |> Promise.all
                     |> Promise.iter setDetailImageUrls
@@ -95,14 +94,14 @@ let HomePage () =
 
             marker [
                 Key snapshot.id
-                MarkerLatitude location.latitude
-                MarkerLongitude location.longitude
-                OffsetLeft 0
-                OffsetTop 0
+                MarkerProp.MarkerLatitude location.latitude
+                MarkerProp.MarkerLongitude location.longitude
+                MarkerProp.OffsetLeft 0
+                MarkerProp.OffsetTop 0
             ] [
                 link [
                     Key $"link-%s{snapshot.id}"
-                    To ($"/detail/%s{snapshot.id}")
+                    ReactRouterProp.To $"/detail/%s{snapshot.id}"
                     OnClick (fun _ -> setIsModalOpen true)
                 ] [ img [ Src "/images/ronny.png" ; Height "20" ; Width "20" ] ]
             ]
@@ -115,10 +114,10 @@ let HomePage () =
 
         marker [
             Key "user"
-            MarkerLatitude geolocation.latitude
-            MarkerLongitude geolocation.longitude
-            OffsetTop 0
-            OffsetLeft 0
+            MarkerProp.MarkerLatitude geolocation.latitude
+            MarkerProp.MarkerLongitude geolocation.longitude
+            MarkerProp.OffsetTop 0
+            MarkerProp.OffsetLeft 0
         ] [
             icon [
                 Key "user-icon"

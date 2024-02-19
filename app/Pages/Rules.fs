@@ -1,7 +1,7 @@
 module Rules
 
-open React.DSL
-open React.DSL.Props
+open React
+open type React.DSL.DOMProps
 
 let RulesPage () =
     let lis text = li [] [ span [] [ str text ] ]

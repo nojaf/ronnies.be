@@ -1,25 +1,40 @@
 module ComponentsDSL
 
-open Fable.Core.JsInterop
-open React
+open Fable.Core
 open React.Plugin
-open React.DSL
-open Components
 
-[<JSX(nameof Loader, __SOURCE_DIRECTORY__ + "/Components.fs")>]
-let loader (props : #IProp seq) : ReactElement =
-    jsxTransformFallback Loader props Seq.empty
+#nowarn "1182"
+
+[<JSX(nameof Components.Loader, "Components/Loader.fs")>]
+let loader (props : JSX.Prop seq) : JSX.Element = null
 
 [<RequireQualifiedAccess>]
 type ToggleProp =
-    | [<CompiledName "trueLabel">] TrueLabel of string
-    | FalseLabel of string
-    | OnChange of (bool -> unit)
-    | Value of bool
-    | Disabled of bool
+    [<Emit "trueLabel">]
+    static member TrueLabel (value : string) : JSX.Prop = "trueLabel", box value
 
-    interface IProp
+    [<Emit "falseLabel">]
+    static member FalseLabel (value : string) : JSX.Prop = "falseLabel", box value
 
-[<JSX(nameof Toggle, __SOURCE_DIRECTORY__ + "/Components.fs")>]
-let toggle (props : #IProp seq) : ReactElement =
-    jsxTransformFallback Toggle props Seq.empty
+    [<Emit "onChange">]
+    static member OnChange (value : bool -> unit) : JSX.Prop = "onChange", box value
+
+    [<Emit "value">]
+    static member Value (value : bool) : JSX.Prop = "value", box value
+
+    [<Emit "disabled">]
+    static member Disabled (value : bool) : JSX.Prop = "disabled", box value
+
+[<JSX(nameof Components.Toggle, "Components/Toggle.fs")>]
+let toggle (props : JSX.Prop seq) : JSX.Element = null
+
+[<RequireQualifiedAccess>]
+type LocationPickerProp =
+    [<Emit "onChange">]
+    static member OnChange (value : LatLng -> LatLng -> unit) : JSX.Prop = "onChange", box value
+
+    [<Emit "existingLocations">]
+    static member ExistingLocations (value : (string * LatLng) array) : JSX.Prop = "existingLocations", box value
+
+[<JSX(nameof Components.LocationPicker.LocationPicker, "Components/LocationPicker.fs")>]
+let locationPicker (props : JSX.Prop seq) : JSX.Element = null

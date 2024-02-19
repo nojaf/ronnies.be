@@ -1,36 +1,42 @@
 ﻿module ReactRouterDom
 
+open Fable.Core
 open Fable.Core.JsInterop
-open React
 open React.Plugin
 
 #nowarn "1182"
 
 [<JSX("BrowserRouter", "react-router-dom")>]
-let browserRouter (props : #IProp seq) (children : ReactElement seq) : ReactElement = null
+let browserRouter (props : JSX.Prop seq) (children : JSX.Element seq) : JSX.Element = null
 
 [<JSX("Routes", "react-router-dom")>]
-let routes (props : #IProp seq) (routes : ReactElement seq) : ReactElement = null
+let routes (props : JSX.Prop seq) (routes : JSX.Element seq) : JSX.Element = null
 
 [<JSX("Route", "react-router-dom")>]
-let route (props : IProp seq) : ReactElement = null
+let route (props : JSX.Prop seq) : JSX.Element = null
 
+[<RequireQualifiedAccess>]
 type ReactRouterProp =
-    | To of string
-    | Index of bool
-    | Path of string
-    | Element of ReactElement
+    [<Emit("to")>]
+    static member To (value : string) : JSX.Prop = "to", box value
 
-    interface IProp
+    [<Emit "index">]
+    static member Index (value : bool) = "index", box value
+
+    [<Emit "path">]
+    static member Path (value : string) = "path", box value
+
+    [<Emit "element">]
+    static member Element (value : JSX.Element) = "element", box value
 
 [<JSX("Navigate", "react-router-dom")>]
-let navigate (props : IProp seq) : ReactElement = null
+let navigate (props : JSX.Prop seq) : JSX.Element = null
 
 [<JSX("Link", "react-router-dom")>]
-let link (props : IProp seq) (children : ReactElement seq) : ReactElement = null
+let link (props : JSX.Prop seq) (children : JSX.Element seq) : JSX.Element = null
 
 [<JSX("NavLink", "react-router-dom")>]
-let navLink (props : IProp seq) (children : ReactElement seq) : ReactElement = null
+let navLink (props : JSX.Prop seq) (children : JSX.Element seq) : JSX.Element = null
 
 let useNavigate () : string -> unit = import "useNavigate" "react-router-dom"
 

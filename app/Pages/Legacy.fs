@@ -2,8 +2,7 @@ module Legacy
 
 open System
 open React
-open React.DSL
-open React.DSL.Props
+open type React.DSL.DOMProps
 open ReactMapGL
 
 type LegacyLocation =
@@ -29,7 +28,7 @@ let LegacyPage () =
                 zoom = 6
             |}
 
-    let data, setData = React.useState<LegacyLocation array> (Array.empty)
+    let data, setData = React.useState<LegacyLocation array> Array.empty
 
     React.useEffect (
         fun () ->
@@ -45,10 +44,10 @@ let LegacyPage () =
         |> Array.map (fun location ->
             marker [
                 Key location.id
-                MarkerLatitude location.latitude
-                MarkerLongitude location.longitude
-                OffsetLeft 0
-                OffsetTop 0
+                MarkerProp.MarkerLatitude location.latitude
+                MarkerProp.MarkerLongitude location.longitude
+                MarkerProp.OffsetLeft 0
+                MarkerProp.OffsetTop 0
             ] [
                 img [
                     Key $"%s{location.id}-image"
@@ -63,7 +62,7 @@ let LegacyPage () =
         reactMapGL
             [
                 ReactMapGLProp.MapboxAccessToken mapboxApiAccessToken
-                ReactMapGLProp.OnMove (fun ev -> setViewport ev.viewState) :> IProp
+                ReactMapGLProp.OnMove (fun ev -> setViewport ev.viewState)
                 Style {| height = "100vh" ; width = "100vw" |}
                 ReactMapGLProp.Latitude viewport.latitude
                 ReactMapGLProp.Longitude viewport.longitude

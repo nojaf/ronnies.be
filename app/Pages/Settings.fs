@@ -4,10 +4,8 @@ open Fable.Core.JsInterop
 open Fable.Core
 open Browser
 open Browser.Types
-open Feliz
 open React
-open React.DSL
-open React.DSL.Props
+open type React.DSL.DOMProps
 open type Firebase.Hooks.Exports
 open type Firebase.FireStore.Exports
 open type Firebase.Messaging.Exports
@@ -41,7 +39,7 @@ let registerServiceWorker () =
 
 let getTokenSnapshot (uid : uid) =
     let tokenRef = doc (firestore, FCM_TOKEN_COLLECTION, uid)
-    getDoc<FCMTokenData> (tokenRef)
+    getDoc<FCMTokenData> tokenRef
 
 let getFcmToken () =
     promise {
@@ -182,10 +180,10 @@ let SettingsPage () =
                 p [ Key "no-notifications-support" ] [ em [] [ str "Je browser ondersteunt geen notificaties." ] ]
 
             toggle [
-                ToggleProp.TrueLabel "Aan" :> IProp
+                ToggleProp.TrueLabel "Aan"
                 ToggleProp.FalseLabel "Uit"
                 ToggleProp.OnChange onChange
-                ToggleProp.Value (value = EnableNotifications.Yes)
+                ToggleProp.Value ((value = EnableNotifications.Yes))
                 ToggleProp.Disabled false
                 Key "toggle-notifications"
             ]

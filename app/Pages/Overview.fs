@@ -3,11 +3,10 @@ module Overview
 open System
 open Fable.Core.JsInterop
 open React
-open React.DSL
-open React.DSL.Props
+open type React.DSL.DOMProps
 open Firebase
 open ReactRouterDom
-open Components
+open ComponentsDSL
 
 let private formatDate (d : DateTime) : string =
     emitJsExpr
@@ -66,7 +65,7 @@ let OverviewPage () =
                         else $"{location.price} {location.currency}"
 
                     tr [ Key id ] [
-                        td [] [ link [ To $"/detail/{id}" ] [ str location.name ] ]
+                        td [] [ link [ ReactRouterProp.To $"/detail/{id}" ] [ str location.name ] ]
                         td [] [ str $"%s{priceText}" ]
                         td [] [ str (formatDate (location.date.toDate ())) ]
                     ]
@@ -90,9 +89,9 @@ let OverviewPage () =
             ]
         )
 
-    main [ Id "overview" ] [
-        h1 [ Key "overview-title" ] [ str "Overzicht" ]
+    let content =
         match overviewTable with
-        | None -> Loader ()
+        | None -> loader []
         | Some overviewTable -> overviewTable
-    ]
+
+    main [ Id "overview" ] [ h1 [ Key "overview-title" ] [ str "Overzicht" ] ; content ]

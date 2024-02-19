@@ -1,149 +1,22 @@
 ﻿module AddLocation
 
 open System
-open ComponentsDSL
 open Fable.Core
 open Fable.Core.JsInterop
-open Feliz.UseElmish
 open Elmish
+open Feliz.UseElmish
 open React
-open React.DSL
-open React.DSL.Props
+open type React.DSL.DOMProps
 open ReactRouterDom
 open Firebase
 open type Firebase.Hooks.Exports
+open ComponentsDSL
 
 type Storage = Storage.Exports
 type Firestore = FireStore.Exports
 
-open ReactMapGL
 open Iconify
 open UseFilePicker
-
-type LatLng = float * float
-
-let LocationPicker
-    (props :
-        {|
-            onChange : LatLng -> LatLng -> unit
-            existingLocations : (string * LatLng) array
-        |})
-    =
-    let geolocation = useGeolocation {| enableHighAccuracy = true |}
-    let userLatitude, setUserLatitude = React.useState 50.946139
-    let userLongitude, setUserLongitude = React.useState 3.138671
-    let ronnyLatitude, setRonnyLatitude = React.useState userLatitude
-    let ronnyLongitude, setRonnyLongitude = React.useState userLongitude
-
-    let viewport, setViewport =
-        React.useState<Viewport>
-            {|
-                latitude = userLatitude
-                longitude = userLongitude
-                zoom = 16
-            |}
-
-    React.useEffect (
-        (fun () ->
-            if not geolocation.loading then
-                setUserLatitude geolocation.latitude
-                setUserLongitude geolocation.longitude
-
-                setViewport
-                    {|
-                        latitude = geolocation.latitude
-                        longitude = geolocation.longitude
-                        zoom = 16
-                    |}
-
-                setRonnyLatitude geolocation.latitude
-                setRonnyLongitude geolocation.longitude
-
-                props.onChange
-                    (geolocation.latitude, geolocation.longitude)
-                    (geolocation.latitude, geolocation.longitude)
-        ),
-        [| box geolocation.loading |]
-    )
-
-    let onMapClick (ev : MapLayerMouseEvent) =
-        let lngLat = ev.lngLat
-        setRonnyLatitude lngLat.lat
-        setRonnyLongitude lngLat.lng
-        props.onChange (userLatitude, userLongitude) (lngLat.lat, lngLat.lng)
-
-    let existingRonnies =
-        props.existingLocations
-        |> Array.map (fun (name, (lat, lng)) ->
-            marker [
-                Key $"existing-%f{lat}-%f{lng}"
-                MarkerLatitude lat
-                MarkerLongitude lng
-                Key name
-            ] [
-                img [
-                    Key $"existing-img-%f{lat}-%f{lng}"
-                    Src "/images/r-black.png"
-                    Width 24
-                    Height 24
-                ]
-                strong [ Key $"existing-name-%f{lat}-%f{lng}" ] [ str name ]
-            ]
-        )
-
-    let refreshLocation (ev : Browser.Types.Event) =
-        ev.preventDefault ()
-
-        Browser.Navigator.navigator.geolocation
-        |> Option.iter (fun geolocation ->
-            geolocation.getCurrentPosition (
-                fun position ->
-                    JS.console.log ("Got position", position)
-                    setUserLatitude position.coords.latitude
-                    setUserLongitude position.coords.longitude
-                , (fun error -> JS.console.error error)
-                , (!!{| enableHighAccuracy = true |})
-            )
-        )
-
-    fragment [] [
-        reactMapGL [
-            ReactMapGLProp.MapboxAccessToken mapboxApiAccessToken
-            ReactMapGLProp.OnMove (fun ev -> setViewport ev.viewState) :> IProp
-            ReactMapGLProp.OnClick onMapClick
-            Style {| height = "30vh" ; width = "100%" |}
-            ReactMapGLProp.Latitude viewport.latitude
-            ReactMapGLProp.Longitude viewport.longitude
-            ReactMapGLProp.Zoom viewport.zoom
-            ReactMapGLProp.MapStyle "mapbox://styles/nojaf/ck0wtbppf0jal1cq72o8i8vm1"
-        ] [
-            yield! existingRonnies
-            marker [
-                Key "ronny"
-                MarkerLatitude ronnyLatitude
-                MarkerLongitude ronnyLongitude
-                OffsetTop 0
-                OffsetLeft 0
-            ] [
-                img [ Key "marker-ronny-image" ; Src "/images/ronny.png" ; Width 24 ; Height 24 ]
-            ]
-            marker [
-                Key "user"
-                MarkerLatitude userLatitude
-                MarkerLongitude userLongitude
-                OffsetTop 0
-                OffsetLeft 0
-            ] [
-                icon [
-                    Key "user-icon"
-                    IconProp.Icon "clarity:user-line"
-                    IconProp.Height 24
-                    IconProp.Width 24
-                ]
-            ]
-        ]
-        button [ ClassName "ghost" ; OnClick refreshLocation ] [ str "Refresh locatie" ]
-    ]
 
 let currencies =
     [
@@ -653,10 +526,8 @@ let AddLocationPage () =
     let inputError error =
         error |> Option.map (fun error -> p [] [ str error ]) |> ofOption
 
-    let errorClass error : IProp seq =
-        match error with
-        | None -> []
-        | Some _ -> [ ClassName "error" ]
+    let errorClass error =
+        if Option.isSome error then "error" else null
 
     let coPatronsOptions =
         model.Users
@@ -710,7 +581,7 @@ let AddLocationPage () =
         | State.UnAuthorized ->
             span [ Key "unauthorized" ] [
                 str "Sorry matje, je bent geen patron of niet "
-                link [ To "/login" ] [ str "ingelogd" ]
+                link [ ReactRouterProp.To "/login" ] [ str "ingelogd" ]
             ]
         | State.SubmitFailed ->
             div [ Key "submit-failed" ; Id "submit-failed" ] [
@@ -726,7 +597,7 @@ let AddLocationPage () =
                     dispatch Submit
                 )
             ] [
-                div [ yield Key "container-name" :> IProp ; yield! errorClass model.Errors.Name ] [
+                div [ ClassName (errorClass model.Errors.Name) ] [
                     label [ Key "label-name" ] [ str "Naam*" ]
                     input [
                         Key "input-name"
@@ -737,7 +608,7 @@ let AddLocationPage () =
                     ]
                     inputError model.Errors.Name
                 ]
-                div [ yield Key "container-price" :> IProp ; yield! errorClass model.Errors.Price ] [
+                div [ ClassName (errorClass model.Errors.Price) ] [
                     label [ Key "label-price" ] [ str "Prijs*" ]
                     div [ Key "price-input-container" ; ClassName "price" ] [
                         input [
@@ -752,20 +623,18 @@ let AddLocationPage () =
                     ]
                     inputError model.Errors.Price
                 ]
-                div [ Key "container-location" :> IProp ; yield! errorClass model.Errors.Location ] [
+                div [ ClassName (errorClass model.Errors.Location) ] [
                     label [ Key "label-location" ] [ str "Locatie*" ]
                     div [ Key "location-picker-container" ; Id "locationPickerContainer" ] [
-                        ofComponentWithProps
-                            LocationPicker
-                            {|
-                                key = "location-picker"
-                                onChange = onLocationChanges
-                                existingLocations =
-                                    model.ExistingLocations
-                                    |> Array.map (fun exisingLocation ->
-                                        exisingLocation.name, (exisingLocation.latitude, exisingLocation.longitude)
-                                    )
-                            |}
+                        locationPicker [
+                            LocationPickerProp.OnChange onLocationChanges
+                            LocationPickerProp.ExistingLocations (
+                                model.ExistingLocations
+                                |> Array.map (fun exisingLocation ->
+                                    exisingLocation.name, (exisingLocation.latitude, exisingLocation.longitude)
+                                )
+                            )
+                        ]
                     ]
                     inputError model.Errors.Location
                 ]

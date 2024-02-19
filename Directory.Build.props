@@ -1,0 +1,8 @@
+<Project>
+  <PropertyGroup>
+    <WarnOn>$(WarnOn);1182</WarnOn> <!-- Unused variables,https://learn.microsoft.com/en-us/dotnet/fsharp/language-reference/compiler-options#opt-in-warnings -->
+    <WarnOn>$(WarnOn);3390</WarnOn><!-- Malformed XML doc comments -->
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+<!--    <OtherFlags>$(OtherFlags) &#45;&#45;test:GraphBasedChecking &#45;&#45;test:ParallelOptimization &#45;&#45;test:ParallelIlxGen</OtherFlags>-->
+  </PropertyGroup>
+</Project>

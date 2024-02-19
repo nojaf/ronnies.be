@@ -8,4 +8,4 @@ parallel --line-buffer -j 3 ::: \
     "firebase emulators:start --project=ronnies-210509" \
     "dotnet fable watch ./App.fsproj --cwd ./app -e .js -o ./out --fableLib fable-library --noReflection --exclude 'Nojaf.Fable.React.Plugin' --run bunx --bun vite -d"
 
-# dotnet fable ./App.fsproj --cwd ./app -e .js -o ./out --fableLib fable-library --noReflection --exclude 'Nojaf.Fable.React.Plugin'
+# dotnet fable ./App.fsproj --cwd ./app -e .jsx -o ./out --fableLib "@fable-org/fable-library-js" --noReflection --exclude 'Nojaf.Fable.React.Plugin' --test:MSBuildCracker

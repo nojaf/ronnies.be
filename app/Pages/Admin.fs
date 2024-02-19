@@ -1,13 +1,11 @@
 module Admin
 
+open Fable.Core
 open React
-open React.DSL
-open React.DSL.Props
-open Firebase
+open type React.DSL.DOMProps
 open type Firebase.Auth.Exports
 open type Firebase.Hooks.Exports
-open ReactRouterDom
-open Components
+open ComponentsDSL
 
 [<RequireQualifiedAccess>]
 type AddUserState =
@@ -17,16 +15,16 @@ type AddUserState =
     | Success of string
 
 let AddUser () =
-    let name, setName = React.useState<string> ("")
-    let email, setEmail = React.useState<string> ("")
-    let state, setState = React.useStateByFunction<AddUserState> (AddUserState.Initial)
+    let name, setName = React.useState<string> ""
+    let email, setEmail = React.useState<string> ""
+    let state, setState = React.useStateByFunction<AddUserState> AddUserState.Initial
 
     let onSubmit (e : Browser.Types.Event) =
         e.preventDefault ()
         setState (fun _ -> AddUserState.Loading)
 
         API.addUser name email
-        |> Promise.map (fun user ->
+        |> Promise.map (fun _user ->
             setState (fun _ -> AddUserState.Success $"{name} ({email}) was added!")
             setName ""
             setEmail ""
@@ -70,7 +68,7 @@ let AddUser () =
             yield! fields
             yield p [ ClassName "error" ] [ str error ]
             yield submitButton
-        | AddUserState.Loading -> yield Loader ()
+        | AddUserState.Loading -> yield loader []
         | AddUserState.Success msg ->
             yield! fields
             yield submitButton
@@ -82,13 +80,13 @@ let AdminPage () =
 
     main [ Id "admin" ] [
         if loading then
-            Loader ()
+            loader []
         else
 
         match tokenResult with
         | Some tokenResult when tokenResult.claims.admin ->
             h1 [ Key "title" ] [ str "Admin" ]
             h2 [ Key "add-user-title" ] [ str "Add user" ]
-            ofComponentWithProps AddUser {| key = "add-user" |}
+            JSX.create AddUser []
         | _ -> h1 [ Key "unauthorized" ] [ str "Unauthorized" ]
     ]

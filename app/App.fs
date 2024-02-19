@@ -1,13 +1,12 @@
 ﻿module App
 
+open Fable.Core
 open Fable.Core.JsInterop
 open Browser.Dom
-open Firebase
 open type Firebase.Auth.Exports
 open type Firebase.Hooks.Exports
 open React
-open React.DSL
-open React.DSL.Props
+open type React.DSL.DOMProps
 open ReactRouterDom
 open UseHooksTs
 open Iconify
@@ -42,15 +41,16 @@ let App () =
         li [
             Key too
             OnClick (fun _ -> setIsMenuOpen false)
-            if not (System.String.IsNullOrWhiteSpace id) then
-                Id id
-        ] [ navLink [ To too ; Key too ] [ content ] ]
+            Id (if System.String.IsNullOrWhiteSpace id then null else id)
+        ] [ navLink [ ReactRouterProp.To too ; Key too ] [ content ] ]
 
     let mkNavLink too text = mkNavLinkAux too "" (str text)
 
     browserRouter [] [
         nav [] [
-            link [ To "/" ; OnClick (fun _ -> setIsMenuOpen false) ] [ img [ Src "/images/r-white.png" ] ]
+            link [ ReactRouterProp.To "/" ; OnClick (fun _ -> setIsMenuOpen false) ] [
+                img [ Src "/images/r-white.png" ]
+            ]
             button [
                 OnClick (fun ev ->
                     ev.preventDefault ()
@@ -79,7 +79,7 @@ let App () =
                     | Some tokenResult when tokenResult.claims.admin -> yield mkNavLink "/admin" "Admin"
                     | _ -> ()
 
-                    yield li [ Key "logout" ; OnClick (fun _ -> setIsMenuOpen false) ] [ ofComponent LogoutComponent ]
+                    yield li [ Key "logout" ; OnClick (fun _ -> setIsMenuOpen false) ] [ JSX.create LogoutComponent [] ]
 
                     yield
                         mkNavLinkAux
@@ -94,7 +94,7 @@ let App () =
         routes [] [
             route [
                 ReactRouterProp.Index true
-                ReactRouterProp.Element (suspense [ Fallback (p [] [ str "fallback" ]) ] [ (ofComponent HomePage) ])
+                ReactRouterProp.Element (suspense [ Fallback (p [] [ str "fallback" ]) ] [ (JSX.create HomePage []) ])
             ]
             route [
                 ReactRouterProp.Path "/overview"
@@ -102,37 +102,37 @@ let App () =
             ]
             route [
                 ReactRouterProp.Path "/add-location"
-                ReactRouterProp.Element (ofComponent AddLocation.AddLocationPage)
+                ReactRouterProp.Element (JSX.create AddLocation.AddLocationPage [])
             ]
             route [
                 ReactRouterProp.Path "/leaderboard"
-                ReactRouterProp.Element (ofComponent Leaderboard.LeaderboardPage)
+                ReactRouterProp.Element (JSX.create Leaderboard.LeaderboardPage [])
             ]
             route [
                 ReactRouterProp.Path "/rules"
-                ReactRouterProp.Element (ofComponent Rules.RulesPage)
+                ReactRouterProp.Element (JSX.create Rules.RulesPage [])
             ]
             route [
                 ReactRouterProp.Path "/legacy"
-                ReactRouterProp.Element (ofComponent Legacy.LegacyPage)
+                ReactRouterProp.Element (JSX.create Legacy.LegacyPage [])
             ]
             route [
                 ReactRouterProp.Path "/login"
-                ReactRouterProp.Element (ofComponent Login.LoginPage)
+                ReactRouterProp.Element (JSX.create Login.LoginPage [])
             ]
             route [
                 ReactRouterProp.Path "/settings"
-                ReactRouterProp.Element (ofComponent Settings.SettingsPage)
+                ReactRouterProp.Element (JSX.create Settings.SettingsPage [])
             ]
             route [
                 ReactRouterProp.Path "/detail/:id"
-                ReactRouterProp.Element (suspense [ Fallback (p [] [ str "fallback" ]) ] [ (ofComponent HomePage) ])
+                ReactRouterProp.Element (suspense [ Fallback (p [] [ str "fallback" ]) ] [ (JSX.create HomePage []) ])
             ]
             route [
                 ReactRouterProp.Path "/admin"
-                ReactRouterProp.Element (ofComponent Admin.AdminPage)
+                ReactRouterProp.Element (JSX.create Admin.AdminPage [])
             ]
-            // route [ ReactRouterProp.Path "*" ; ReactRouterProp.Element (navigate [ To "/" ]) ]
+        // route [ ReactRouterProp.Path "*" ; ReactRouterProp.Element (navigate [ To "/" ]) ]
         ]
     ]
 
@@ -140,5 +140,5 @@ document.addEventListener (
     "DOMContentLoaded",
     fun _ ->
         let root = ReactDom.createRoot (document.querySelector "app")
-        root.render (strictMode [] [ ofComponent App ])
+        root.render (strictMode [] [ JSX.create App [] ])
 )

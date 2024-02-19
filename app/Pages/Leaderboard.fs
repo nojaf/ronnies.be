@@ -1,17 +1,10 @@
 module Leaderboard
 
-open Fable.Core.JsInterop
-open Fable.Core
-open Browser
-open Browser.Types
-open Feliz
 open React
-open React.DSL
-open React.DSL.Props
+open type React.DSL.DOMProps
 open Iconify
 open Firebase
 open type Firebase.Auth.Exports
-open ReactRouterDom
 open ComponentsDSL
 
 type HighScore =
@@ -24,7 +17,7 @@ type HighScore =
 let LeaderboardPage () =
     let querySnapshot, snapShotIsLoading, _ = Hooks.Exports.useQuery allRonniesQuery
     let user, isUserLoading, _ = Hooks.Exports.useAuthState auth
-    let scores, setScores = React.useState<HighScore array> (Array.empty)
+    let scores, setScores = React.useState<HighScore array> Array.empty
 
     React.useEffect (
         fun () ->
@@ -68,23 +61,27 @@ let LeaderboardPage () =
         |> Array.map (fun highScore ->
             let hasHighestScore = highScore.score = highestScore
 
+            let highestScoreIcon =
+                if not hasHighestScore then
+                    null
+                else
+                    icon [
+                        Key "crown"
+                        IconProp.Icon "mdi:crown"
+                        IconProp.Height 24
+                        IconProp.Width 24
+                    ]
+
             tr [ Key highScore.uid ] [
                 td [ ClassName (if hasHighestScore then "highscore" else "") ] [
-                    if hasHighestScore then
-                        icon [
-                            Key "crown"
-                            IconProp.Icon "mdi:crown"
-                            IconProp.Height 24
-                            IconProp.Width 24
-                        ]
+                    highestScoreIcon
                     str highScore.displayName
                 ]
                 td [] [ ofInt highScore.score ]
             ]
         )
 
-    main [] [
-        h1 [ Key "title" ] [ str "Klassement" ]
+    let content =
         if snapShotIsLoading || isUserLoading then
             loader [ Key "loader" ]
         else
@@ -92,4 +89,5 @@ let LeaderboardPage () =
                 thead [] [ tr [] [ th [] [ str "Naam" ] ; th [] [ str "Score" ] ] ]
                 tbody [] rows
             ]
-    ]
+
+    main [] [ h1 [ Key "title" ] [ str "Klassement" ] ; content ]

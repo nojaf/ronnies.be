@@ -1,5 +1,5 @@
 module Settings
 
-open React
+open Fable.Core
 
-val SettingsPage : unit -> ReactElement
+val SettingsPage : unit -> JSX.Element

@@ -6,9 +6,7 @@ open Fable.Core
 open Browser
 open Browser.Types
 open React
-open React.DSL
-open React.DSL.Props
-open Firebase
+open type React.DSL.DOMProps
 open type Firebase.Auth.Exports
 open ReactRouterDom
 
