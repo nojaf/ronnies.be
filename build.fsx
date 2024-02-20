@@ -12,7 +12,7 @@ let initialize = stage "Init" { run "dotnet tool restore" }
 pipeline "Build" {
     workingDir __SOURCE_DIRECTORY__
     initialize
-    runIfOnlySpecified false
+    runIfOnlySpecified true
 }
 
 pipeline "Watch" {
@@ -30,14 +30,14 @@ pipeline "Watch" {
         }
         stage "app" {
             workingDir (__SOURCE_DIRECTORY__ </> "App")
-            run
-                "dotnet fable ./App.fsproj -e .jsx --watch -o ./out --fableLib \"@fable-org/fable-library-js\" --noReflection --exclude \"Nojaf.Fable.React.Plugin\" --test:MSBuildCracker"
+            // run
+            //     "dotnet fable ./App.fsproj -e .jsx --watch -o ./out --fableLib \"@fable-org/fable-library-js\" --noReflection --exclude \"Nojaf.Fable.React.Plugin\" --test:MSBuildCracker"
             run "bun run dev"
             paralle
         }
         paralle
     }
-    runIfOnlySpecified true
+    runIfOnlySpecified false
 }
 
 tryPrintPipelineCommandHelp ()
