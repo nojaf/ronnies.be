@@ -94,4 +94,4 @@ let OverviewPage () =
         | None -> loader []
         | Some overviewTable -> overviewTable
 
-    main [ Id "overview" ] [ h1 [ Key "overview-title" ] [ str "Overzicht" ] ; content ]
+    main [ Id "overview" ] [ h1 [] [ str "Overzicht" ] ; content ]

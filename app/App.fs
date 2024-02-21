@@ -20,7 +20,8 @@ let LogoutComponent () =
 
     a [ Href "#" ; OnClick logoutHandler ] [ str "uitloggen" ]
 
-let private HomePage = React.``lazy`` (fun () -> importDynamic<obj> "./Pages/Home")
+let private HomePage =
+    React.``lazy`` (fun () -> importDynamic<obj> "./Pages/Home.fs")
 
 let App () =
     let isTablet = useMediaQuery "screen and (min-width: 960px)"

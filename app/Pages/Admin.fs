@@ -8,13 +8,13 @@ open type Firebase.Hooks.Exports
 open ComponentsDSL
 
 [<RequireQualifiedAccess>]
-type AddUserState =
+type private AddUserState =
     | Initial
     | Error of string
     | Loading
     | Success of string
 
-let AddUser () =
+let private AddUser () =
     let name, setName = React.useState<string> ""
     let email, setEmail = React.useState<string> ""
     let state, setState = React.useStateByFunction<AddUserState> AddUserState.Initial
@@ -87,6 +87,6 @@ let AdminPage () =
         | Some tokenResult when tokenResult.claims.admin ->
             h1 [ Key "title" ] [ str "Admin" ]
             h2 [ Key "add-user-title" ] [ str "Add user" ]
-            JSX.create AddUser []
+            JSX.create AddUser [ Key "add-user" ]
         | _ -> h1 [ Key "unauthorized" ] [ str "Unauthorized" ]
     ]
