@@ -17,16 +17,23 @@
     <Compile Include="Components\Loader.fs" />
     <Compile Include="Components\LocationPicker.fs" />
     <Compile Include="ComponentsDSL.fs"/>
+    <Compile Include="Pages\Login.fsi"/>
     <Compile Include="Pages\Login.fs"/>
+    <Compile Include="Pages\Overview.fsi"/>
     <Compile Include="Pages\Overview.fs"/>
+    <Compile Include="Pages\Home.fsi"/>
     <Compile Include="Pages\Home.fs"/>
     <Compile Include="Pages\AddLocation.fsi"/>
     <Compile Include="Pages\AddLocation.fs"/>
+    <Compile Include="Pages\Leaderboard.fsi"/>
     <Compile Include="Pages\Leaderboard.fs"/>
+    <Compile Include="Pages\Rules.fsi"/> 
     <Compile Include="Pages\Rules.fs"/>
     <Compile Include="Pages\Settings.fsi"/>
     <Compile Include="Pages\Settings.fs"/>
+    <Compile Include="Pages\Legacy.fsi"/>
     <Compile Include="Pages\Legacy.fs"/>
+    <Compile Include="Pages\Admin.fsi"/>
     <Compile Include="Pages\Admin.fs"/>
     <Compile Include="App.fs"/>
   </ItemGroup>

@@ -67,13 +67,13 @@ let rec requestNotificationsPermissions (uid : uid) : JS.Promise<EnableNotificat
         let! permission = emitJsExpr<JS.Promise<string>> () "Notification.requestPermission()"
 
         if permission = "granted" then
-            return! saveMessagineDeviceToken uid
+            return! saveMessageDeviceToken uid
         else
             console.log $"Unable to get permission to notify, got %s{permission}"
             return EnableNotifications.No
     }
 
-and saveMessagineDeviceToken (uid : uid) : JS.Promise<EnableNotifications> =
+and saveMessageDeviceToken (uid : uid) : JS.Promise<EnableNotifications> =
     try
         promise {
             let! fcmToken = getFcmToken ()
@@ -173,7 +173,11 @@ let SettingsPage () =
 
     main [ Id "settings" ] [
         h1 [ Key "title" ] [ str "Settings" ]
-        if browserSupportsNotifications && value <> EnableNotifications.Unknown then
+        match value with
+        | EnableNotifications.Unknown -> loader [ Key "loader" ]
+        | _ ->
+
+        if browserSupportsNotifications then
             h2 [ Key "notifications-title" ] [ str "Notificaties?" ]
 
             if not browserSupportsNotifications then

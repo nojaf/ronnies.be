@@ -14,7 +14,7 @@ type private AddUserState =
     | Loading
     | Success of string
 
-let private AddUser () =
+let AddUser () =
     let name, setName = React.useState<string> ""
     let email, setEmail = React.useState<string> ""
     let state, setState = React.useStateByFunction<AddUserState> AddUserState.Initial
@@ -66,13 +66,13 @@ let private AddUser () =
             yield submitButton
         | AddUserState.Error error ->
             yield! fields
-            yield p [ ClassName "error" ] [ str error ]
+            yield p [ ClassName "error" ; Key "error" ] [ str error ]
             yield submitButton
-        | AddUserState.Loading -> yield loader []
+        | AddUserState.Loading -> yield loader [ Key "loader" ]
         | AddUserState.Success msg ->
             yield! fields
             yield submitButton
-            yield p [ ClassName "success" ] [ str msg ]
+            yield p [ ClassName "success" ; Key "success" ] [ str msg ]
     ]
 
 let AdminPage () =
@@ -80,13 +80,13 @@ let AdminPage () =
 
     main [ Id "admin" ] [
         if loading then
-            loader []
+            loader [ Key "loader" ]
         else
 
         match tokenResult with
         | Some tokenResult when tokenResult.claims.admin ->
             h1 [ Key "title" ] [ str "Admin" ]
             h2 [ Key "add-user-title" ] [ str "Add user" ]
-            JSX.create AddUser [ Key "add-user" ]
+            React.createElement AddUser {| key = "add-user" |} []
         | _ -> h1 [ Key "unauthorized" ] [ str "Unauthorized" ]
     ]
