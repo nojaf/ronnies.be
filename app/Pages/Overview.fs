@@ -1,6 +1,7 @@
 module Overview
 
 open System
+open Fable.Core
 open Fable.Core.JsInterop
 open React
 open type React.DSL.DOMProps
@@ -18,6 +19,7 @@ type SortOrder =
     | ByPrice = 1
     | ByDate = 2
 
+[<ExportDefault>]
 let OverviewPage () =
     let querySnapshot, isLoading, _ = Hooks.Exports.useQuery allRonniesQuery
 

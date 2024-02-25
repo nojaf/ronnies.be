@@ -2,4 +2,5 @@ module Leaderboard
 
 open Fable.Core
 
-val LeaderboardPage: unit -> JSX.Element
+[<ExportDefault>]
+val LeaderboardPage : unit -> JSX.Element

@@ -1,5 +1,6 @@
 module Leaderboard
 
+open Fable.Core
 open React
 open type React.DSL.DOMProps
 open Iconify
@@ -14,6 +15,7 @@ type HighScore =
         score : int
     |}
 
+[<ExportDefault>]
 let LeaderboardPage () =
     let querySnapshot, snapShotIsLoading, _ = Hooks.Exports.useQuery allRonniesQuery
     let user, isUserLoading, _ = Hooks.Exports.useAuthState auth

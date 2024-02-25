@@ -10,6 +10,7 @@ open type React.DSL.DOMProps
 open ReactRouterDom
 open UseHooksTs
 open Iconify
+open ComponentsDSL
 
 let LogoutComponent () =
     let navigate = useNavigate ()
@@ -20,8 +21,18 @@ let LogoutComponent () =
 
     a [ Href "#" ; OnClick logoutHandler ] [ str "uitloggen" ]
 
-let private HomePage =
-    React.``lazy`` (fun () -> importDynamic<obj> "./Pages/Home.fs")
+let inline private importPage path =
+    React.``lazy`` (fun () -> importDynamic<JSX.ElementType> path)
+
+let private HomePage = importPage "./Pages/Home.fs"
+let private OverviewPage = importPage "./Pages/Overview.fs"
+let private AddLocationPage = importPage "./Pages/AddLocation.fs"
+let private LeaderboardPage = importPage "./Pages/Leaderboard.fs"
+let private RulesPage = importPage "./Pages/Rules.fs"
+let private LegacyPage = importPage "./Pages/Legacy.fs"
+let private LoginPage = importPage "./Pages/Login.fs"
+let private SettingsPage = importPage "./Pages/Settings.fs"
+let private AdminPage = importPage "./Pages/Admin.fs"
 
 let App () =
     let isTablet = useMediaQuery "screen and (min-width: 960px)"
@@ -46,6 +57,7 @@ let App () =
         ] [ navLink [ ReactRouterProp.To too ; Key too ] [ content ] ]
 
     let mkNavLink too text = mkNavLinkAux too "" (str text)
+    let loader = loader []
 
     browserRouter [] [
         nav [] [
@@ -95,43 +107,43 @@ let App () =
         routes [] [
             route [
                 ReactRouterProp.Index true
-                ReactRouterProp.Element (suspense [ Fallback (p [] [ str "fallback" ]) ] [ (JSX.create HomePage []) ])
+                ReactRouterProp.Element (suspense [ Fallback loader ] [ (JSX.create HomePage []) ])
             ]
             route [
                 ReactRouterProp.Path "/overview"
-                ReactRouterProp.Element (Overview.OverviewPage ())
+                ReactRouterProp.Element (suspense [ Fallback loader ] [ (JSX.create OverviewPage []) ])
             ]
             route [
                 ReactRouterProp.Path "/add-location"
-                ReactRouterProp.Element (JSX.create AddLocation.AddLocationPage [])
+                ReactRouterProp.Element (suspense [ Fallback loader ] [ (JSX.create AddLocationPage []) ])
             ]
             route [
                 ReactRouterProp.Path "/leaderboard"
-                ReactRouterProp.Element (JSX.create Leaderboard.LeaderboardPage [])
+                ReactRouterProp.Element (suspense [ Fallback loader ] [ (JSX.create LeaderboardPage []) ])
             ]
             route [
                 ReactRouterProp.Path "/rules"
-                ReactRouterProp.Element (JSX.create Rules.RulesPage [])
+                ReactRouterProp.Element (suspense [ Fallback loader ] [ (JSX.create RulesPage []) ])
             ]
             route [
                 ReactRouterProp.Path "/legacy"
-                ReactRouterProp.Element (JSX.create Legacy.LegacyPage [])
+                ReactRouterProp.Element (suspense [ Fallback loader ] [ (JSX.create LegacyPage []) ])
             ]
             route [
                 ReactRouterProp.Path "/login"
-                ReactRouterProp.Element (JSX.create Login.LoginPage [])
+                ReactRouterProp.Element (suspense [ Fallback loader ] [ (JSX.create LoginPage []) ])
             ]
             route [
                 ReactRouterProp.Path "/settings"
-                ReactRouterProp.Element (JSX.create Settings.SettingsPage [])
+                ReactRouterProp.Element (suspense [ Fallback loader ] [ (JSX.create SettingsPage []) ])
             ]
             route [
                 ReactRouterProp.Path "/detail/:id"
-                ReactRouterProp.Element (suspense [ Fallback (p [] [ str "fallback" ]) ] [ (JSX.create HomePage []) ])
+                ReactRouterProp.Element (suspense [ Fallback loader ] [ (JSX.create HomePage []) ])
             ]
             route [
                 ReactRouterProp.Path "/admin"
-                ReactRouterProp.Element (JSX.create Admin.AdminPage [])
+                ReactRouterProp.Element (suspense [ Fallback loader ] [ (JSX.create AdminPage []) ])
             ]
         // route [ ReactRouterProp.Path "*" ; ReactRouterProp.Element (navigate [ To "/" ]) ]
         ]

@@ -1,8 +1,10 @@
 module Rules
 
+open Fable.Core
 open React
 open type React.DSL.DOMProps
 
+[<ExportDefault>]
 let RulesPage () =
     let lis text = li [] [ span [] [ str text ] ]
 

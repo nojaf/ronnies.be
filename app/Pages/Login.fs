@@ -10,6 +10,7 @@ open type React.DSL.DOMProps
 open type Firebase.Auth.Exports
 open ReactRouterDom
 
+[<ExportDefault>]
 let LoginPage () =
     let email, setEmail =
         let emailFromLocalStorage = window.localStorage.getItem "email"
@@ -86,6 +87,10 @@ let LoginPage () =
 
                 input [ Key "submit" ; Type "submit" ; Class "btn primary" ]
             else
-                p [ Key "msg" ] [ str $"Er werd een email verstuurd naar {email}. Via deze log je in." ]
+                p [ Key "msg" ] [
+                    str $"Er werd een email verstuurd naar {email}."
+                    br []
+                    str "Via deze log je in."
+                ]
         ]
     ]

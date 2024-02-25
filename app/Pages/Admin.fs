@@ -75,6 +75,7 @@ let AddUser () =
             yield p [ ClassName "success" ; Key "success" ] [ str msg ]
     ]
 
+[<ExportDefault>]
 let AdminPage () =
     let tokenResult, loading, _ = useAuthIdTokenResult<CustomClaims> auth
 
@@ -87,6 +88,6 @@ let AdminPage () =
         | Some tokenResult when tokenResult.claims.admin ->
             h1 [ Key "title" ] [ str "Admin" ]
             h2 [ Key "add-user-title" ] [ str "Add user" ]
-            React.createElement AddUser {| key = "add-user" |} []
+            React.createElement (AddUser, {| key = "add-user" |})
         | _ -> h1 [ Key "unauthorized" ] [ str "Unauthorized" ]
     ]

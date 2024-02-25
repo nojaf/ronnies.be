@@ -2,4 +2,5 @@ module Login
 
 open Fable.Core
 
-val LoginPage: unit -> JSX.Element
+[<ExportDefault>]
+val LoginPage : unit -> JSX.Element

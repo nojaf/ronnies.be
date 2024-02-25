@@ -2,4 +2,5 @@ module Admin
 
 open Fable.Core
 
-val AdminPage: unit -> JSX.Element
+[<ExportDefault>]
+val AdminPage : unit -> JSX.Element

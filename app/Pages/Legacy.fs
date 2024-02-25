@@ -1,6 +1,7 @@
 module Legacy
 
 open System
+open Fable.Core
 open React
 open type React.DSL.DOMProps
 open ReactMapGL
@@ -19,6 +20,7 @@ type LegacyLocation =
         creator : string
     |}
 
+[<ExportDefault>]
 let LegacyPage () =
     let viewport, setViewport =
         React.useState<Viewport>

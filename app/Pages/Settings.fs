@@ -101,6 +101,7 @@ and saveMessageDeviceToken (uid : uid) : JS.Promise<EnableNotifications> =
         console.error ("Unable to get messaging token.", ex)
         Promise.lift EnableNotifications.No
 
+[<ExportDefault>]
 let SettingsPage () =
     let user, isUserLoading, _ = useAuthState auth
     let tokenResult, _, _ = useAuthIdTokenResult auth

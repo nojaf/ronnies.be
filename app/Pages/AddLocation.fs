@@ -477,6 +477,7 @@ let distanceBetweenTwoPoints (latA, lngA) (latB, lngB) =
 
         dist
 
+[<ExportDefault>]
 let AddLocationPage () =
     let navigate = useNavigate ()
     let user, isUserLoading, _ = useAuthState auth
@@ -599,7 +600,7 @@ let AddLocationPage () =
                     dispatch Submit
                 )
             ] [
-                div [ ClassName (errorClass model.Errors.Name) ] [
+                div [ ClassName (errorClass model.Errors.Name) ; Key "name-container" ] [
                     label [ Key "label-name" ] [ str "Naam*" ]
                     input [
                         Key "input-name"
@@ -610,7 +611,7 @@ let AddLocationPage () =
                     ]
                     inputError model.Errors.Name
                 ]
-                div [ ClassName (errorClass model.Errors.Price) ] [
+                div [ ClassName (errorClass model.Errors.Price) ; Key "price-container" ] [
                     label [ Key "label-price" ] [ str "Prijs*" ]
                     div [ Key "price-input-container" ; ClassName "price" ] [
                         input [
@@ -625,7 +626,7 @@ let AddLocationPage () =
                     ]
                     inputError model.Errors.Price
                 ]
-                div [ ClassName (errorClass model.Errors.Location) ] [
+                div [ ClassName (errorClass model.Errors.Location) ; Key "location-container" ] [
                     label [ Key "label-location" ] [ str "Locatie*" ]
                     div [ Key "location-picker-container" ; Id "locationPickerContainer" ] [
                         locationPicker [
