@@ -57,12 +57,12 @@ let getFcmToken () =
     }
 
 [<RequireQualifiedAccess>]
-type EnableNotifications =
+type private EnableNotifications =
     | Unknown
     | Yes
     | No
 
-let rec requestNotificationsPermissions (uid : uid) : JS.Promise<EnableNotifications> =
+let rec private requestNotificationsPermissions (uid : uid) : JS.Promise<EnableNotifications> =
     promise {
         let! permission = emitJsExpr<JS.Promise<string>> () "Notification.requestPermission()"
 
@@ -73,7 +73,7 @@ let rec requestNotificationsPermissions (uid : uid) : JS.Promise<EnableNotificat
             return EnableNotifications.No
     }
 
-and saveMessageDeviceToken (uid : uid) : JS.Promise<EnableNotifications> =
+and private saveMessageDeviceToken (uid : uid) : JS.Promise<EnableNotifications> =
     try
         promise {
             let! fcmToken = getFcmToken ()

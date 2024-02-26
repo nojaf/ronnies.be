@@ -6,8 +6,10 @@ open React.DSL
 open type React.DSL.DOMProps
 open StyledComponents
 
-let private css =
-    """
+let private StyledDiv : JSX.ElementType =
+    mkStyleComponent
+        "div"
+        """
 & {
     display: flex;
     align-items: center;
@@ -42,8 +44,6 @@ let private css =
     }
 }
 """
-
-let private StyledDiv : JSX.ElementType = mkStyleComponent "div" css
 
 let inline private styledDiv (children : JSX.Element seq) : JSX.Element =
     JSX.create StyledDiv [ "children", children ]

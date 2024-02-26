@@ -194,29 +194,6 @@ input.error {
     }
 }
 
-/* Toggle */
-.toggle button.active {
-    outline: 2px solid var(--primary);
-    z-index: 2;
-    color: var(--primary);
-}
-
-.toggle button.active:disabled {
-    background-color: #fafbfc;
-    border-color: #1b1f2326;
-    color: #959da5;
-    cursor: default;
-    outline: none;
-}
-
-.toggle button:first-child {
-    border-right: none;
-}
-
-.toggle button:last-child {
-    border-left: none;
-}
-
 /* helper */
 .center { text-align: center; }
 .align-right { text-align: right; }

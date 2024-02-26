@@ -5,7 +5,7 @@ open React.Plugin
 
 #nowarn "1182"
 
-[<JSX(nameof Components.Loader, "Components/Loader.fs")>]
+[<JSX(nameof Components.Loader.Loader, "Components/Loader.fs")>]
 let loader (props : JSX.Prop seq) : JSX.Element = null
 
 [<RequireQualifiedAccess>]
@@ -25,7 +25,7 @@ type ToggleProp =
     [<Emit "disabled">]
     static member Disabled (value : bool) : JSX.Prop = "disabled", box value
 
-[<JSX(nameof Components.Toggle, "Components/Toggle.fs")>]
+[<JSX(nameof Components.Toggle.Toggle, "Components/Toggle.fs")>]
 let toggle (props : JSX.Prop seq) : JSX.Element = null
 
 [<RequireQualifiedAccess>]
