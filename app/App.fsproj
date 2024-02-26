@@ -11,6 +11,7 @@
     <Compile Include="Bindings\ReactRouterDom.fs"/>
     <Compile Include="Bindings\ReactMapGL.fs"/>
     <Compile Include="Bindings\UseFilePicker.fs"/>
+    <Compile Include="Bindings\StyledComponents.fs" />
     <Compile Include="Types.fs"/>
     <Compile Include="API.fs"/>
     <Compile Include="Components\Toggle.fs" />

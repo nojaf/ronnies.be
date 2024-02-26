@@ -1,12 +1,10 @@
 ﻿module Components.Loader
 
 open Fable.Core
-open Fable.Core.JsInterop
 open type React.React
 open React.DSL
 open type React.DSL.DOMProps
-
-let private styled : obj = import "styled" "styled-components"
+open StyledComponents
 
 let private css =
     """
@@ -45,8 +43,9 @@ let private css =
 }
 """
 
-let private StyledDiv : JSX.ElementType =
-    emitJsExpr (styled, css) """$0.div`${$1}`"""
+let private StyledDiv : JSX.ElementType = mkStyleComponent "div" css
 
-let Loader () =
-    createElement (StyledDiv, null, div [] [])
+let inline private styledDiv (children : JSX.Element seq) : JSX.Element =
+    JSX.create StyledDiv [ "children", children ]
+
+let Loader () = styledDiv [ div [] [] ]
