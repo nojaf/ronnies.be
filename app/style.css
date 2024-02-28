@@ -1,9 +1,46 @@
 ﻿@charset "UTF-8";
 
 :root {
-    --primary: #791716;
-    --primary-hover: #ba2322;
-    --primary-border: #380b0a;
+    --spacing-50: 4px;
+    --spacing-100: 8px;
+    --spacing-200: 12px;
+    --spacing-300: 16px;
+    --spacing-400: 24px;
+    --spacing-500: 32px;
+    --spacing-600: 48px;
+    --spacing-700: 64px;
+    --spacing-800: 96px;
+    --spacing-900: 128px;
+    --spacing-950: 192px;
+
+    --font-50: 12px;
+    --font-100: 14px;
+    --font-200: 16px;
+    --font-300: 18px;
+    --font-400: 20px;
+    --font-500: 24px;
+    --font-600: 30px;
+    --font-700: 36px;
+    --font-800: 48px;
+    --font-900: 60px;
+    --font-950: 72px;
+
+    --ronny-50: #fff1f1;
+    --ronny-100: #ffe1e1;
+    --ronny-200: #ffc8c7;
+    --ronny-300: #ffa2a1;
+    --ronny-400: #ff6c6a;
+    --ronny-500: #f83d3b;
+    --ronny-600: #e51f1d;
+    --ronny-700: #c11614;
+    --ronny-800: #9f1615;
+    --ronny-900: #791716; /* official */
+    --ronny-950: #480807;
+
+    --radius: 6px;
+    --line-height: 1.5;
+    --heading-line-height: 1.25;
+    
     --menu: #c44d56;
     --menu-hover: #d7868d;
     --menu-border: #943138;
@@ -23,17 +60,6 @@
     --dark: #383A42;
     --transparent-dark: #80383A42;
     --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-    --unit: 0.5rem;
-    --unit-2: 1rem;
-    --unit-3: 1.5rem;
-    --unit-4: 2rem;
-    --unit-5: 2.5rem;
-    --unit-6: 3rem;
-    --unit-7: 3.5rem;
-    --unit-8: 4rem;
-    --unit-9: 4.5rem;
-    --unit-10: 5rem;
-    --radius: var(--radius);
 }
 
 * {
@@ -64,8 +90,58 @@ h6 {
     font-weight: 500;
 }
 
+/* Headings */
 h1 {
-    font-size: var(--unit-5);
+    font-size: var(--font-600);
+    line-height: var(--heading-line-height);
+    margin-bottom: var(--spacing-400);
+}
+
+h2 {
+    font-size: var(--font-500);
+    line-height: var(--heading-line-height);
+    margin-bottom: var(--spacing-300);
+}
+
+h3 {
+    font-size: var(--font-400);
+    line-height: var(--heading-line-height);
+    margin-bottom: var(--spacing-200);
+}
+
+h4 {
+    font-weight: bold;
+}
+
+h4, h5, h6 {
+    font-size: var(--font-300);
+    margin-bottom: var(--spacing-200);
+}
+
+@media screen and (min-width: 768px) {
+    h1 {
+        font-size: var(--font-700);
+        margin-bottom: var(--spacing-400);
+        line-height: var(--heading-line-height);
+    }
+
+    h2 {
+        font-size: var(--font-600);
+        margin-bottom: var(--spacing-400);
+    }
+
+    h3 {
+        font-size: var(--font-500);
+        margin-bottom: var(--spacing-200);
+    }
+
+    h4 {
+        font-size: var(--font-400);
+    }
+
+    h4, h5, h6 {
+        margin-top: var(--spacing-300);
+    }
 }
 
 input, select, textarea {
@@ -73,15 +149,14 @@ input, select, textarea {
     border-radius: 0;
     display: block;
     box-sizing: border-box;
-    font-size: var(--unit-2);
-    padding: var(--unit);
+    font-size: var(--font-200);
+    padding: var(--spacing-50);
     width: 100%;
-    border: 1px solid var(--transparent-dark);
-    border-style: inset;
+    border: 1px inset var(--transparent-dark);
 }
 
 input, select {
-    height: var(--unit-5);
+    height: var(--spacing-500);
 }
 
 input.error {
@@ -97,7 +172,6 @@ input.error {
     border-radius: 0;
     box-shadow: #1b1f230a 0 1px, #ffffff40 0 1px inset;
     box-sizing: border-box;
-    color: #24292e;
     cursor: pointer;
     display: inline-block;
     font-family: var(--font);
@@ -148,16 +222,16 @@ input.error {
     }
 
     & i {
-        margin-right: var(--unit);
+        margin-right: var(--spacing-200);
     }
 
     &.primary{
-        background-color: var(--primary);
-        border-color: var(--primary-border);
+        background-color: var(--ronny-900);
+        border-color: var(--ronny-950);
         color: var(--white);
 
         &:hover {
-            background-color: var(--primary-hover);
+            background-color: var(--ronny-700);
         }
     }
 
@@ -183,12 +257,12 @@ input.error {
 
     &.ghost {
         background-color: var(--white);
-        border-color: var(--primary);
-        color: var(--primary);
+        border-color: var(--ronny-900);
+        color: var(--ronny-900);
     
         &:hover {
-            background-color: var(--primary-hover);
-            border-color: var(--primary-hover);
+            background-color: var(--ronny-700);
+            border-color: var(--ronny-700);
             color: var(--white);
         }
     }
@@ -198,10 +272,14 @@ input.error {
 .center { text-align: center; }
 .align-right { text-align: right; }
 
+main {
+    padding-inline: var(--spacing-200);
+}
+
 nav {
-    background-color: var(--primary);
+    background-color: var(--ronny-900);
     color: white;
-    padding-top: var(--unit-2);
+    padding-top: var(--spacing-300);
     display: grid;
     grid-template-rows: auto auto;
     grid-template-columns: auto auto;
@@ -213,8 +291,8 @@ nav {
 }
 
 nav > a {
-    margin-left: var(--unit-2);
-    margin-bottom: var(--unit-2);
+    margin-left: var(--spacing-300);
+    margin-bottom: var(--spacing-300);
     grid-row: 1;
     grid-column: 1;
     justify-self: start;
@@ -222,7 +300,7 @@ nav > a {
 
 nav > a img {
     display: block;
-    height: var(--unit-3);
+    height: var(--spacing-400);
 }
 
 nav a:hover img, nav button:hover svg {
@@ -236,12 +314,12 @@ nav button {
     background-color: transparent;
     border: none;
     padding: 0;
-    max-height: var(--unit-3);
+    max-height: var(--spacing-400);
     grid-row: 1;
     grid-column: 2;
     justify-self: end;
-    margin-right: var(--unit-2);
-    margin-bottom: var(--unit-2);
+    margin-right: var(--spacing-200);
+    margin-bottom: var(--spacing-200);
 }
 
 nav button:hover {
@@ -282,7 +360,7 @@ nav ul.show {
 
 nav ul li a {
     display: block;
-    padding: var(--unit);
+    padding: var(--spacing-200);
     border-bottom: 1px solid var(--grey-border);
     background-color: var(--menu);
     color: white;
@@ -292,7 +370,7 @@ nav ul li a {
 nav ul #user a {
     display: flex;
     align-items: center;
-    padding: var(--unit);
+    padding: var(--spacing-200);
     font-weight: 500;
 }
 
@@ -301,7 +379,7 @@ nav ul #user a:hover {
 }
 
 nav ul #user a svg {
-    margin-right: var(--unit);
+    margin-right: var(--spacing-50);
 }
 
 nav ul li a:hover {
@@ -310,7 +388,7 @@ nav ul li a:hover {
 }
 
 nav ul li a:active, nav ul li a.active {
-    background-color: var(--primary);
+    background-color: var(--ronny-900);
     font-weight: bold;
 }
 
@@ -326,7 +404,7 @@ nav ul li a:active, nav ul li a.active {
         display: flex;
         justify-content: flex-end;
         align-items: center;
-        height: var(--unit-3);
+        height: var(--spacing-400);
         animation: initial;
         opacity: 1;
         visibility: visible;
@@ -336,7 +414,7 @@ nav ul li a:active, nav ul li a.active {
     nav ul li a, nav ul #user {
         background-color: transparent;
         border: none;
-        margin-right: var(--unit-2);
+        margin-right: var(--spacing-400);
         padding: 0;
     }
 
@@ -351,19 +429,18 @@ nav ul li a:active, nav ul li a.active {
 }
 
 main {
-    padding-top: var(--unit-8);
-    margin: 0 var(--unit-2);
+    padding-top: var(--spacing-800);
 }
 
 #login {
     border: 1px solid var(--menu-border);
-    padding: var(--unit-2);
+    padding: var(--spacing-400);
     max-width: 400px;
-    margin: var(--unit-2) auto auto;
+    margin: var(--spacing-400) auto auto;
 }
 
 #login input {
-    margin: var(--unit-2) 0;
+    margin: var(--spacing-400) 0;
 }
 
 #login input:last-child {
@@ -375,33 +452,20 @@ label {
     display: block;
 }
 
-#add-location, #admin {
-    margin: 0 var(--unit-4);
-}
-
 #add-location h1 {
-    margin-bottom: var(--unit-2);
-}
-
-#add-location .loading {
-    margin-top: calc(2 * var(--unit-10));
+    margin-bottom: var(--spacing-400);
 }
 
 form > div {
-    margin-top: var(--unit-4);
+    margin-top: var(--spacing-400);
 
     & label {
-        margin-bottom: var(--unit);
+        margin-bottom: var(--spacing-200);
     }
 }
 
 #add-location form > div > p {
     margin: 0;
-}
-
-form > label {
-    margin-bottom: var(--unit);
-
 }
 
 #add-location form .price {
@@ -415,13 +479,12 @@ form > label {
 
 #add-location form .price select {
     border-left: none;
-    max-width: var(--unit-10);
+    max-width: var(--spacing-700);
 }
-
 
 #add-location input[type=submit], #admin input[type=submit] {
     width: initial;
-    margin-bottom: var(--unit-2);
+    margin-bottom: var(--spacing-400);
 }
 
 #add-location .error input {
@@ -431,27 +494,26 @@ form > label {
 #add-location .error p {
     color: var(--danger);
     line-height: 1;
-    margin: 0;
-    margin-top: var(--unit);
+    margin: var(--spacing-300) 0 0;
 }
 
 #add-location .error #locationPickerContainer {
-    border: 1px solid var(--danger);
+    outline: 1px solid var(--danger);
 }
 
 #locationPickerContainer button {
     display: block;
-    margin-top: var(--unit-2);
+    margin-top: var(--spacing-400);
 }
 
 #add-location #others {
-    margin-top: var(--unit);
+    margin-top: var(--spacing-100);
 }
 
 #add-location #others button {
     display: inline-block;
-    margin-right: calc(var(--unit) / 2);
-    margin-top: calc(var(--unit) / 2);
+    margin-right: var(--spacing-200);
+    margin-top:  var(--spacing-200);
 }
 
 #add-location #others button:first-child {
@@ -459,17 +521,16 @@ form > label {
 }
 
 #add-location #selectedOthers {
-    margin: 0;
     padding: 0;
     list-style: none;
-    margin-top: var(--unit-2);
+    margin: var(--spacing-400) 0 0;
 }
 
 #add-location #selectedOthers li {
     display: flex;
     align-content: center;
     justify-content: space-between;
-    margin-bottom: var(--unit);
+    margin-bottom: var(--spacing-200);
 }
 
 #add-location #selectedOthers li:last-child {
@@ -477,13 +538,12 @@ form > label {
 }
 
 #add-location #selectedOthers li span {
-    line-height: var(--unit-4);
-    font-size: var(--unit-2);
-
+    font-size: var(--font-300);
+    font-style: italic;
 }
 
 #add-location #selectedOthers li button {
-    padding: var(--unit);
+    padding: var(--spacing-100);
     display: flex;
 }
 
@@ -495,21 +555,21 @@ form > label {
         justify-content: center;
 
         & svg {
-            margin-left: var(--unit-2);
+            margin-left: var(--spacing-400);
         }
 
         & span {
-            line-height: var(--unit-4);
-            font-size: var(--unit-2);
+            line-height: var(--spacing-600);
+            font-size: var(--font-300);
         }
     }
 
     & img {
-        margin: var(--unit) 0;
+        margin: var(--spacing-300) 0;
     }
 
     & p {
-        margin-bottom: var(--unit);
+        margin-bottom: var(--spacing-200);
     }
 
     &:has(img) p {
@@ -522,13 +582,13 @@ form > label {
 }
 
 #submit-failed {
-    margin-top: var(--unit-6);
+    margin-top: var(--spacing-600);
 }
 
 #submit-failed code pre { 
     color: var(--danger-border);
     background-color: var(--grey);
-    padding: var(--unit-2);
+    padding: var(--spacing-400);
 }
 
 @media screen and (min-width: 600px) {
@@ -555,25 +615,25 @@ form > label {
 }
 
 #detail > div {
-    border: 3px solid var(--primary);
+    border: 3px solid var(--ronny-900);
     margin: auto;
-    padding: var(--unit-3);
+    padding: var(--spacing-400);
     background-color: var(--white);
     position: relative;
-    width: calc(100vw - var(--unit-4));
+    width: calc(100vw - var(--spacing-800));
     max-width: 420px;
     box-sizing: border-box;
 }
 
 #detail h1 {
-    font-size: var(--unit-3);
+    font-size: var(--font-600);
 }
 
 #detail .close {
     position: absolute;
     right: -18px;
     top: -18px;
-    background-color: var(--primary);
+    background-color: var(--ronny-900);
     color: var(--white);
     border-radius: 18px;
     height: 36px;
@@ -583,12 +643,11 @@ form > label {
 
 #detail img {
     width: 100%;
-    margin-top: var(--unit-2);
+    object-fit: contain;
 }
 
 #detail blockquote {
-    margin: 0;
-    margin-top: var(--unit-2);
+    margin: var(--spacing-400) 0 0;
     font-style: italic;
 }
 
@@ -597,7 +656,7 @@ form > label {
 }
 
 table {
-    margin-top: var(--unit-2);
+    margin-top: var(--spacing-400);
     width: 100%;
     border-collapse: collapse;
 }
@@ -615,7 +674,7 @@ table th, table td {
 }
 
 table th {
-    color: var(--primary);
+    color: var(--ronny-900);
     cursor: pointer;
 }
 
@@ -630,7 +689,7 @@ table th:hover {
 }
 
 table th, table td {
-    padding: var(--unit-2);
+    padding: var(--spacing-400);
 }
 
 table tbody tr:nth-child(2n - 1) {
@@ -638,7 +697,7 @@ table tbody tr:nth-child(2n - 1) {
 }
 
 table a {
-    color:var(--primary);
+    color:var(--ronny-900);
     text-decoration: none;
 }
 
@@ -659,47 +718,35 @@ table a:hover {
 }
 
 .highscore svg {
-    margin-right: var(--unit);
+    margin-right: var(--spacing-100);
     color: #F6CF57;
 }
 
 #manifesto h2 {
-    margin-top: var(--unit-4);
-    font-size: calc( 1.75 * var(--unit-2));
+    font-size: calc( 1.75 * var(--spacing-400));
 }
 
 #manifesto ol {
     list-style: upper-roman;
 
     & li {
-        padding: calc(var(--unit) / 2) 0;
+        padding: var(--spacing-200) 0;
     }
 }
 
-
 dt {
     font-weight: bold;
-    margin-top: var(--unit-3);
-    margin-bottom: var(--unit);
+    margin-block: var(--spacing-200);
 }
 
 dd {
     margin: 0;
 }
 
-#settings h2 {
-    margin: var(--unit-4) 0 var(--unit-2) 0;
-}
-
 #admin {
-    & h1, h2 {
-        margin-bottom: var(--unit-2);
-    }
-
     .success {
         background-color: var(--success);
-        border-radius: var(--radius);
-        padding: var(--unit-2);
+        padding: var(--spacing-400);
         color: var(--white);
     }
 }
