@@ -30,8 +30,8 @@ let private StyledDiv : JSX.ElementType =
     height: 64px;
     margin: 8px;
     border-radius: 50%;
-    border: 6px solid var(--primary);
-    border-color: var(--primary) transparent var(--primary) transparent;
+    border: 6px solid var(--ronny-600);
+    border-color: var(--ronny-600) transparent var(--ronny-600) transparent;
     animation: lds-dual-ring 1.2s linear infinite;
 }
 
@@ -45,7 +45,4 @@ let private StyledDiv : JSX.ElementType =
 }
 """
 
-let inline private styledDiv (children : JSX.Element seq) : JSX.Element =
-    JSX.create StyledDiv [ "children", children ]
-
-let Loader () = styledDiv [ div [] [] ]
+let Loader () = styleComponent StyledDiv [ div [] [] ]

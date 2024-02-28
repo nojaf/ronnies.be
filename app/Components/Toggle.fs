@@ -20,9 +20,9 @@ let private StyledDiv : JSX.ElementType =
         "div"
         """
 button.active {
-    outline: 2px solid var(--primary);
+    outline: 2px solid var(--ronny-900);
     z-index: 2;
-    color: var(--primary);
+    color: var(--ronny-900);
 }
 
 button.active:disabled {
@@ -42,15 +42,12 @@ button:last-child {
 }
 """
 
-let inline private styledDiv (children : JSX.Element seq) : JSX.Element =
-    JSX.create StyledDiv [ "children", children ]
-
 let Toggle (props : ToggleProps) =
     let onClick (value : bool) (ev : MouseEvent) =
         ev.preventDefault ()
         props.onChange value
 
-    styledDiv [
+    styleComponent StyledDiv [
         button [
             Key "true-button"
             OnClick (if props.value then ignore else onClick true)

@@ -277,7 +277,7 @@ main {
 }
 
 nav {
-    background-color: var(--ronny-900);
+    background-color: var(--ronny-500);
     color: white;
     padding-top: var(--spacing-300);
     display: grid;

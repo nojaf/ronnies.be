@@ -10,7 +10,17 @@ open type React.DSL.DOMProps
 open ReactRouterDom
 open UseHooksTs
 open Iconify
+open StyledComponents
 open ComponentsDSL
+
+let StyledNav : JSX.ElementType =
+    mkStyleComponent
+        "nav"
+        """
+& {
+
+}
+"""
 
 let LogoutComponent () =
     let navigate = useNavigate ()
