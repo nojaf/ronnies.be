@@ -13,6 +13,7 @@ type LocationPickerProps =
         existingLocations : (string * LatLng) array
     |}
 
+[<ExportDefault>]
 let LocationPicker (props : LocationPickerProps) =
     let geolocation = useGeolocation {| enableHighAccuracy = true |}
     let userLatitude, setUserLatitude = React.useState 50.946139

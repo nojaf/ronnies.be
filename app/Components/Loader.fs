@@ -45,4 +45,5 @@ let private StyledDiv : JSX.ElementType =
 }
 """
 
+[<ExportDefault>]
 let Loader () = styleComponent StyledDiv [ div [] [] ]

@@ -42,6 +42,7 @@ button:last-child {
 }
 """
 
+[<ExportDefault>]
 let Toggle (props : ToggleProps) =
     let onClick (value : bool) (ev : MouseEvent) =
         ev.preventDefault ()

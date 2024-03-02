@@ -39,6 +39,7 @@
     <Compile Include="App.fs"/>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Update="FSharp.Core" Version="8.0.200" />
     <PackageReference Include="Fable.Core" Version="4.3.0"/>
     <PackageReference Include="Fable.AST" Version="4.4.0"/>
     <PackageReference Include="Fable.Browser.Dom" Version="2.16.0"/>
