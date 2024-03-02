@@ -14,7 +14,7 @@ let useGeolocation
               loading : bool
               error : obj option
           |} =
-    import "useGeolocation" "react-use"
+    import "useGeolocation" "@uidotdev/usehooks"
 
 type Viewport =
     {|

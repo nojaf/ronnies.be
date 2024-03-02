@@ -88,7 +88,7 @@ header {
 > div img {
     width: 100%;
     max-width: 600px;
-    margin-block: var(--spacing-100);
+    margin-block: var(--spacing-200);
     display: block;
 }
 
@@ -131,6 +131,21 @@ header {
         font-weight: 300;
         font-size: var(--font-200);
     }
+}
+
+> div p {
+    padding-inline: var(--spacing-200);
+}
+
+> div .others {
+    font-size: var(--font-50);
+    font-style: italic;
+}
+
+> div .others strong {
+    padding-inline: var(--spacing-50);
+    font-size: var(--font-50);
+    font-style: normal;
 }
 
 time {
@@ -273,6 +288,24 @@ let OverviewPage () =
                                 loader []
                             ]
 
+                    let alsoPresent =
+                        if not showByColumn || Array.isEmpty location.otherUserIds then
+                            null
+                        else
+                            let others =
+                                location.otherUserIds
+                                |> Array.choose (fun otherId -> Map.tryFind otherId users)
+                                |> String.concat ", "
+                                |> fun text -> strong [] [ str text ]
+
+                            p [ ClassName "others" ] [ str "Ook present " ; others ]
+
+                    let description =
+                        if String.IsNullOrWhiteSpace location.remark then
+                            null
+                        else
+                            p [] [ str location.remark ]
+
                     div [ Key id ] [
                         by
                         photo
@@ -295,6 +328,8 @@ let OverviewPage () =
                                 ]
                             ]
                         ]
+                        alsoPresent
+                        description
                         time [ Key $"%s{id}-date" ] [
                             str (formatDistanceToNow ((location.date.toDate ()), {| addSuffix = true |}))
                         ]

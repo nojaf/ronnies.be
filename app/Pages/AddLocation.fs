@@ -649,7 +649,7 @@ let AddLocationPage () =
             | None, None when (isUserLoading && isTokenResultLoading) -> dispatch Msg.IsUnauthorized
             | _ -> ()
 
-        , [| box tokenResult ; box user |]
+        , [| box isTokenResultLoading ; box isUserLoading |]
     )
 
     let filePickerResult =
@@ -672,8 +672,6 @@ let AddLocationPage () =
         fun (ev : Browser.Types.Event) -> ev.Value |> msg |> dispatch
 
     let onLocationChanges (userLocation, ronnyLocation) =
-        JS.console.log (userLocation)
-        JS.console.log (ronnyLocation)
         dispatch (UpdateLocation ronnyLocation)
 
         let isTooFar = distanceBetweenTwoPoints userLocation ronnyLocation > 0.25

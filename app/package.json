@@ -19,7 +19,7 @@
     "react-firehooks": "3.0.0",
     "react-map-gl": "7.1.1",
     "react-router-dom": "6.14.1",
-    "react-use": "17.4.0",
+    "@uidotdev/usehooks": "^2.4.1",
     "styled-components": "^6.1.8",
     "use-file-picker": "^2.0.0",
     "use-sync-external-store": "1.2.0",
