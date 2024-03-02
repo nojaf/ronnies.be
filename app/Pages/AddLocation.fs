@@ -10,6 +10,7 @@ open type React.DSL.DOMProps
 open ReactRouterDom
 open Firebase
 open type Firebase.Hooks.Exports
+open StyledComponents
 open ComponentsDSL
 
 type Storage = Storage.Exports
@@ -478,6 +479,158 @@ let distanceBetweenTwoPoints (latA, lngA) (latB, lngB) =
 
         dist
 
+let StyledMain : JSX.ElementType =
+    mkStyleComponent
+        "main"
+        """
+label {
+    font-weight: 500;
+    display: block;
+}
+
+form > div {
+    margin-top: var(--spacing-400);
+
+    & label {
+        margin-bottom: var(--spacing-200);
+    }
+}
+
+form > div > p {
+    margin: 0;
+}
+
+form .price {
+    display: flex;
+    align-items: center;
+}
+
+form .price input {
+    flex: 1;
+}
+
+form .price select {
+    border-left: none;
+    max-width: var(--spacing-700);
+}
+
+input[type=submit], #admin input[type=submit] {
+    width: initial;
+    margin-bottom: var(--spacing-400);
+}
+
+.error input {
+    border: 2px solid var(--danger);
+}
+
+.error p {
+    color: var(--danger);
+    line-height: 1;
+    margin: var(--spacing-300) 0 0;
+}
+
+.error #locationPickerContainer {
+    outline: 2px solid var(--danger);
+}
+
+#locationPickerContainer button {
+    display: block;
+    margin-top: var(--spacing-400);
+}
+
+#others {
+    margin-top: var(--spacing-100);
+}
+
+#others button {
+    display: inline-block;
+    margin-right: var(--spacing-200);
+    margin-top:  var(--spacing-200);
+}
+
+#others button:first-child {
+    margin-left: 0;
+}
+
+#selectedOthers {
+    padding: 0;
+    list-style: none;
+    margin: var(--spacing-400) 0 0;
+}
+
+#selectedOthers li {
+    display: flex;
+    align-content: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-200);
+}
+
+#selectedOthers li:last-child {
+    margin-bottom: 0;
+}
+
+#selectedOthers li span {
+    font-size: var(--font-300);
+    font-style: italic;
+}
+
+#selectedOthers li button {
+    padding: var(--spacing-100);
+    display: flex;
+}
+
+#take-picture {
+    & button {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        & svg {
+            margin-left: var(--spacing-400);
+        }
+
+        & span {
+            line-height: var(--spacing-600);
+            font-size: var(--font-300);
+        }
+    }
+
+    & img {
+        margin: var(--spacing-300) 0;
+    }
+
+    & p {
+        margin-bottom: var(--spacing-200);
+    }
+
+    &:has(img) p {
+        margin-bottom: 0;
+    }
+}
+
+pre {
+    overflow-x: auto;
+}
+
+#submit-failed {
+    margin-top: var(--spacing-600);
+}
+
+#submit-failed code pre { 
+    color: var(--danger-border);
+    background-color: var(--grey);
+    padding: var(--spacing-400);
+}
+
+@media screen and (min-width: 600px) {
+    & {
+        max-width: 600px;
+        margin: auto;
+    }
+}
+"""
+
 [<ExportDefault>]
 let AddLocationPage () =
     let navigate = useNavigate ()
@@ -577,7 +730,7 @@ let AddLocationPage () =
         ev.preventDefault ()
         filePickerResult.openFilePicker ()
 
-    main [ Id "add-location" ] [
+    styleComponent StyledMain [
         h1 [ Key "add-location-title" ] [ str "E nieuwen toevoegen" ]
         match model.CurrentState with
         | State.Loading -> loader [ Key "loader" ]

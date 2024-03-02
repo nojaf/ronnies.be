@@ -20,9 +20,9 @@ let private StyledDiv : JSX.ElementType =
         "div"
         """
 button.active {
-    outline: 2px solid var(--ronny-900);
+    outline: 2px solid var(--ronny-600);
     z-index: 2;
-    color: var(--ronny-900);
+    color: var(--ronny-600);
 }
 
 button.active:disabled {

@@ -8,6 +8,74 @@ open Firebase
 open ReactMapGL
 open Iconify
 open ReactRouterDom
+open StyledComponents
+
+let StyledMain : JSX.ElementType =
+    mkStyleComponent
+        "main"
+        """
+& {
+    margin: 0;
+    padding: 0;
+    max-width: initial;
+    height: 100%;
+}
+"""
+
+let StyledDetail : JSX.ElementType =
+    mkStyleComponent
+        "div"
+        """
+& {
+    z-index: 100;
+    display: flex;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, .20);
+}
+
+> div {
+    border: 3px solid var(--ronny-500);
+    margin: auto;
+    padding: var(--spacing-400);
+    background-color: var(--white);
+    position: relative;
+    width: calc(100vw - var(--spacing-600));
+    max-width: 420px;
+    box-sizing: border-box;
+}
+
+h1 {
+    font-size: var(--font-600);
+}
+
+.close {
+    position: absolute;
+    right: -18px;
+    top: -18px;
+    background-color: var(--ronny-900);
+    color: var(--white);
+    border-radius: 18px;
+    height: 36px;
+    width: 36px;
+    cursor: pointer;
+}
+
+img {
+    width: 100%;
+    object-fit: contain;
+}
+
+blockquote {
+    margin: var(--spacing-400) 0 0;
+    font-style: italic;
+}
+
+p:last-of-type {
+    margin-bottom: 0;
+}
+"""
 
 [<ExportDefault>]
 let HomePage () =
@@ -154,7 +222,7 @@ let HomePage () =
                 else
                     $"Prijs {detailLocation.price} {detailLocation.currency}"
 
-            div [ Id "detail" ] [
+            styleComponent StyledDetail [
                 div [] [
                     span [ Key "close" ; ClassName "close" ; OnClick (fun _ -> setIsModalOpen false) ] [
                         icon [
@@ -182,7 +250,7 @@ let HomePage () =
             ]
         )
 
-    main [ Id "world-map" ] [
+    styleComponent StyledMain [
         ofOption detail
         reactMapGL [
             ReactMapGLProp.MapboxAccessToken mapboxApiAccessToken
