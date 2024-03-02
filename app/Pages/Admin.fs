@@ -6,6 +6,7 @@ open type React.DSL.DOMProps
 open type Firebase.Auth.Exports
 open type Firebase.Hooks.Exports
 open ComponentsDSL
+open StyledComponents
 
 [<RequireQualifiedAccess>]
 type private AddUserState =
@@ -75,11 +76,29 @@ let AddUser () =
             yield p [ ClassName "success" ; Key "success" ] [ str msg ]
     ]
 
+let StyledMain : JSX.ElementType =
+    mkStyleComponent
+        "main"
+        """
+.success {
+    background-color: var(--success);
+    padding: var(--spacing-400);
+    color: var(--white);
+}
+
+@media screen and (min-width: 600px) {
+    & {
+        max-width: 600px;
+        margin: auto;
+    }
+}
+"""
+
 [<ExportDefault>]
 let AdminPage () =
     let tokenResult, loading, _ = useAuthIdTokenResult<CustomClaims> auth
 
-    main [ Id "admin" ] [
+    styleComponent StyledMain [
         if loading then
             loader [ Key "loader" ]
         else

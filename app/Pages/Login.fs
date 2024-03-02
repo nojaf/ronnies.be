@@ -9,6 +9,27 @@ open React
 open type React.DSL.DOMProps
 open type Firebase.Auth.Exports
 open ReactRouterDom
+open StyledComponents
+
+let StyledMain : JSX.ElementType =
+    mkStyleComponent
+        "main"
+        """
+form {
+    border: 1px solid var(--ronny-400);
+    padding: var(--spacing-400);
+    max-width: 400px;
+    margin: var(--spacing-400) auto auto;
+    
+    input {
+        margin: var(--spacing-200) 0;
+    }
+    
+    input:last-child {
+        margin-bottom: 0;
+    }
+}
+"""
 
 [<ExportDefault>]
 let LoginPage () =
@@ -71,7 +92,7 @@ let LoginPage () =
 
     let emailClass = if error then "error" else ""
 
-    main [] [
+    styleComponent StyledMain [
         form [ Id "login" ; OnSubmit onSubmit ] [
             h1 [ Key "login-title" ] [ str "Inloggen" ]
             if not emailSent then

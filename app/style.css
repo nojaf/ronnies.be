@@ -226,8 +226,8 @@ input.error {
     }
 
     &.primary{
-        background-color: var(--ronny-900);
-        border-color: var(--ronny-950);
+        background-color: var(--ronny-600);
+        border-color: var(--ronny-800);
         color: var(--white);
 
         &:hover {
@@ -275,21 +275,6 @@ input.error {
 main {
     padding-top: var(--spacing-800);
     padding-inline: var(--spacing-200);
-}
-
-#login {
-    border: 1px solid var(--menu-border);
-    padding: var(--spacing-400);
-    max-width: 400px;
-    margin: var(--spacing-400) auto auto;
-}
-
-#login input {
-    margin: var(--spacing-400) 0;
-}
-
-#login input:last-child {
-    margin-bottom: 0;
 }
 
 label {
@@ -443,13 +428,6 @@ form > div {
     }
 }
 
-#world-map {
-    margin: 0;
-    padding: 0;
-    max-width: initial;
-    height: 100%;
-}
-
 #detail {
     z-index: 100;
     display: flex;
@@ -500,104 +478,9 @@ form > div {
     margin-bottom: 0;
 }
 
-table {
-    margin-top: var(--spacing-400);
-    width: 100%;
-    border-collapse: collapse;
-}
-
-table th {
-    text-align: left;
-}
-
-table th, table td {
-    display: table-cell;
-    border-top: 1px solid var(--grey);
-    border-bottom: 1px solid var(--grey);
-    box-sizing: border-box;
-    border-collapse: collapse;
-}
-
-table th {
-    color: var(--ronny-600);
-    cursor: pointer;
-}
-
-table th:active {
-    color: var(--dark);
-    font-weight: bold;
-}
-
-table th:hover {
-    font-weight: bold;
-    text-decoration: underline;
-}
-
-table th, table td {
-    padding: var(--spacing-400);
-}
-
-table tbody tr:nth-child(2n - 1) {
-    background-color:var(--grey);
-}
-
-table a {
-    color:var(--ronny-900);
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-}
-
-table a:hover {
-    text-decoration: underline;
-}
-
-table a svg {
-    margin-left: var(--spacing-100);
-}
-
 @media screen and (min-width: 960px) {
     main {
         max-width: 960px;
         margin: auto;
-    }
-}
-
-.highscore {
-    display: flex;
-    align-items: center;
-}
-
-.highscore svg {
-    margin-right: var(--spacing-100);
-    color: #F6CF57;
-}
-
-#manifesto h2 {
-    font-size: calc( 1.75 * var(--spacing-400));
-}
-
-#manifesto ol {
-    list-style: upper-roman;
-
-    & li {
-        padding: var(--spacing-200) 0;
-    }
-}
-
-dt {
-    font-weight: bold;
-    margin-block: var(--spacing-200);
-}
-
-dd {
-    margin: 0;
-}
-
-#admin {
-    .success {
-        background-color: var(--success);
-        padding: var(--spacing-400);
-        color: var(--white);
     }
 }

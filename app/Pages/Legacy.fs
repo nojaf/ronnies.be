@@ -5,6 +5,7 @@ open Fable.Core
 open React
 open type React.DSL.DOMProps
 open ReactMapGL
+open StyledComponents
 
 type LegacyLocation =
     {|
@@ -19,6 +20,18 @@ type LegacyLocation =
         created : DateTime
         creator : string
     |}
+
+let StyledMain : JSX.ElementType =
+    mkStyleComponent
+        "main"
+        """
+& {
+    margin: 0;
+    padding: 0;
+    max-width: initial;
+    height: 100%;
+}
+"""
 
 [<ExportDefault>]
 let LegacyPage () =
@@ -60,7 +73,7 @@ let LegacyPage () =
             ]
         )
 
-    main [ Id "world-map" ] [
+    styleComponent StyledMain [
         reactMapGL
             [
                 ReactMapGLProp.MapboxAccessToken mapboxApiAccessToken

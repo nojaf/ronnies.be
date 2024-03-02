@@ -3,7 +3,6 @@ module Overview
 open System
 open Browser.Types
 open Fable.Core
-open Fable.Core.JsInterop
 open React
 open type React.DSL.DOMProps
 open Firebase
@@ -137,6 +136,8 @@ header {
 time {
     color: var(--ronny-900);
     padding-inline: var(--spacing-200);
+    margin-top: var(--spacing-200);
+    display: block;
 }
 """
 
@@ -195,7 +196,7 @@ let OverviewPage () =
         , [| isLoading |]
     )
 
-    let overviewTable =
+    let overview =
         if isLoading then
             None
         else
@@ -210,7 +211,7 @@ let OverviewPage () =
 
         querySnapshot
         |> Option.map (fun querySnapshot ->
-            let rows =
+            let locations =
                 querySnapshot.docs
                 |> Array.map (fun snapshot -> snapshot.id, snapshot.data ())
                 |> fun locations ->
@@ -314,13 +315,13 @@ let OverviewPage () =
                     button [ Key "price-header" ; OnClick (onHeaderClick SortOrder.ByPrice) ] [ str "Prijs" ]
                     button [ Key "date-header" ; OnClick (onHeaderClick SortOrder.ByDate) ] [ str "Datum toegevoegd" ]
                 ]
-                yield! rows
+                yield! locations
             ]
         )
 
     let content =
-        match overviewTable with
+        match overview with
         | None -> loader []
-        | Some overviewTable -> overviewTable
+        | Some overview -> overview
 
     styleComponent StyledMain [ content ]

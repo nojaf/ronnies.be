@@ -3,6 +3,29 @@ module Rules
 open Fable.Core
 open React
 open type React.DSL.DOMProps
+open StyledComponents
+
+let StyledMain : JSX.ElementType =
+    mkStyleComponent
+        "main"
+        """
+ol {
+    list-style: upper-roman;
+
+    & li {
+        padding: var(--spacing-200) 0;
+    }
+}
+
+dt {
+    font-weight: bold;
+    margin-block: var(--spacing-200);
+}
+
+dd {
+    margin: 0;
+}
+"""
 
 [<ExportDefault>]
 let RulesPage () =
@@ -11,7 +34,7 @@ let RulesPage () =
     let faqItem q a =
         [ dt [ Key $"dt=%s{q}" ] [ str q ] ; dd [ Key $"dd-{q}" ] [ str a ] ]
 
-    main [ Id "manifesto" ] [
+    styleComponent StyledMain [
         h1 [] [ str "Manifesto" ]
         ol [] [
             lis "Je drinkt graag Rodenbach (deuh)."
