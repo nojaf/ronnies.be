@@ -18,6 +18,7 @@ type HighScore =
 [<ExportDefault>]
 let LeaderboardPage () =
     let querySnapshot, snapShotIsLoading, _ = Hooks.Exports.useQuery allRonniesQuery
+    // TODO: still required??
     let user, isUserLoading, _ = Hooks.Exports.useAuthState auth
     let scores, setScores = React.useState<HighScore array> Array.empty
 
@@ -25,7 +26,7 @@ let LeaderboardPage () =
         fun () ->
             match querySnapshot, user with
             | Some querySnapshot, Some user ->
-                API.getUsers ()
+                API.getUsers {| includeCurrentUser = true |}
                 |> Promise.map (fun users ->
                     let userMap =
                         [|

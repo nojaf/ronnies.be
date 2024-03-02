@@ -6,6 +6,8 @@ open Fable.Core.JsInterop
 open Firebase.Admin
 open Firebase.Functions
 open Firebase.Functions.V2
+open Firebase.Functions.V2.Https
+open Ronnies.Shared
 
 let isEmulator : bool = emitJsExpr () "process.env.FUNCTIONS_EMULATOR === \"true\""
 
@@ -163,7 +165,7 @@ let users =
             region = "europe-west1"
             allowedCors = Some allowedCors
         |},
-        fun request ->
+        fun (request : CallableRequest<UsersData, CustomClaims>) ->
             promise {
                 match request.auth with
                 | HasMemberClaim currentId ->
@@ -172,8 +174,14 @@ let users =
                     let users =
                         listUsersResult.users
                         |> Array.choose (fun userRecord ->
-                            if userRecord.uid = currentId then
+                            if userRecord.uid = currentId && not request.data.includeCurrentUser then
                                 None
+                            elif userRecord.uid = currentId then
+                                Some
+                                    {|
+                                        displayName = userRecord.displayName
+                                        uid = userRecord.uid
+                                    |}
                             else
                                 userRecord.customClaims
                                 |> Option.bind (fun customClaims ->

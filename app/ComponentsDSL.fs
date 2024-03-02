@@ -38,3 +38,6 @@ type LocationPickerProp =
 
 [<JSX(nameof Components.LocationPicker.LocationPicker, "Components/LocationPicker.fs")>]
 let locationPicker (props : JSX.Prop seq) : JSX.Element = null
+
+[<JSX(nameof Components.Navigation, "Components/Navigation.fs")>]
+let navigation (props : JSX.Prop seq) : JSX.Element = null

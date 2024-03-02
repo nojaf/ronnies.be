@@ -9,27 +9,7 @@ open React
 open type React.DSL.DOMProps
 open ReactRouterDom
 open UseHooksTs
-open Iconify
-open StyledComponents
 open ComponentsDSL
-
-let StyledNav : JSX.ElementType =
-    mkStyleComponent
-        "nav"
-        """
-& {
-
-}
-"""
-
-let LogoutComponent () =
-    let navigate = useNavigate ()
-
-    let logoutHandler (ev : Browser.Types.Event) =
-        ev.preventDefault ()
-        signOut auth |> Promise.iter (fun () -> navigate "/")
-
-    a [ Href "#" ; OnClick logoutHandler ] [ str "uitloggen" ]
 
 let inline private importPage path =
     React.``lazy`` (fun () -> importDynamic<JSX.ElementType> path)
@@ -45,75 +25,20 @@ let private SettingsPage = importPage "./Pages/Settings.fs"
 let private AdminPage = importPage "./Pages/Admin.fs"
 
 let App () =
-    let isTablet = useMediaQuery "screen and (min-width: 960px)"
-    let isMenuOpen, setIsMenuOpen = React.useState false
-    let user, _, _ = useAuthState auth
-    let tokenResult, _, _ = useAuthIdTokenResult<CustomClaims> auth
-
-    React.useEffect (
-        fun () ->
-            if isTablet then
-                setIsMenuOpen false
-        , [| isTablet |]
-    )
-
-    let menuClass = (if isMenuOpen then "show" else "")
-
-    let mkNavLinkAux too id content =
-        li [
-            Key too
-            OnClick (fun _ -> setIsMenuOpen false)
-            Id (if System.String.IsNullOrWhiteSpace id then null else id)
-        ] [ navLink [ ReactRouterProp.To too ; Key too ] [ content ] ]
-
-    let mkNavLink too text = mkNavLinkAux too "" (str text)
-    let loader = loader []
+    let loader =
+        div [
+            Style
+                {|
+                    position = "fixed"
+                    zIndex = 100
+                    top = "50%"
+                    left = "50%"
+                    transform = "translate(-50%,-50%)"
+                |}
+        ] [ loader [] ]
 
     browserRouter [] [
-        nav [] [
-            link [ ReactRouterProp.To "/" ; OnClick (fun _ -> setIsMenuOpen false) ] [
-                img [ Src "/images/r-white.png" ]
-            ]
-            button [
-                OnClick (fun ev ->
-                    ev.preventDefault ()
-                    setIsMenuOpen (not isMenuOpen)
-                )
-            ] [
-                icon [
-                    Key "mobile-menu-icon"
-                    IconProp.Icon "ic:baseline-menu"
-                    IconProp.Width 24
-                    IconProp.Height 24
-                ]
-            ]
-            ul [ ClassName menuClass ] [
-                yield mkNavLink "/overview" "Overzicht"
-                yield mkNavLink "/legacy" "De vorige keer"
-
-                match user with
-                | None -> yield mkNavLink "/login" "Inloggen"
-                | Some user ->
-                    yield mkNavLink "/add-location" "E nieuwen toevoegen"
-                    yield mkNavLink "/leaderboard" "Klassement"
-                    yield mkNavLink "/rules" "Manifesto"
-
-                    match tokenResult with
-                    | Some tokenResult when tokenResult.claims.admin -> yield mkNavLink "/admin" "Admin"
-                    | _ -> ()
-
-                    yield li [ Key "logout" ; OnClick (fun _ -> setIsMenuOpen false) ] [ JSX.create LogoutComponent [] ]
-
-                    yield
-                        mkNavLinkAux
-                            "/settings"
-                            "user"
-                            (fragment [] [
-                                icon [ IconProp.Icon "clarity:user-line" ; IconProp.Height 24 ; IconProp.Width 24 ]
-                                str user.displayName
-                            ])
-            ]
-        ]
+        navigation []
         routes [] [
             route [
                 ReactRouterProp.Index true

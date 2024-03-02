@@ -273,163 +273,8 @@ input.error {
 .align-right { text-align: right; }
 
 main {
-    padding-inline: var(--spacing-200);
-}
-
-nav {
-    background-color: var(--ronny-500);
-    color: white;
-    padding-top: var(--spacing-300);
-    display: grid;
-    grid-template-rows: auto auto;
-    grid-template-columns: auto auto;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 10;
-}
-
-nav > a {
-    margin-left: var(--spacing-300);
-    margin-bottom: var(--spacing-300);
-    grid-row: 1;
-    grid-column: 1;
-    justify-self: start;
-}
-
-nav > a img {
-    display: block;
-    height: var(--spacing-400);
-}
-
-nav a:hover img, nav button:hover svg {
-    background: rgba(255, 255, 255, .25);
-    border-radius: var(--radius);
-}
-
-nav button {
-    cursor: pointer;
-    color: var(--white);
-    background-color: transparent;
-    border: none;
-    padding: 0;
-    max-height: var(--spacing-400);
-    grid-row: 1;
-    grid-column: 2;
-    justify-self: end;
-    margin-right: var(--spacing-200);
-    margin-bottom: var(--spacing-200);
-}
-
-nav button:hover {
-    color: var(--grey);
-    background: transparent;
-}
-
-@keyframes menu-open {
-    from {
-        opacity: 0;
-        visibility: collapse;
-        height: 0;
-        border-top: none;
-    }
-    to {
-        opacity: 1;
-        visibility: visible;
-        height: initial;
-        border-top: 1px solid var(--white);
-    }
-}
-
-nav ul {
-    grid-row: 2;
-    grid-column: 1 / span 2;
-    padding: 0;
-    margin: 0;
-    list-style: none;
-    opacity: 0;
-    visibility: collapse;
-    height: 0;
-    box-sizing: content-box;
-}
-
-nav ul.show {
-    animation: menu-open 0.2s ease-in forwards;
-}
-
-nav ul li a {
-    display: block;
-    padding: var(--spacing-200);
-    border-bottom: 1px solid var(--grey-border);
-    background-color: var(--menu);
-    color: white;
-    text-decoration: none;
-}
-
-nav ul #user a {
-    display: flex;
-    align-items: center;
-    padding: var(--spacing-200);
-    font-weight: 500;
-}
-
-nav ul #user a:hover {
-    text-decoration: none;
-}
-
-nav ul #user a svg {
-    margin-right: var(--spacing-50);
-}
-
-nav ul li a:hover {
-    background-color: var(--menu-hover);
-    cursor: pointer;
-}
-
-nav ul li a:active, nav ul li a.active {
-    background-color: var(--ronny-900);
-    font-weight: bold;
-}
-
-@media screen and (min-width: 960px) {
-    nav button {
-        display: none;
-    }
-
-    nav ul {
-        grid-row: 1;
-        grid-column: 2;
-        justify-self: end;
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        height: var(--spacing-400);
-        animation: initial;
-        opacity: 1;
-        visibility: visible;
-        border: none;
-    }
-
-    nav ul li a, nav ul #user {
-        background-color: transparent;
-        border: none;
-        margin-right: var(--spacing-400);
-        padding: 0;
-    }
-
-    nav ul li a:hover {
-        background-color: transparent;
-        text-decoration: underline;
-    }
-
-    nav ul li a:focus {
-        text-decoration: none;
-    }
-}
-
-main {
     padding-top: var(--spacing-800);
+    padding-inline: var(--spacing-200);
 }
 
 #login {
@@ -674,7 +519,7 @@ table th, table td {
 }
 
 table th {
-    color: var(--ronny-900);
+    color: var(--ronny-600);
     cursor: pointer;
 }
 
@@ -699,10 +544,16 @@ table tbody tr:nth-child(2n - 1) {
 table a {
     color:var(--ronny-900);
     text-decoration: none;
+    display: flex;
+    align-items: center;
 }
 
 table a:hover {
     text-decoration: underline;
+}
+
+table a svg {
+    margin-left: var(--spacing-100);
 }
 
 @media screen and (min-width: 960px) {

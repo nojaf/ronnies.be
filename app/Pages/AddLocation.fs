@@ -360,7 +360,8 @@ let submitLocation (navigate : string -> unit) (model : Model) (dispatch : Msg -
 
 let update (navigate : string -> unit) msg model =
     match msg with
-    | UpdateUserId uid -> { model with UserId = uid }, Cmd.OfPromise.perform API.getUsers () Msg.UsersLoaded
+    | UpdateUserId uid ->
+        { model with UserId = uid }, Cmd.OfPromise.perform API.getUsers {| includeCurrentUser = false |} Msg.UsersLoaded
     | IsUnauthorized ->
         { model with
             CurrentState = State.UnAuthorized

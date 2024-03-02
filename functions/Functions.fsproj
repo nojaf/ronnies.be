@@ -5,6 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Firebase.fs" />
+    <Compile Include="../Shared.fs" />
     <Compile Include="index.fsi" />
     <Compile Include="index.fs" />
   </ItemGroup>
