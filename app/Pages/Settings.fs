@@ -9,6 +9,7 @@ open type React.DSL.DOMProps
 open type Firebase.Hooks.Exports
 open type Firebase.FireStore.Exports
 open type Firebase.Messaging.Exports
+open Ronnies.Shared
 open ComponentsDSL
 
 [<Literal>]
@@ -17,8 +18,6 @@ let VAPID_KEY =
 
 [<Literal>]
 let FCM_TOKEN_COLLECTION = "fcmTokens"
-
-type FCMTokenData = {| tokens : string array |}
 
 [<Emit("'serviceWorker' in navigator")>]
 let hasServiceWorker : bool = jsNative

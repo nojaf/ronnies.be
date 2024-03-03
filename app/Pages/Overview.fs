@@ -11,6 +11,7 @@ open type Firebase.Hooks.Exports
 open ReactRouterDom
 open Iconify
 open StyledComponents
+open Ronnies.Shared
 open ComponentsDSL
 
 [<Import("formatDistanceToNow", "date-fns")>]

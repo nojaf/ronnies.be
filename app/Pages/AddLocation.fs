@@ -735,7 +735,7 @@ let AddLocationPage () =
         | State.Submit -> fragment [ Key "submit" ] [ loader [] ; p [ ClassName "center" ] [ str "Ant opsloan..." ] ]
         | State.UnAuthorized ->
             span [ Key "unauthorized" ] [
-                str "Sorry matje, je bent geen patron of niet "
+                str "Sorry matje, je bent geen patron of niet&nbsp;"
                 link [ ReactRouterProp.To "/login" ] [ str "ingelogd" ]
             ]
         | State.SubmitFailed ->

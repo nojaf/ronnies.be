@@ -59,8 +59,6 @@ type User =
     abstract displayName : string
     abstract email : string
 
-type CustomClaims = {| ``member`` : bool ; admin : bool |}
-
 let isAdmin (auth : Https.RequestAuth<CustomClaims> option) =
     match auth with
     | None -> false
@@ -231,8 +229,6 @@ let cleanUpUsers =
                     }
                 )
     )
-
-type FCMTokenData = {| tokens : string array |}
 
 let broadCastNotification data =
     promise {

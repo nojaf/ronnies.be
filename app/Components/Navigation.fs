@@ -9,6 +9,7 @@ open UseHooksTs
 open Iconify
 open type Firebase.Auth.Exports
 open type Firebase.Hooks.Exports
+open Ronnies.Shared
 
 let StyledNav : JSX.ElementType =
     mkStyleComponent

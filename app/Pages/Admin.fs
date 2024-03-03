@@ -7,6 +7,7 @@ open type Firebase.Auth.Exports
 open type Firebase.Hooks.Exports
 open ComponentsDSL
 open StyledComponents
+open Ronnies.Shared
 
 [<RequireQualifiedAccess>]
 type private AddUserState =

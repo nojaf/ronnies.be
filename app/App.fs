@@ -8,7 +8,6 @@ open type Firebase.Hooks.Exports
 open React
 open type React.DSL.DOMProps
 open ReactRouterDom
-open UseHooksTs
 open ComponentsDSL
 
 let inline private importPage path =
