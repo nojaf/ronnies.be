@@ -30,14 +30,30 @@ pipeline "Watch" {
         }
         stage "app" {
             workingDir (__SOURCE_DIRECTORY__ </> "App")
-            // run
-            //     "dotnet fable ./App.fsproj -e .jsx --watch -o ./out --fableLib \"@fable-org/fable-library-js\" --noReflection --exclude \"Nojaf.Fable.React.Plugin\" --test:MSBuildCracker"
             run "bun run dev"
             paralle
         }
         paralle
     }
     runIfOnlySpecified false
+}
+
+pipeline "Deploy" {
+    workingDir __SOURCE_DIRECTORY__
+    initialize
+    stage "restore" { run "dotnet restore -tl" }
+    stage "frontend" {
+        workingDir (__SOURCE_DIRECTORY__ </> "app")
+        run "bun i"
+        run "bun run build"
+    }
+    stage "backend" {
+        workingDir (__SOURCE_DIRECTORY__ </> "functions")
+        run "npm i"
+        run "dotnet fable -e .js --fableLib \"@fable-org/fable-library-js\" --noCache -c Release --test:MSBuildCracker"
+    }
+    stage "firebase" { run "firebase deploy --only hosting,functions" }
+    runIfOnlySpecified true
 }
 
 tryPrintPipelineCommandHelp ()
