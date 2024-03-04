@@ -38,9 +38,15 @@ h1 {
 header {
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-between;
+    gap: var(--spacing-50);
+    flex-wrap: wrap;
     margin-bottom: var(--spacing-400);
     padding-inline: var(--spacing-200);
+}
+
+header p {
+    flex: 1;
 }
 
 > div {
