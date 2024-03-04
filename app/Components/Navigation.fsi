@@ -1,4 +1,4 @@
-module Components
+module Components.Navigation
 
 open Fable.Core
 

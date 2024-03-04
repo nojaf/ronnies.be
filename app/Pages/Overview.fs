@@ -15,7 +15,7 @@ open Ronnies.Shared
 open ComponentsDSL
 
 [<Import("formatDistanceToNow", "date-fns")>]
-let formatDistanceToNow (date : DateTime, options : {| addSuffix : bool |}) : string = jsNative
+let formatDistanceToNow (_date : DateTime, _options : {| addSuffix : bool |}) : string = jsNative
 
 type SortOrder =
     | ByName = 0

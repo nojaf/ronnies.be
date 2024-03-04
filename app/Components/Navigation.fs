@@ -1,4 +1,4 @@
-module Components
+module Components.Navigation
 
 open Fable.Core
 open React
@@ -183,6 +183,13 @@ let Navigation () : JSX.Element =
     let isMenuOpen, setIsMenuOpen = React.useState false
     let user, _, _ = useAuthState auth
     let tokenResult, _, _ = useAuthIdTokenResult<CustomClaims> auth
+
+    React.useEffect (
+        fun () ->
+            if isTablet then
+                setIsMenuOpen false
+        , [| isTablet |]
+    )
 
     let menuClass = if isMenuOpen then "show" else ""
 
