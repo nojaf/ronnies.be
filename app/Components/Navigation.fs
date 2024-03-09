@@ -202,7 +202,7 @@ let Navigation () : JSX.Element =
 
     let mkNavLink too text = mkNavLinkAux too "" (str text)
 
-    styleComponent StyledNav [
+    styledComponent StyledNav [
         link [ ReactRouterProp.To "/" ; OnClick (fun _ -> setIsMenuOpen false) ] [ img [ Src "/images/r-white.png" ] ]
         button [
             OnClick (fun ev ->

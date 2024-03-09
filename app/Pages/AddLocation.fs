@@ -728,7 +728,7 @@ let AddLocationPage () =
         ev.preventDefault ()
         filePickerResult.openFilePicker ()
 
-    styleComponent StyledMain [
+    styledComponent StyledMain [
         h1 [ Key "add-location-title" ] [ str "E nieuwen toevoegen" ]
         match model.CurrentState with
         | State.Loading -> loader [ Key "loader" ]

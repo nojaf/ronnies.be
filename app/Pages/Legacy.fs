@@ -73,7 +73,7 @@ let LegacyPage () =
             ]
         )
 
-    styleComponent StyledMain [
+    styledComponent StyledMain [
         reactMapGL
             [
                 ReactMapGLProp.MapboxAccessToken mapboxApiAccessToken

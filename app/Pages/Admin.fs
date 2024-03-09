@@ -81,6 +81,19 @@ let StyledMain : JSX.ElementType =
     mkStyleComponent
         "main"
         """
+label {
+    font-weight: 500;
+    display: block;
+}
+
+form > div {
+    margin-top: var(--spacing-400);
+
+    & label {
+        margin-bottom: var(--spacing-200);
+    }
+}
+
 .success {
     background-color: var(--success);
     padding: var(--spacing-400);
@@ -99,7 +112,7 @@ let StyledMain : JSX.ElementType =
 let AdminPage () =
     let tokenResult, loading, _ = useAuthIdTokenResult<CustomClaims> auth
 
-    styleComponent StyledMain [
+    styledComponent StyledMain [
         if loading then
             loader [ Key "loader" ]
         else

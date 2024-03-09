@@ -92,7 +92,7 @@ let LoginPage () =
 
     let emailClass = if error then "error" else ""
 
-    styleComponent StyledMain [
+    styledComponent StyledMain [
         form [ Id "login" ; OnSubmit onSubmit ] [
             h1 [ Key "login-title" ] [ str "Inloggen" ]
             if not emailSent then

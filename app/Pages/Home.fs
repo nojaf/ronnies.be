@@ -222,7 +222,7 @@ let HomePage () =
                 else
                     $"Prijs {detailLocation.price} {detailLocation.currency}"
 
-            styleComponent StyledDetail [
+            styledComponent StyledDetail [
                 div [] [
                     span [ Key "close" ; ClassName "close" ; OnClick (fun _ -> setIsModalOpen false) ] [
                         icon [
@@ -250,7 +250,7 @@ let HomePage () =
             ]
         )
 
-    styleComponent StyledMain [
+    styledComponent StyledMain [
         ofOption detail
         reactMapGL [
             ReactMapGLProp.MapboxAccessToken mapboxApiAccessToken

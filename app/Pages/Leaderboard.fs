@@ -138,4 +138,4 @@ let LeaderboardPage () =
                 tbody [] rows
             ]
 
-    styleComponent StyledMain [ h1 [ Key "title" ] [ str "Klassement" ] ; content ]
+    styledComponent StyledMain [ h1 [ Key "title" ] [ str "Klassement" ] ; content ]

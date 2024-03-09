@@ -12,6 +12,7 @@
     <Compile Include="Bindings\ReactMapGL.fs"/>
     <Compile Include="Bindings\UseFilePicker.fs"/>
     <Compile Include="Bindings\StyledComponents.fs" />
+    <Compile Include="Bindings\ReactLazyLoad.fs" />
     <Compile Include="../Shared.fs" />
     <Compile Include="Types.fs"/>
     <Compile Include="API.fs"/>
@@ -20,6 +21,8 @@
     <Compile Include="Components\LocationPicker.fs" />
     <Compile Include="Components\Navigation.fsi" />
     <Compile Include="Components\Navigation.fs" />
+    <Compile Include="Components\OverviewItem.fsi" />
+    <Compile Include="Components\OverviewItem.fs" />
     <Compile Include="ComponentsDSL.fs"/>
     <Compile Include="Pages\Login.fsi"/>
     <Compile Include="Pages\Login.fs"/>

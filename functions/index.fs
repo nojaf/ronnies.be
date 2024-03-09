@@ -284,16 +284,32 @@ if (process.env.FUNCTIONS_EMULATOR === "true") {
       .createUser({
         displayName: "nojaf",
         email: "florian.verdonck@outlook.com",
-        password: "ronalds",
+        password: "ronalds"
       })
       .then((user) => {
         console.log("admin seeded");
         auth.setCustomUserClaims(user.uid, {
           admin: true,
-          member: true,
+          member: true
         });
       });
   });
+  
+    auth.getUserByEmail("bp@gmail.com").catch((err) => {
+        auth
+          .createUser({
+            displayName: "Gilles",
+            email: "bp@gmail.com",
+            password: "ronalds"
+          })
+          .then((user) => {
+            console.log("BP seeded");
+            auth.setCustomUserClaims(user.uid, {
+              admin: false,
+              member: true
+            });
+          });
+      });
 }
 """
 

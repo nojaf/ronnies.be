@@ -41,3 +41,17 @@ let locationPicker (props : JSX.Prop seq) : JSX.Element = null
 
 [<JSX(nameof Components.Navigation.Navigation, "Components/Navigation.fs")>]
 let navigation (props : JSX.Prop seq) : JSX.Element = null
+
+[<RequireQualifiedAccess>]
+type OverviewItemProp =
+    [<Emit "id">]
+    static member Id (value : string) : JSX.Prop = "id", box value
+
+    [<Emit "location">]
+    static member Location (value : RonnyLocation) : JSX.Prop = "location", box value
+
+    [<Emit "users">]
+    static member Users (value : Map<uid, string>) : JSX.Prop = "users", box value
+
+[<JSX(nameof Components.OverviewItem.OverviewItem, "Components/OverviewItem.fs")>]
+let overviewItem (props : JSX.Prop seq) : JSX.Element = null

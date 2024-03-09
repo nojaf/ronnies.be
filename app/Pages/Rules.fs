@@ -34,7 +34,7 @@ let RulesPage () =
     let faqItem q a =
         [ dt [ Key $"dt=%s{q}" ] [ str q ] ; dd [ Key $"dd-{q}" ] [ str a ] ]
 
-    styleComponent StyledMain [
+    styledComponent StyledMain [
         h1 [] [ str "Manifesto" ]
         ol [] [
             lis "Je drinkt graag Rodenbach (deuh)."

@@ -48,7 +48,7 @@ let Toggle (props : ToggleProps) =
         ev.preventDefault ()
         props.onChange value
 
-    styleComponent StyledDiv [
+    styledComponent StyledDiv [
         button [
             Key "true-button"
             OnClick (if props.value then ignore else onClick true)
