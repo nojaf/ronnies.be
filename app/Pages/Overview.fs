@@ -114,7 +114,7 @@ let OverviewPage () =
                             (fun (_, location : RonnyLocation) -> location.name.ToLower ())
                             locations
                 |> Array.map (fun (id, location) ->
-                    lazyLoad [ LazyLoadProp.Offset 200 ; Key id ] [
+                    lazyLoad [ LazyLoadProp.Offset 600 ; Key id ] [
                         overviewItem [
                             OverviewItemProp.Id id
                             OverviewItemProp.Location location
