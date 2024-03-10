@@ -1,33 +1,32 @@
 module Admin
 
-open Feliz
+open Fable.Core
 open React
-open React.Props
-open Firebase
+open type React.DSL.DOMProps
 open type Firebase.Auth.Exports
 open type Firebase.Hooks.Exports
-open ReactRouterDom
-open Components
+open ComponentsDSL
+open StyledComponents
+open Ronnies.Shared
 
 [<RequireQualifiedAccess>]
-type AddUserState =
+type private AddUserState =
     | Initial
     | Error of string
     | Loading
     | Success of string
 
-[<ReactComponent>]
 let AddUser () =
-    let name, setName = React.useState<string> ("")
-    let email, setEmail = React.useState<string> ("")
-    let state, setState = React.useStateByFunction<AddUserState> (AddUserState.Initial)
+    let name, setName = React.useState<string> ""
+    let email, setEmail = React.useState<string> ""
+    let state, setState = React.useStateByFunction<AddUserState> AddUserState.Initial
 
     let onSubmit (e : Browser.Types.Event) =
         e.preventDefault ()
         setState (fun _ -> AddUserState.Loading)
 
         API.addUser name email
-        |> Promise.map (fun user ->
+        |> Promise.map (fun _user ->
             setState (fun _ -> AddUserState.Success $"{name} ({email}) was added!")
             setName ""
             setEmail ""
@@ -36,16 +35,16 @@ let AddUser () =
 
     let fields =
         [
-            div [] [
+            div [ Key "name-container" ] [
                 label [] [ str "Naam*" ]
                 input [
                     Name "name"
                     Required true
                     DefaultValue name
-                    OnChange (fun ev -> setName ev.Value)
+                    OnChange (fun (ev : Browser.Types.Event) -> setName ev.Value)
                 ]
             ]
-            div [] [
+            div [ Key "email-container" ] [
                 label [] [ str "Email*" ]
                 input [
                     Name "email"
@@ -58,7 +57,9 @@ let AddUser () =
         ]
 
     let submitButton =
-        div [ ClassName "align-right" ] [ input [ Type "submit" ; Value "Toevoegen!" ; ClassName "primary" ] ]
+        div [ ClassName "align-right" ; Key "submit-container" ] [
+            input [ Type "submit" ; Value "Toevoegen!" ; ClassName "primary" ]
+        ]
 
     form [ OnSubmit onSubmit ] [
         match state with
@@ -67,28 +68,59 @@ let AddUser () =
             yield submitButton
         | AddUserState.Error error ->
             yield! fields
-            yield p [ ClassName "error" ] [ str error ]
+            yield p [ ClassName "error" ; Key "error" ] [ str error ]
             yield submitButton
-        | AddUserState.Loading -> yield Loader ()
+        | AddUserState.Loading -> yield loader [ Key "loader" ]
         | AddUserState.Success msg ->
             yield! fields
             yield submitButton
-            yield p [ ClassName "success" ] [ str msg ]
+            yield p [ ClassName "success" ; Key "success" ] [ str msg ]
     ]
 
-[<ReactComponent>]
+let StyledMain : JSX.ElementType =
+    mkStyleComponent
+        "main"
+        """
+label {
+    font-weight: 500;
+    display: block;
+}
+
+form > div {
+    margin-top: var(--spacing-400);
+
+    & label {
+        margin-bottom: var(--spacing-200);
+    }
+}
+
+.success {
+    background-color: var(--success);
+    padding: var(--spacing-400);
+    color: var(--white);
+}
+
+@media screen and (min-width: 600px) {
+    & {
+        max-width: 600px;
+        margin: auto;
+    }
+}
+"""
+
+[<ExportDefault>]
 let AdminPage () =
     let tokenResult, loading, _ = useAuthIdTokenResult<CustomClaims> auth
 
-    main [ Id "admin" ] [
+    styledComponent StyledMain [
         if loading then
-            Loader ()
+            loader [ Key "loader" ]
         else
 
         match tokenResult with
         | Some tokenResult when tokenResult.claims.admin ->
-            h1 [] [ str "Admin" ]
-            h2 [] [ str "Add user" ]
-            AddUser ()
-        | _ -> h1 [] [ str "Unauthorized" ]
+            h1 [ Key "title" ] [ str "Admin" ]
+            h2 [ Key "add-user-title" ] [ str "Add user" ]
+            React.createElement (AddUser, {| key = "add-user" |})
+        | _ -> h1 [ Key "unauthorized" ] [ str "Unauthorized" ]
     ]

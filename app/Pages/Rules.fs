@@ -1,15 +1,40 @@
 module Rules
 
-open Feliz
+open Fable.Core
 open React
-open React.Props
+open type React.DSL.DOMProps
+open StyledComponents
 
-[<ReactComponent>]
+let StyledMain : JSX.ElementType =
+    mkStyleComponent
+        "main"
+        """
+ol {
+    list-style: upper-roman;
+
+    & li {
+        padding: var(--spacing-200) 0;
+    }
+}
+
+dt {
+    font-weight: bold;
+    margin-block: var(--spacing-200);
+}
+
+dd {
+    margin: 0;
+}
+"""
+
+[<ExportDefault>]
 let RulesPage () =
     let lis text = li [] [ span [] [ str text ] ]
-    let faqItem q a = [ dt [] [ str q ] ; dd [] [ str a ] ]
 
-    main [ Id "manifesto" ] [
+    let faqItem q a =
+        [ dt [ Key $"dt=%s{q}" ] [ str q ] ; dd [ Key $"dd-{q}" ] [ str a ] ]
+
+    styledComponent StyledMain [
         h1 [] [ str "Manifesto" ]
         ol [] [
             lis "Je drinkt graag Rodenbach (deuh)."

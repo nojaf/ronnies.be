@@ -3,131 +3,21 @@
 open System
 open Fable.Core
 open Fable.Core.JsInterop
-open Fable.Import
-open Feliz
-open Feliz.UseElmish
 open Elmish
+open Feliz.UseElmish
 open React
-open React.Props
+open type React.DSL.DOMProps
 open ReactRouterDom
 open Firebase
 open type Firebase.Hooks.Exports
+open StyledComponents
+open ComponentsDSL
 
-type Storage = Firebase.Storage.Exports
-type Firestore = Firebase.FireStore.Exports
+type Storage = Storage.Exports
+type Firestore = FireStore.Exports
 
-open ReactMapGL
 open Iconify
 open UseFilePicker
-open Components
-
-type LatLng = float * float
-
-[<ReactComponent>]
-let LocationPicker
-    (props :
-        {|
-            OnChange : LatLng -> LatLng -> unit
-            ExistingLocations : (string * LatLng) array
-        |})
-    =
-    let geolocation = useGeolocation {| enableHighAccuracy = true |}
-    let userLatitude, setUserLatitude = React.useState 50.946139
-    let userLongitude, setUserLongitude = React.useState 3.138671
-    let ronnyLatitude, setRonnyLatitude = React.useState userLatitude
-    let ronnyLongitude, setRonnyLongitude = React.useState userLongitude
-
-    let viewport, setViewport =
-        React.useState<Viewport>
-            {|
-                latitude = userLatitude
-                longitude = userLongitude
-                zoom = 16
-            |}
-
-    React.useEffect (
-        (fun () ->
-            if not geolocation.loading then
-                setUserLatitude geolocation.latitude
-                setUserLongitude geolocation.longitude
-
-                setViewport
-                    {|
-                        latitude = geolocation.latitude
-                        longitude = geolocation.longitude
-                        zoom = 16
-                    |}
-
-                setRonnyLatitude geolocation.latitude
-                setRonnyLongitude geolocation.longitude
-
-                props.OnChange
-                    (geolocation.latitude, geolocation.longitude)
-                    (geolocation.latitude, geolocation.longitude)
-        ),
-        [| box geolocation.loading |]
-    )
-
-    let onMapClick (ev : MapLayerMouseEvent) =
-        let lngLat = ev.lngLat
-        setRonnyLatitude lngLat.lat
-        setRonnyLongitude lngLat.lng
-        props.OnChange (userLatitude, userLongitude) (lngLat.lat, lngLat.lng)
-
-    let existingRonnies =
-        props.ExistingLocations
-        |> Array.map (fun (name, (lat, lng)) ->
-            Marker [ MarkerLatitude lat ; MarkerLongitude lng ; Key name ] [
-                img [ Src "/images/r-black.png" ; HTMLAttr.Width 24 ; HTMLAttr.Height 24 ]
-                strong [] [ str name ]
-            ]
-        )
-
-    let refreshLocation (ev : Browser.Types.Event) =
-        ev.preventDefault ()
-
-        Browser.Navigator.navigator.geolocation
-        |> Option.iter (fun geolocation ->
-            geolocation.getCurrentPosition (
-                fun position ->
-                    JS.console.log ("Got position", position)
-                    setUserLatitude position.coords.latitude
-                    setUserLongitude position.coords.longitude
-                , (fun error -> JS.console.error (error))
-                , (!!{| enableHighAccuracy = true |})
-            )
-        )
-
-    fragment [] [
-        ReactMapGL [
-            ReactMapGLProp.OnMove (fun ev -> setViewport ev.viewState) :> IProp
-            ReactMapGLProp.OnClick onMapClick
-            Style [ CSSProp.Height "30vh" ; CSSProp.Width "100%" ]
-            ReactMapGLProp.Latitude viewport.latitude
-            ReactMapGLProp.Longitude viewport.longitude
-            ReactMapGLProp.Zoom viewport.zoom
-            ReactMapGLProp.MapStyle "mapbox://styles/nojaf/ck0wtbppf0jal1cq72o8i8vm1"
-        ] [
-            ofArray existingRonnies
-            Marker [
-                Key "ronny"
-                MarkerLatitude ronnyLatitude
-                MarkerLongitude ronnyLongitude
-                OffsetTop 0
-                OffsetLeft 0
-            ] [ img [ Src "/images/ronny.png" ; HTMLAttr.Width 24 ; HTMLAttr.Height 24 ] ]
-            Marker [
-                Key "user"
-                MarkerLatitude userLatitude
-                MarkerLongitude userLongitude
-                OffsetTop 0
-                OffsetLeft 0
-            ] [
-                Icon [ IconProp.Icon "clarity:user-line" ; IconProp.Height 24 ; IconProp.Width 24 ]
-            ]
-        ]
-        button [ OnClick refreshLocation ] [ str "Refresh locatie" ]
-    ]
 
 let currencies =
     [
@@ -393,7 +283,7 @@ let isValidNumber (v : string) : bool = emitJsExpr v "!isNaN($0)"
 
 /// Source: https://gist.github.com/ORESoftware/ba5d03f3e1826dc15d5ad2bcec37f7bf?permalink_comment_id=3518821#gistcomment-3518821
 let resizeImage base64String maxWidth maxHeight =
-    Promise.create (fun resolve reject ->
+    Promise.create (fun resolve _reject ->
         let img = Browser.Dom.Image.Create ()
         img.src <- base64String
 
@@ -467,11 +357,12 @@ let submitLocation (navigate : string -> unit) (model : Model) (dispatch : Msg -
             )
 
     storagePromise
-    |> Promise.eitherEnd addLocation (fun err -> addLocation Array.empty)
+    |> Promise.eitherEnd addLocation (fun _err -> addLocation Array.empty)
 
 let update (navigate : string -> unit) msg model =
     match msg with
-    | UpdateUserId uid -> { model with UserId = uid }, Cmd.OfPromise.perform API.getUsers () Msg.UsersLoaded
+    | UpdateUserId uid ->
+        { model with UserId = uid }, Cmd.OfPromise.perform API.getUsers {| includeCurrentUser = false |} Msg.UsersLoaded
     | IsUnauthorized ->
         { model with
             CurrentState = State.UnAuthorized
@@ -588,7 +479,159 @@ let distanceBetweenTwoPoints (latA, lngA) (latB, lngB) =
 
         dist
 
-[<ReactComponent>]
+let StyledMain : JSX.ElementType =
+    mkStyleComponent
+        "main"
+        """
+label {
+    font-weight: 500;
+    display: block;
+}
+
+form > div {
+    margin-top: var(--spacing-400);
+
+    & label {
+        margin-bottom: var(--spacing-200);
+    }
+}
+
+form > div > p {
+    margin: 0;
+}
+
+form .price {
+    display: flex;
+    align-items: center;
+}
+
+form .price input {
+    flex: 1;
+}
+
+form .price select {
+    border-left: none;
+    max-width: var(--spacing-700);
+}
+
+input[type=submit], #admin input[type=submit] {
+    width: initial;
+    margin-bottom: var(--spacing-400);
+}
+
+.error input {
+    border: 2px solid var(--danger);
+}
+
+.error p {
+    color: var(--danger);
+    line-height: 1;
+    margin: var(--spacing-300) 0 0;
+}
+
+.error #locationPickerContainer {
+    outline: 2px solid var(--danger);
+}
+
+#locationPickerContainer button {
+    display: block;
+    margin-top: var(--spacing-400);
+}
+
+#others {
+    margin-top: var(--spacing-100);
+}
+
+#others button {
+    display: inline-block;
+    margin-right: var(--spacing-200);
+    margin-top:  var(--spacing-200);
+}
+
+#others button:first-child {
+    margin-left: 0;
+}
+
+#selectedOthers {
+    padding: 0;
+    list-style: none;
+    margin: var(--spacing-400) 0 0;
+}
+
+#selectedOthers li {
+    display: flex;
+    align-content: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-200);
+}
+
+#selectedOthers li:last-child {
+    margin-bottom: 0;
+}
+
+#selectedOthers li span {
+    font-size: var(--font-300);
+    font-style: italic;
+}
+
+#selectedOthers li button {
+    padding: var(--spacing-100);
+    display: flex;
+}
+
+#take-picture {
+    & button {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        & svg {
+            margin-left: var(--spacing-400);
+        }
+
+        & span {
+            line-height: var(--spacing-600);
+            font-size: var(--font-300);
+        }
+    }
+
+    & img {
+        margin: var(--spacing-300) 0;
+    }
+
+    & p {
+        margin-bottom: var(--spacing-200);
+    }
+
+    &:has(img) p {
+        margin-bottom: 0;
+    }
+}
+
+pre {
+    overflow-x: auto;
+}
+
+#submit-failed {
+    margin-top: var(--spacing-600);
+}
+
+#submit-failed code pre { 
+    color: var(--danger-border);
+    background-color: var(--grey);
+    padding: var(--spacing-400);
+}
+
+@media screen and (min-width: 600px) {
+    & {
+        max-width: 600px;
+        margin: auto;
+    }
+}
+"""
+
+[<ExportDefault>]
 let AddLocationPage () =
     let navigate = useNavigate ()
     let user, isUserLoading, _ = useAuthState auth
@@ -606,7 +649,7 @@ let AddLocationPage () =
             | None, None when (isUserLoading && isTokenResultLoading) -> dispatch Msg.IsUnauthorized
             | _ -> ()
 
-        , [| box tokenResult ; box user |]
+        , [| box isTokenResultLoading ; box isUserLoading |]
     )
 
     let filePickerResult =
@@ -627,9 +670,8 @@ let AddLocationPage () =
 
     let updateOnChange msg =
         fun (ev : Browser.Types.Event) -> ev.Value |> msg |> dispatch
-        |> OnChange
 
-    let onLocationChanges userLocation ronnyLocation =
+    let onLocationChanges (userLocation, ronnyLocation) =
         dispatch (UpdateLocation ronnyLocation)
 
         let isTooFar = distanceBetweenTwoPoints userLocation ronnyLocation > 0.25
@@ -639,10 +681,8 @@ let AddLocationPage () =
     let inputError error =
         error |> Option.map (fun error -> p [] [ str error ]) |> ofOption
 
-    let errorClass error : IHTMLProp seq =
-        match error with
-        | None -> []
-        | Some _ -> [ ClassName "error" ]
+    let errorClass error =
+        if Option.isSome error then "error" else null
 
     let coPatronsOptions =
         model.Users
@@ -675,7 +715,7 @@ let AddLocationPage () =
                         dispatch (Msg.ToggleUser uid)
                     )
                 ] [
-                    Icon [
+                    icon [
                         IconProp.Icon "iconamoon:trash-duotone"
                         IconProp.Width 16
                         IconProp.Height 16
@@ -688,96 +728,105 @@ let AddLocationPage () =
         ev.preventDefault ()
         filePickerResult.openFilePicker ()
 
-    main [ Id "add-location" ] [
-        h1 [] [ str "E nieuwen toevoegen" ]
+    styledComponent StyledMain [
+        h1 [ Key "add-location-title" ] [ str "E nieuwen toevoegen" ]
         match model.CurrentState with
-        | State.Loading -> Loader ()
-        | State.Submit -> fragment [] [ Loader () ; p [ ClassName "center" ] [ str "Ant opsloan..." ] ]
+        | State.Loading -> loader [ Key "loader" ]
+        | State.Submit -> fragment [ Key "submit" ] [ loader [] ; p [ ClassName "center" ] [ str "Ant opsloan..." ] ]
         | State.UnAuthorized ->
-            span [] [
-                str "Sorry matje, je bent geen patron of niet "
-                Link [ To "/login" ] [ str "ingelogd" ]
+            span [ Key "unauthorized" ] [
+                str "Sorry matje, je bent geen patron of niet&nbsp;"
+                link [ ReactRouterProp.To "/login" ] [ str "ingelogd" ]
             ]
         | State.SubmitFailed ->
-            div [ Id "submit-failed" ] [
+            div [ Key "submit-failed" ; Id "submit-failed" ] [
                 h2 [] [ str "Butter, zwoar mislukt zeg 😸!" ]
                 code [] [ pre [] [ str model.SubmitError ] ]
                 p [] [ str "Je kan later nog eens proberen, maar rekent er niet op 😅" ]
             ]
         | State.Enter ->
             form [
+                Key "form-enter"
                 OnSubmit (fun ev ->
                     ev.preventDefault ()
                     dispatch Submit
                 )
             ] [
-                div [ yield! errorClass model.Errors.Name ] [
-                    label [] [ str "Naam*" ]
-                    input [ Name "name" ; DefaultValue model.Name ; updateOnChange UpdateName ]
+                div [ ClassName (errorClass model.Errors.Name) ; Key "name-container" ] [
+                    label [ Key "label-name" ] [ str "Naam*" ]
+                    input [
+                        Key "input-name"
+                        Name "name"
+                        DefaultValue model.Name
+                        OnChange (updateOnChange UpdateName)
+                        AutoComplete "off"
+                    ]
                     inputError model.Errors.Name
                 ]
-                div [ yield! errorClass model.Errors.Price ] [
-                    label [] [ str "Prijs*" ]
-                    div [ ClassName "price" ] [
+                div [ ClassName (errorClass model.Errors.Price) ; Key "price-container" ] [
+                    label [ Key "label-price" ] [ str "Prijs*" ]
+                    div [ Key "price-input-container" ; ClassName "price" ] [
                         input [
+                            Key "input-price"
                             Name "price"
                             Type "number"
                             Step "0.01"
                             DefaultValue model.Price
-                            updateOnChange UpdatePrice
+                            OnChange (updateOnChange UpdatePrice)
                         ]
-                        select [ updateOnChange UpdateCurrency ] [ ofList (List.map mapToCurrencyItem currencies) ]
+                        select [ OnChange (updateOnChange UpdateCurrency) ] (List.map mapToCurrencyItem currencies)
                     ]
                     inputError model.Errors.Price
                 ]
-                div [ yield! errorClass model.Errors.Location ] [
-                    label [] [ str "Locatie*" ]
-                    div [ Id "locationPickerContainer" ] [
-                        LocationPicker
-                            {|
-                                OnChange = onLocationChanges
-                                ExistingLocations =
-                                    model.ExistingLocations
-                                    |> Array.map (fun exisingLocation ->
-                                        exisingLocation.name, (exisingLocation.latitude, exisingLocation.longitude)
-                                    )
-                            |}
+                div [ ClassName (errorClass model.Errors.Location) ; Key "location-container" ] [
+                    label [ Key "label-location" ] [ str "Locatie*" ]
+                    div [ Key "location-picker-container" ; Id "locationPickerContainer" ] [
+                        locationPicker [
+                            LocationPickerProp.OnChange onLocationChanges
+                            LocationPickerProp.ExistingLocations (
+                                model.ExistingLocations
+                                |> Array.map (fun exisingLocation ->
+                                    exisingLocation.name, (exisingLocation.latitude, exisingLocation.longitude)
+                                )
+                            )
+                        ]
                     ]
                     inputError model.Errors.Location
                 ]
-                div [] [
+                div [ Key "container-is-draft" ] [
                     label [] [ str "Ist van vat?" ]
-                    Toggle
-                        {|
-                            TrueLabel = "Joat"
-                            FalseLabel = "Nint"
-                            OnChange = (UpdateIsDraft >> dispatch)
-                            Value = model.IsDraft
-                            Disabled = false
-                        |}
-                ]
-                div [] [
-                    label [] [ str "Co-patrons?" ]
-                    p [] [ str "Zin der nog matjes aanwezig?" ]
-                    div [ Id "others" ] [ ofArray coPatronsOptions ]
-                    ul [ Id "selectedOthers" ] [ ofArray coPatronsSelected ]
-                ]
-                div [ Id "take-picture" ] [
-                    label [] [ str "Foto" ]
-                    p [] [ str "Niet verplicht, kan wel leutig zijn." ]
-                    for photo in model.Photos do
-                        img [ Src photo ; HTMLAttr.Width "100%" ]
-                    button [ OnClick onTakePicture ] [
-                        span [] [ str "Voeg foto toe" ]
-                        Icon [ IconProp.Icon "ph:camera-duotone" ; IconProp.Height 24 ; IconProp.Width 24 ]
+                    toggle [
+                        ToggleProp.TrueLabel "Joat"
+                        ToggleProp.FalseLabel "Nint"
+                        ToggleProp.OnChange (UpdateIsDraft >> dispatch)
+                        ToggleProp.Value model.IsDraft
+                        ToggleProp.Disabled false
                     ]
                 ]
-                div [] [
-                    label [] [ str "Opmerking" ]
-                    textarea [ DefaultValue model.Remark ; updateOnChange UpdateRemark ; Rows 2 ] []
+                div [ Key "container-copatrons" ] [
+                    label [ Key "label-copatrons" ] [ str "Co-patrons?" ]
+                    p [] [ str "Zin der nog matjes aanwezig?" ]
+                    div [ Id "others" ] coPatronsOptions
+                    ul [ Id "selectedOthers" ] coPatronsSelected
                 ]
-                div [ ClassName "align-right" ] [ input [ Type "submit" ; Class "primary" ; Value "Save!" ] ]
-            // if Browser.Dom.window.location.host.StartsWith ("localhost") then
-            //     pre [] [ str (Fable.Core.JS.JSON.stringify (model, space = 4)) ]
+                div [ Key "container-take-picture" ; Id "take-picture" ] [
+                    label [ Key "take-photo" ] [ str "Foto" ]
+                    p [ Key "take-photo-info" ] [ str "Niet verplicht, kan wel leutig zijn." ]
+                    for photo in model.Photos do
+                        img [ Key $"photo-%s{photo}" ; Src photo ; Width "100%" ]
+                    button [ Key "take-photo-btn" ; OnClick onTakePicture ] [
+                        span [] [ str "Voeg foto toe" ]
+                        icon [ IconProp.Icon "ph:camera-duotone" ; IconProp.Height 24 ; IconProp.Width 24 ]
+                    ]
+                ]
+                div [ Key "container-remarks" ] [
+                    label [] [ str "Opmerking" ]
+                    textarea [ DefaultValue model.Remark ; OnChange (updateOnChange UpdateRemark) ; Rows 2 ] []
+                ]
+                div [ Key "container-save" ; ClassName "align-right" ] [
+                    input [ Type "submit" ; Class "primary" ; Value "Save!" ]
+                ]
+                if Browser.Dom.window.location.host.StartsWith "localhost" then
+                    pre [ Key "debug" ] [ str (JS.JSON.stringify (model, space = 4)) ]
             ]
     ]

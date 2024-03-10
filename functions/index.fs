@@ -6,6 +6,8 @@ open Fable.Core.JsInterop
 open Firebase.Admin
 open Firebase.Functions
 open Firebase.Functions.V2
+open Firebase.Functions.V2.Https
+open Ronnies.Shared
 
 let isEmulator : bool = emitJsExpr () "process.env.FUNCTIONS_EMULATOR === \"true\""
 
@@ -56,8 +58,6 @@ let secretRequest
 type User =
     abstract displayName : string
     abstract email : string
-
-type CustomClaims = {| ``member`` : bool ; admin : bool |}
 
 let isAdmin (auth : Https.RequestAuth<CustomClaims> option) =
     match auth with
@@ -163,7 +163,7 @@ let users =
             region = "europe-west1"
             allowedCors = Some allowedCors
         |},
-        fun request ->
+        fun (request : CallableRequest<UsersData, CustomClaims>) ->
             promise {
                 match request.auth with
                 | HasMemberClaim currentId ->
@@ -172,8 +172,14 @@ let users =
                     let users =
                         listUsersResult.users
                         |> Array.choose (fun userRecord ->
-                            if userRecord.uid = currentId then
+                            if userRecord.uid = currentId && not request.data.includeCurrentUser then
                                 None
+                            elif userRecord.uid = currentId then
+                                Some
+                                    {|
+                                        displayName = userRecord.displayName
+                                        uid = userRecord.uid
+                                    |}
                             else
                                 userRecord.customClaims
                                 |> Option.bind (fun customClaims ->
@@ -223,8 +229,6 @@ let cleanUpUsers =
                     }
                 )
     )
-
-type FCMTokenData = {| tokens : string array |}
 
 let broadCastNotification data =
     promise {
@@ -280,16 +284,32 @@ if (process.env.FUNCTIONS_EMULATOR === "true") {
       .createUser({
         displayName: "nojaf",
         email: "florian.verdonck@outlook.com",
-        password: "ronalds",
+        password: "ronalds"
       })
       .then((user) => {
         console.log("admin seeded");
         auth.setCustomUserClaims(user.uid, {
           admin: true,
-          member: true,
+          member: true
         });
       });
   });
+  
+    auth.getUserByEmail("bp@gmail.com").catch((err) => {
+        auth
+          .createUser({
+            displayName: "Gilles",
+            email: "bp@gmail.com",
+            password: "ronalds"
+          })
+          .then((user) => {
+            console.log("BP seeded");
+            auth.setCustomUserClaims(user.uid, {
+              admin: false,
+              member: true
+            });
+          });
+      });
 }
 """
 
@@ -304,7 +324,7 @@ let testNotification =
                 "POST"
                 request
                 response
-                (fun request response ->
+                (fun _request response ->
                     promise {
                         try
                             let! user = auth.getUserByEmail "florian.verdonck@outlook.com"

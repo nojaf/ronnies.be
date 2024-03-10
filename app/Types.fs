@@ -6,6 +6,8 @@ open Fable.Core.JsInterop
 open Firebase
 open Firebase.FireStore
 
+type LatLng = float * float
+
 /// Firebase uid
 type uid = string
 
@@ -23,8 +25,6 @@ type RonnyLocation =
         remark : string
         date : Timestamp
     |}
-
-type CustomClaims = {| ``member`` : bool ; admin : bool |}
 
 let Constants = {| Locations = "locations" |}
 

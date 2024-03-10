@@ -485,3 +485,4 @@ seed.fsx
 dist/
 data/
 .env
+fable_modules/

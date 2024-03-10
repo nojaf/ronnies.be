@@ -1,38 +1,42 @@
 ﻿module ReactRouterDom
 
+open Fable.Core
 open Fable.Core.JsInterop
-open React
-open React.Props
+open React.Plugin
 
 #nowarn "1182"
 
-let inline BrowserRouter (children : ReactElement seq) =
-    ofImportWithoutProps "BrowserRouter" "react-router-dom" children
+[<JSX("BrowserRouter", "react-router-dom")>]
+let browserRouter (props : JSX.Prop seq) (children : JSX.Element seq) : JSX.Element = null
 
-let inline Routes (routes : ReactElement seq) =
-    ofImportWithoutProps "Routes" "react-router-dom" routes
+[<JSX("Routes", "react-router-dom")>]
+let routes (props : JSX.Prop seq) (routes : JSX.Element seq) : JSX.Element = null
 
-let inline Route (props : IProp seq) =
-    ofImportWithoutChildren "Route" "react-router-dom" props
+[<JSX("Route", "react-router-dom")>]
+let route (props : JSX.Prop seq) : JSX.Element = null
 
+[<RequireQualifiedAccess>]
 type ReactRouterProp =
-    | To of string
-    | Index of bool
-    | Path of string
-    | Element of ReactElement
+    [<Emit("to")>]
+    static member To (value : string) : JSX.Prop = "to", box value
 
-    interface IProp
+    [<Emit "index">]
+    static member Index (value : bool) = "index", box value
 
-let inline Navigate (props : IProp seq) =
-    ofImportWithoutChildren "Navigate" "react-router-dom" props
+    [<Emit "path">]
+    static member Path (value : string) = "path", box value
 
-let inline Link (props : IProp seq) (children : ReactElement seq) =
-    ofImport "Link" "react-router-dom" props children
+    [<Emit "element">]
+    static member Element (value : JSX.Element) = "element", box value
 
-let inline NavLink (props : IProp seq) (children : ReactElement seq) =
-    let className (prop : {| isActive : bool |}) = if prop.isActive then "active" else ""
+[<JSX("Navigate", "react-router-dom")>]
+let navigate (props : JSX.Prop seq) : JSX.Element = null
 
-    ofImport "NavLink" "react-router-dom" [| yield! props ; DOMAttr.Custom ("className", !!className) |] children
+[<JSX("Link", "react-router-dom")>]
+let link (props : JSX.Prop seq) (children : JSX.Element seq) : JSX.Element = null
+
+[<JSX("NavLink", "react-router-dom")>]
+let navLink (props : JSX.Prop seq) (children : JSX.Element seq) : JSX.Element = null
 
 let useNavigate () : string -> unit = import "useNavigate" "react-router-dom"
 

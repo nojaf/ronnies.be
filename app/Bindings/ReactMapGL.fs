@@ -1,8 +1,10 @@
 ﻿module ReactMapGL
 
+#nowarn "1182"
+
 open Fable.Core
 open Fable.Core.JsInterop
-open React
+open React.Plugin
 
 let useGeolocation
     : {| enableHighAccuracy : bool |}
@@ -12,7 +14,7 @@ let useGeolocation
               loading : bool
               error : obj option
           |} =
-    import "useGeolocation" "react-use"
+    import "useGeolocation" "@uidotdev/usehooks"
 
 type Viewport =
     {|
@@ -33,37 +35,47 @@ type MapLayerMouseEvent =
 // TODO: https://visgl.github.io/react-map-gl/docs/get-started
 [<RequireQualifiedAccess>]
 type ReactMapGLProp =
-    | Latitude of float
-    | Longitude of float
-    | Zoom of int
-    | OnClick of (MapLayerMouseEvent -> unit)
-    | MapStyle of string
-    | MapboxAccessToken of string
-    | OnMove of ({| viewState : Viewport |} -> unit)
+    [<Emit "latitude">]
+    static member Latitude (value : float) = "latitude", box value
 
-    interface IProp
+    [<Emit "longitude">]
+    static member Longitude (value : float) = "longitude", box value
+
+    [<Emit "zoom">]
+    static member Zoom (value : int) = "zoom", box value
+
+    [<Emit "onClick">]
+    static member OnClick (value : MapLayerMouseEvent -> unit) = "onClick", box value
+
+    [<Emit "mapStyle">]
+    static member MapStyle (value : string) = "mapStyle", box value
+
+    [<Emit "mapboxAccessToken">]
+    static member MapboxAccessToken (value : string) = "mapboxAccessToken", box value
+
+    [<Emit "onMove">]
+    static member OnMove (value : {| viewState : Viewport |} -> unit) = "onMove", box value
 
 let mapboxApiAccessToken : string =
     "pk.eyJ1Ijoibm9qYWYiLCJhIjoiY2p6eHV4ODkwMWNoaTNidXRqeGlrb2JpMSJ9.x6fTQsfCfGMKwxpdKxjhMQ"
 
-// https://visgl.github.io/react-map-gl/docs/upgrade-guide#map
-let inline ReactMapGL (props : #IProp seq) (children : ReactElement seq) : ReactElement =
-    let allProps =
-        [|
-            yield ReactMapGLProp.MapboxAccessToken mapboxApiAccessToken :> IProp
-            for p in props do
-                yield p :> IProp
-        |]
+/// https://visgl.github.io/react-map-gl/docs/upgrade-guide#map
+[<JSX("default as Map", "react-map-gl")>]
+let reactMapGL (props : JSX.Prop seq) (children : JSX.Element seq) : JSX.Element = null
 
-    ofImport "default" "react-map-gl" allProps children
-
+[<RequireQualifiedAccess>]
 type MarkerProp =
-    | [<CompiledName("latitude")>] MarkerLatitude of float
-    | [<CompiledName("longitude")>] MarkerLongitude of float
-    | OffsetLeft of int
-    | OffsetTop of int
+    [<Emit "latitude">]
+    static member MarkerLatitude (value : float) = "latitude", box value
 
-    interface IProp
+    [<Emit "longitude">]
+    static member MarkerLongitude (value : float) = "longitude", box value
 
-let inline Marker (props : IProp list) (children : ReactElement seq) : ReactElement =
-    ofImport "Marker" "react-map-gl" props children
+    [<Emit "offsetLeft">]
+    static member OffsetLeft (value : int) = "offsetLeft", box value
+
+    [<Emit "offsetTop">]
+    static member OffsetTop (value : int) = "offsetTop", box value
+
+[<JSX("Marker", "react-map-gl")>]
+let marker (props : JSX.Prop seq) (children : JSX.Element seq) : JSX.Element = null

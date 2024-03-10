@@ -5,14 +5,33 @@ open Fable.Core.JsInterop
 open Fable.Core
 open Browser
 open Browser.Types
-open Feliz
 open React
-open React.Props
-open Firebase
+open type React.DSL.DOMProps
 open type Firebase.Auth.Exports
 open ReactRouterDom
+open StyledComponents
 
-[<ReactComponent>]
+let StyledMain : JSX.ElementType =
+    mkStyleComponent
+        "main"
+        """
+form {
+    border: 1px solid var(--ronny-400);
+    padding: var(--spacing-400);
+    max-width: 400px;
+    margin: var(--spacing-400) auto auto;
+    
+    input {
+        margin: var(--spacing-200) 0;
+    }
+    
+    input:last-child {
+        margin-bottom: 0;
+    }
+}
+"""
+
+[<ExportDefault>]
 let LoginPage () =
     let email, setEmail =
         let emailFromLocalStorage = window.localStorage.getItem "email"
@@ -73,11 +92,12 @@ let LoginPage () =
 
     let emailClass = if error then "error" else ""
 
-    main [] [
+    styledComponent StyledMain [
         form [ Id "login" ; OnSubmit onSubmit ] [
-            h1 [] [ str "Inloggen" ]
+            h1 [ Key "login-title" ] [ str "Inloggen" ]
             if not emailSent then
                 input [
+                    Key "email"
                     Type "email"
                     Placeholder "email"
                     AutoComplete "email"
@@ -86,8 +106,12 @@ let LoginPage () =
                     ClassName emailClass
                 ]
 
-                input [ Type "submit" ; Class "btn primary" ]
+                input [ Key "submit" ; Type "submit" ; Class "btn primary" ]
             else
-                p [] [ str $"Er werd een email verstuurd naar {email}. Via deze log je in." ]
+                p [ Key "msg" ] [
+                    str $"Er werd een email verstuurd naar {email}."
+                    br []
+                    str "Via deze log je in."
+                ]
         ]
     ]

@@ -4,13 +4,13 @@ open Fable.Core.JsInterop
 open Fable.Core
 open Browser
 open Browser.Types
-open Feliz
 open React
-open React.Props
+open type React.DSL.DOMProps
 open type Firebase.Hooks.Exports
 open type Firebase.FireStore.Exports
 open type Firebase.Messaging.Exports
-open Components
+open Ronnies.Shared
+open ComponentsDSL
 
 [<Literal>]
 let VAPID_KEY =
@@ -18,8 +18,6 @@ let VAPID_KEY =
 
 [<Literal>]
 let FCM_TOKEN_COLLECTION = "fcmTokens"
-
-type FCMTokenData = {| tokens : string array |}
 
 [<Emit("'serviceWorker' in navigator")>]
 let hasServiceWorker : bool = jsNative
@@ -40,7 +38,7 @@ let registerServiceWorker () =
 
 let getTokenSnapshot (uid : uid) =
     let tokenRef = doc (firestore, FCM_TOKEN_COLLECTION, uid)
-    getDoc<FCMTokenData> (tokenRef)
+    getDoc<FCMTokenData> tokenRef
 
 let getFcmToken () =
     promise {
@@ -58,23 +56,23 @@ let getFcmToken () =
     }
 
 [<RequireQualifiedAccess>]
-type EnableNotifications =
+type private EnableNotifications =
     | Unknown
     | Yes
     | No
 
-let rec requestNotificationsPermissions (uid : uid) : JS.Promise<EnableNotifications> =
+let rec private requestNotificationsPermissions (uid : uid) : JS.Promise<EnableNotifications> =
     promise {
         let! permission = emitJsExpr<JS.Promise<string>> () "Notification.requestPermission()"
 
         if permission = "granted" then
-            return! saveMessagineDeviceToken uid
+            return! saveMessageDeviceToken uid
         else
             console.log $"Unable to get permission to notify, got %s{permission}"
             return EnableNotifications.No
     }
 
-and saveMessagineDeviceToken (uid : uid) : JS.Promise<EnableNotifications> =
+and private saveMessageDeviceToken (uid : uid) : JS.Promise<EnableNotifications> =
     try
         promise {
             let! fcmToken = getFcmToken ()
@@ -102,7 +100,7 @@ and saveMessagineDeviceToken (uid : uid) : JS.Promise<EnableNotifications> =
         console.error ("Unable to get messaging token.", ex)
         Promise.lift EnableNotifications.No
 
-[<ReactComponent>]
+[<ExportDefault>]
 let SettingsPage () =
     let user, isUserLoading, _ = useAuthState auth
     let tokenResult, _, _ = useAuthIdTokenResult auth
@@ -174,19 +172,23 @@ let SettingsPage () =
     )
 
     main [ Id "settings" ] [
-        h1 [] [ str "Settings" ]
-        if browserSupportsNotifications && value <> EnableNotifications.Unknown then
-            h2 [] [ str "Notificaties?" ]
+        h1 [ Key "title" ] [ str "Settings" ]
+        match value with
+        | EnableNotifications.Unknown -> loader [ Key "loader" ]
+        | _ ->
+
+        if browserSupportsNotifications then
+            h2 [ Key "notifications-title" ] [ str "Notificaties?" ]
 
             if not browserSupportsNotifications then
-                p [] [ em [] [ str "Je browser ondersteunt geen notificaties." ] ]
+                p [ Key "no-notifications-support" ] [ em [] [ str "Je browser ondersteunt geen notificaties." ] ]
 
-            Toggle
-                {|
-                    TrueLabel = "Aan"
-                    FalseLabel = "Uit"
-                    OnChange = onChange
-                    Value = value = EnableNotifications.Yes
-                    Disabled = false
-                |}
+            toggle [
+                ToggleProp.TrueLabel "Aan"
+                ToggleProp.FalseLabel "Uit"
+                ToggleProp.OnChange onChange
+                ToggleProp.Value ((value = EnableNotifications.Yes))
+                ToggleProp.Disabled false
+                Key "toggle-notifications"
+            ]
     ]

@@ -1,7 +1,6 @@
 module AddLocation
 
-open React
-open Feliz
+open Fable.Core
 
-[<ReactComponent>]
-val AddLocationPage : unit -> ReactElement
+[<ExportDefault>]
+val AddLocationPage : unit -> JSX.Element

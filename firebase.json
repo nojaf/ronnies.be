@@ -18,7 +18,7 @@
   "storage": {
     "rules": "storage.rules"
   },
-  "hosting":{
+  "hosting": {
     "public": "./app/dist",
     "rewrites": [
       {
@@ -43,6 +43,9 @@
     "ui": {
       "enabled": true,
       "port": 6007
+    },
+    "hosting": {
+      "port": 5002
     },
     "singleProjectMode": true
   }

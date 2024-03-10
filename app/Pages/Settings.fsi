@@ -1,7 +1,6 @@
 module Settings
 
-open Feliz
-open React
+open Fable.Core
 
-[<ReactComponent>]
-val SettingsPage : unit -> ReactElement
+[<ExportDefault>]
+val SettingsPage : unit -> JSX.Element
