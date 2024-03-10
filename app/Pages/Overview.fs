@@ -114,13 +114,21 @@ let OverviewPage () =
                             (fun (_, location : RonnyLocation) -> location.name.ToLower ())
                             locations
                 |> Array.map (fun (id, location) ->
-                    lazyLoad [ LazyLoadProp.Height 600 ; LazyLoadProp.Offset 600 ; Key id ] [
+                    if Array.isEmpty location.photoNames then
                         overviewItem [
+                            Key id
                             OverviewItemProp.Id id
                             OverviewItemProp.Location location
                             OverviewItemProp.Users users
                         ]
-                    ]
+                    else
+                        lazyLoad [ Key id ; LazyLoadProp.Offset 600 ] [
+                            overviewItem [
+                                OverviewItemProp.Id id
+                                OverviewItemProp.Location location
+                                OverviewItemProp.Users users
+                            ]
+                        ]
                 )
 
             let onHeaderClick (nextSortOrder : SortOrder) =
