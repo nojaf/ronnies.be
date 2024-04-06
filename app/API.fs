@@ -24,4 +24,4 @@ let addUser name email : JS.Promise<obj> =
     user {| displayName = name ; email = email |}
     |> Promise.map (fun result -> result.data)
 
-let testNotification = httpsCallable<unit, obj> (functions, "testNotification")
+let testNotification = httpsCallable<unit, unit> (functions, "testNotification")

@@ -146,7 +146,6 @@ let sudo =
                             return response.sendStatus (500)
                     }
                 )
-
     )
 
 let (|HasMemberClaim|_|) (requestAuth : Https.RequestAuth<CustomClaims> option) =
@@ -192,7 +191,6 @@ let users =
                                                 uid = userRecord.uid
                                             |}
                                 )
-
                         )
 
                     return users
@@ -230,19 +228,35 @@ let cleanUpUsers =
                 )
     )
 
+/// Try and send the data to all tokens in the document.
+/// Remove the tokens if they are no longer valid.
+let sendMessageToFcmToken (data : obj) (fcmDocumentSnapshot : FireStore.DocumentSnapshot<FCMTokenData>) =
+    promise {
+        let tokenData = fcmDocumentSnapshot.data ()
+        let staleTokens = ResizeArray<string> ()
+
+        for token in tokenData.tokens do
+            try
+                do! messaging.send {| token = token ; data = data |}
+            with ex ->
+                if ex?code = "messaging/registration-token-not-registered" then
+                    staleTokens.Add token
+                else
+                    Firebase.Functions.Logger.logger.error ex
+
+        if not (Seq.isEmpty staleTokens) then
+            let nextTokens = tokenData.tokens |> Array.except staleTokens
+            let! _ = fcmDocumentSnapshot.ref.update (nameof (tokenData.tokens), nextTokens)
+            ()
+    }
+
 let broadCastNotification data =
     promise {
         let fcmCollection = firestore.collection<FCMTokenData> ("fcmTokens")
         let! tokenSnapshots = fcmCollection.get ()
 
         for tokenSnapshot in tokenSnapshots.docs do
-            let tokenData = tokenSnapshot.data ()
-
-            for token in tokenData.tokens do
-                try
-                    do! messaging.send {| token = token ; data = data |}
-                with ex ->
-                    Firebase.Functions.Logger.logger.error ex
+            do! sendMessageToFcmToken data tokenSnapshot
     }
 
 // There are more properties present here, I'm only using the data I'm interested in
@@ -314,7 +328,7 @@ if (process.env.FUNCTIONS_EMULATOR === "true") {
 """
 
 let testNotification =
-    Https.Exports.onCall<User, CustomClaims, FCMTokenData> (
+    Https.Exports.onCall<User, CustomClaims, unit> (
         {|
             region = "europe-west1"
             allowedCors = None
@@ -338,15 +352,9 @@ let testNotification =
                     let fcmCollection = firestore.collection<FCMTokenData> ("fcmTokens")
                     let fcmDocumentReference = fcmCollection.doc user.uid
                     let! fcmDocumentSnapshot = fcmDocumentReference.get ()
-                    let tokenData = fcmDocumentSnapshot.data ()
+                    do! sendMessageToFcmToken data fcmDocumentSnapshot
 
-                    for token in tokenData.tokens do
-                        try
-                            do! messaging.send {| token = token ; data = data |}
-                        with ex ->
-                            Firebase.Functions.Logger.logger.error ex
-
-                    return tokenData
+                    return ()
                 with ex ->
                     Logger.logger.error ("Error sending testNotification", ex, {| structuredData = true |})
                     return raise (new Https.HttpsError (ex.Message))
