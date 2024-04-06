@@ -23,6 +23,8 @@
     <Compile Include="Components\Navigation.fs" />
     <Compile Include="Components\OverviewItem.fsi" />
     <Compile Include="Components\OverviewItem.fs" />
+    <Compile Include="Components\Toast.fsi" />
+    <Compile Include="Components\Toast.fs" />
     <Compile Include="ComponentsDSL.fs"/>
     <Compile Include="Pages\Login.fsi"/>
     <Compile Include="Pages\Login.fs"/>

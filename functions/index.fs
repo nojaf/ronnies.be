@@ -314,44 +314,41 @@ if (process.env.FUNCTIONS_EMULATOR === "true") {
 """
 
 let testNotification =
-    Https.Exports.onRequest (
+    Https.Exports.onCall<User, CustomClaims, FCMTokenData> (
         {|
             region = "europe-west1"
             allowedCors = None
         |},
-        fun request response ->
-            secretRequest
-                "POST"
-                request
-                response
-                (fun _request response ->
-                    promise {
+        fun request ->
+            promise {
+                try
+                    if not (isAdmin request.auth) then
+                        return raise (new Https.HttpsError ("Invalid permissions"))
+                    else
+
+                    let! user = auth.getUserByEmail "florian.verdonck@outlook.com"
+
+                    let data =
+                        {|
+                            locationId = "Emwzg2aIXFjESlL0RB66"
+                            userName = "Sie Nojaf"
+                            locationName = "Test notification"
+                        |}
+
+                    let fcmCollection = firestore.collection<FCMTokenData> ("fcmTokens")
+                    let fcmDocumentReference = fcmCollection.doc user.uid
+                    let! fcmDocumentSnapshot = fcmDocumentReference.get ()
+                    let tokenData = fcmDocumentSnapshot.data ()
+
+                    for token in tokenData.tokens do
                         try
-                            let! user = auth.getUserByEmail "florian.verdonck@outlook.com"
-
-                            let data =
-                                {|
-                                    locationId = "Emwzg2aIXFjESlL0RB66"
-                                    userName = "Sie Nojaf"
-                                    locationName = "Test notification"
-                                |}
-
-                            let fcmCollection = firestore.collection<FCMTokenData> ("fcmTokens")
-                            let fcmDocumentReference = fcmCollection.doc user.uid
-                            let! fcmDocumentSnapshot = fcmDocumentReference.get ()
-                            let tokenData = fcmDocumentSnapshot.data ()
-
-                            for token in tokenData.tokens do
-                                try
-                                    do! messaging.send {| token = token ; data = data |}
-                                with ex ->
-                                    Firebase.Functions.Logger.logger.error ex
-
-                            return response.status(200).send (tokenData)
+                            do! messaging.send {| token = token ; data = data |}
                         with ex ->
-                            Logger.logger.error ("Error while elevating user", ex, {| structuredData = true |})
-                            return response.sendStatus (500)
-                    }
-                )
+                            Firebase.Functions.Logger.logger.error ex
 
+                    return tokenData
+                with ex ->
+                    Logger.logger.error ("Error sending testNotification", ex, {| structuredData = true |})
+                    return raise (new Https.HttpsError (ex.Message))
+            }
     )

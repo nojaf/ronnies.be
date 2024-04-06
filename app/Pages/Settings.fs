@@ -10,6 +10,7 @@ open type Firebase.Hooks.Exports
 open type Firebase.FireStore.Exports
 open type Firebase.Messaging.Exports
 open Ronnies.Shared
+open StyledComponents
 open ComponentsDSL
 
 [<Literal>]
@@ -58,7 +59,7 @@ let getFcmToken () =
 [<RequireQualifiedAccess>]
 type private EnableNotifications =
     | Unknown
-    | Yes
+    | Yes of fcmToken : string
     | No
 
 let rec private requestNotificationsPermissions (uid : uid) : JS.Promise<EnableNotifications> =
@@ -90,15 +91,28 @@ and private saveMessageDeviceToken (uid : uid) : JS.Promise<EnableNotifications>
                         [| yield fcmToken ; yield! data.tokens |] |> Array.distinct
 
                     do! updateDoc (tokenRef, {| tokens = tokens |})
-                    return EnableNotifications.Yes
+                    return EnableNotifications.Yes fcmToken
                 else
                     do! setDoc (tokenRef, {| tokens = [| fcmToken |] |})
-                    return EnableNotifications.Yes
+                    return EnableNotifications.Yes fcmToken
 
         }
     with ex ->
         console.error ("Unable to get messaging token.", ex)
         Promise.lift EnableNotifications.No
+
+let StyledMain : JSX.ElementType =
+    mkStyleComponent
+        "main"
+        """
+h3 { margin-top: var(--spacing-400); }
+
+code {
+    margin-top:  var(--spacing-200);
+    display: block;
+    word-break: break-all;
+}
+"""
 
 [<ExportDefault>]
 let SettingsPage () =
@@ -116,26 +130,26 @@ let SettingsPage () =
         if v then
             requestNotificationsPermissions user.uid |> Promise.iter setValue
         else
-            // Remove the current token from the user
-            promise {
-                let! docSnapshot = getTokenSnapshot user.uid
+        // Remove the current token from the user
+        promise {
+            let! docSnapshot = getTokenSnapshot user.uid
 
-                if not (docSnapshot.exists ()) then
-                    ()
-                else
+            if not (docSnapshot.exists ()) then
+                ()
+            else
 
-                let! fcmToken = getFcmToken ()
+            let! fcmToken = getFcmToken ()
 
-                match fcmToken with
-                | None -> ()
-                | Some fcmToken ->
-                    let tokenData = docSnapshot.data ()
-                    let tokens = tokenData.tokens |> Array.filter (fun t -> t <> fcmToken)
-                    do! updateDoc (docSnapshot.ref, {| tokens = tokens |})
-                    setValue EnableNotifications.No
+            match fcmToken with
+            | None -> ()
+            | Some fcmToken ->
+                let tokenData = docSnapshot.data ()
+                let tokens = tokenData.tokens |> Array.filter (fun t -> t <> fcmToken)
+                do! updateDoc (docSnapshot.ref, {| tokens = tokens |})
+                setValue EnableNotifications.No
 
-            }
-            |> Promise.start
+        }
+        |> Promise.start
 
     React.useEffect (
         fun () ->
@@ -159,7 +173,7 @@ let SettingsPage () =
                             let hasToken = Array.contains fcmToken tokenData.tokens
 
                             if hasToken then
-                                setValue EnableNotifications.Yes
+                                setValue (EnableNotifications.Yes fcmToken)
                             else
                                 setValue EnableNotifications.No
                     }
@@ -171,11 +185,30 @@ let SettingsPage () =
         , [| box tokenResult ; box isUserLoading |]
     )
 
-    main [ Id "settings" ] [
+    let adminInfo =
+        match tokenResult with
+        | Some tokenResult when tokenResult.claims?``admin`` ->
+            div [ Key "admin" ] [
+                h3 [ Key "header" ] [ str "Test notification" ]
+                button [
+                    Key "button"
+                    OnClick (fun ev ->
+                        ev.preventDefault ()
+                        API.testNotification () |> Promise.start
+                    )
+                ] [ str "Send!" ]
+                match value with
+                | EnableNotifications.Yes fcmToken ->
+                    code [ Key "fcmToken" ] [ str "Current fcmToken: " ; br [] ; str fcmToken ]
+                | _ -> null
+            ]
+        | _ -> null
+
+    styledComponent StyledMain [
         h1 [ Key "title" ] [ str "Settings" ]
         match value with
         | EnableNotifications.Unknown -> loader [ Key "loader" ]
-        | _ ->
+        | enableNotifications ->
 
         if browserSupportsNotifications then
             h2 [ Key "notifications-title" ] [ str "Notificaties?" ]
@@ -183,12 +216,19 @@ let SettingsPage () =
             if not browserSupportsNotifications then
                 p [ Key "no-notifications-support" ] [ em [] [ str "Je browser ondersteunt geen notificaties." ] ]
 
+            let toggleValue =
+                match enableNotifications with
+                | EnableNotifications.Yes _ -> true
+                | _ -> false
+
             toggle [
                 ToggleProp.TrueLabel "Aan"
                 ToggleProp.FalseLabel "Uit"
                 ToggleProp.OnChange onChange
-                ToggleProp.Value ((value = EnableNotifications.Yes))
+                ToggleProp.Value toggleValue
                 ToggleProp.Disabled false
                 Key "toggle-notifications"
             ]
+
+            adminInfo
     ]

@@ -23,3 +23,5 @@ let private user = httpsCallable<AddUser, obj> (functions, "user")
 let addUser name email : JS.Promise<obj> =
     user {| displayName = name ; email = email |}
     |> Promise.map (fun result -> result.data)
+
+let testNotification = httpsCallable<unit, obj> (functions, "testNotification")

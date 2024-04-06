@@ -24,14 +24,16 @@ pipeline "Watch" {
             run "firebase emulators:start --project=ronnies-210509"
         }
         stage "functions" {
-            workingDir (__SOURCE_DIRECTORY__ </> "Functions")
+            workingDir (__SOURCE_DIRECTORY__ </> "functions")
+            run "bun i"
             run
                 "dotnet fable ./Functions.fsproj -e .js --watch --fableLib \"@fable-org/fable-library-js\" --noCache --test:MSBuildCracker"
         }
         stage "app" {
-            workingDir (__SOURCE_DIRECTORY__ </> "App")
+            workingDir (__SOURCE_DIRECTORY__ </> "app")
+            envVars [ "VITE_PLUGIN_FABLE_DEBUG", "1" ]
+            run "bun i"
             run "bun run dev"
-            paralle
         }
         paralle
     }

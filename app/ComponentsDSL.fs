@@ -55,3 +55,20 @@ type OverviewItemProp =
 
 [<JSX(nameof Components.OverviewItem.OverviewItem, "Components/OverviewItem.fs")>]
 let overviewItem (props : JSX.Prop seq) : JSX.Element = null
+
+[<RequireQualifiedAccess>]
+type ToastProp =
+    [<Emit "url">]
+    static member Url (value : string) : JSX.Prop = "url", box value
+
+    [<Emit "title">]
+    static member Title (value : string) : JSX.Prop = "title", box value
+
+    [<Emit "body">]
+    static member Body (value : string) : JSX.Prop = "body", box value
+
+    [<Emit "onClick">]
+    static member OnClick (value : unit -> unit) : JSX.Prop = "onClick", box value
+
+[<JSX(nameof Components.Toast.Toast, "Components/Toast.fs")>]
+let toast (props : JSX.Prop seq) : JSX.Element = null

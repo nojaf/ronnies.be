@@ -379,10 +379,35 @@ module Messaging =
             serviceWorkerRegistration : Browser.Types.ServiceWorkerRegistration
         |}
 
+    /// https://firebase.google.com/docs/reference/js/messaging_.notificationpayload.md#notificationpayload_interface
+    type NotificationPayload =
+        abstract body : string option
+        abstract icon : string option
+        abstract image : string option
+        abstract title : string option
+
+    /// https://firebase.google.com/docs/reference/js/messaging_.messagepayload.md#messagepayload_interface
+    type MessagePayload<'TData> =
+        abstract fcmOptions : obj option
+        abstract data : 'TData option
+        abstract from : string
+        abstract notification : NotificationPayload
+
     type Exports =
         /// https://firebase.google.com/docs/reference/js/messaging_.md#gettoken
         [<Import("getToken", "firebase/messaging")>]
         static member getToken (messaging : Messaging, ?options : GetTokenOptions) : Promise<string option> = jsNative
+
+        /// https://firebase.google.com/docs/reference/js/messaging_.md#onmessage_b9887da
+        [<Import("onMessage", "firebase/messaging")>]
+        static member onMessage<'TData>
+            (
+                messaging : Messaging,
+                nextOrObserver : System.Action<MessagePayload<'TData>>
+            )
+            : unit
+            =
+            jsNative
 
 /// https://github.com/andipaetzold/react-firehooks
 module Hooks =

@@ -5,6 +5,7 @@ open Fable.Core.JsInterop
 open Browser.Dom
 open type Firebase.Auth.Exports
 open type Firebase.Hooks.Exports
+open type Firebase.Messaging.Exports
 open React
 open type React.DSL.DOMProps
 open ReactRouterDom
@@ -23,7 +24,46 @@ let private LoginPage = importPage "./Pages/Login.fs"
 let private SettingsPage = importPage "./Pages/Settings.fs"
 let private AdminPage = importPage "./Pages/Admin.fs"
 
+type MessageData =
+    {|
+        locationId : string
+        locationName : string
+        userName : string
+    |}
+
+type ToastData = {| message : string ; url : string |}
+
 let App () =
+    let toastData, setToastData = React.useState<ToastData option> None
+
+    React.useEffect (
+        fun () ->
+            messaging ()
+            |> Promise.iter (fun messaging ->
+                onMessage<MessageData> (
+                    messaging,
+                    (fun message ->
+                        Fable.Core.JS.console.log (message)
+
+                        message.data
+                        |> Option.iter (fun data ->
+                            setToastData (
+                                Some (
+                                    {|
+                                        message = $"%s{data.locationName} door %s{data.userName}"
+                                        url = $"/detail/%s{data.locationId}"
+                                    |}
+                                )
+                            )
+
+                            JS.setTimeout (fun () -> setToastData None) 5000 |> ignore
+                        )
+                    )
+                )
+            )
+        , [||]
+    )
+
     let loader =
         div [
             Style
@@ -37,8 +77,8 @@ let App () =
         ] [ loader [] ]
 
     browserRouter [] [
-        navigation []
-        routes [] [
+        navigation [ Key "navigation" ]
+        routes [ Key "routes" ] [
             route [
                 ReactRouterProp.Index true
                 ReactRouterProp.Element (suspense [ Fallback loader ] [ (JSX.create HomePage []) ])
@@ -81,6 +121,16 @@ let App () =
             ]
         // route [ ReactRouterProp.Path "*" ; ReactRouterProp.Element (navigate [ To "/" ]) ]
         ]
+        match toastData with
+        | None -> null
+        | Some toastData ->
+            toast [
+                Key "toast"
+                ToastProp.OnClick (fun () -> setToastData None)
+                ToastProp.Title "Nieuwe ronny plekke toegevoegd"
+                ToastProp.Body toastData.message
+                ToastProp.Url toastData.url
+            ]
     ]
 
 document.addEventListener (
