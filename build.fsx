@@ -51,7 +51,7 @@ pipeline "Deploy" {
     }
     stage "backend" {
         workingDir (__SOURCE_DIRECTORY__ </> "functions")
-        run "npm i"
+        run "bun i"
         run "dotnet fable -e .js --fableLib \"@fable-org/fable-library-js\" --noCache -c Release --test:MSBuildCracker"
     }
     stage "firebase" { run "firebase deploy --only hosting,functions" }
