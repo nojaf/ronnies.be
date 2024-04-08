@@ -376,7 +376,7 @@ module Messaging =
     type GetTokenOptions =
         {|
             vapidKey : string
-            serviceWorkerRegistration : Browser.Types.ServiceWorkerRegistration
+            // serviceWorkerRegistration : Browser.Types.ServiceWorkerRegistration
         |}
 
     /// https://firebase.google.com/docs/reference/js/messaging_.notificationpayload.md#notificationpayload_interface

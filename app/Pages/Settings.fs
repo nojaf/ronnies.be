@@ -28,15 +28,6 @@ let hasPushManager : bool = jsNative
 
 let browserSupportsNotifications = hasPushManager && hasServiceWorker
 
-let registerServiceWorker () =
-    match navigator.serviceWorker with
-    | None -> Promise.reject (exn "Service worker not available")
-    | Some serviceWorker ->
-        let options : ServiceWorkerRegistrationOptions =
-            emitJsExpr () "{ \"type\": \"module\" }"
-
-        serviceWorker.register ("/firebase-messaging-sw.js", options)
-
 let getTokenSnapshot (uid : uid) =
     let tokenRef = doc (firestore, FCM_TOKEN_COLLECTION, uid)
     getDoc<FCMTokenData> tokenRef
@@ -44,16 +35,8 @@ let getTokenSnapshot (uid : uid) =
 let getFcmToken () =
     promise {
         let! messaging = messaging ()
-        let! registration = registerServiceWorker ()
 
-        return!
-            getToken (
-                messaging,
-                {|
-                    vapidKey = VAPID_KEY
-                    serviceWorkerRegistration = registration
-                |}
-            )
+        return! getToken (messaging, {| vapidKey = VAPID_KEY |})
     }
 
 [<RequireQualifiedAccess>]
