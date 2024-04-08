@@ -13,6 +13,11 @@ open Ronnies.Shared
 open StyledComponents
 open ComponentsDSL
 
+[<RequireQualifiedAccess>]
+type LogEntry =
+    | Info of string
+    | Error of string
+
 [<Literal>]
 let VAPID_KEY =
     "BFh5svrvg2AivizTTNse7B4DYRqJ7lk9vg2IN13T_sbn3ONdE1A0Z8eoyu28r24a7u82giEkHARB09Qt7zBtNLI"
@@ -35,7 +40,6 @@ let getTokenSnapshot (uid : uid) =
 let getFcmToken () =
     promise {
         let! messaging = messaging ()
-
         return! getToken (messaging, {| vapidKey = VAPID_KEY |})
     }
 
@@ -45,38 +49,47 @@ type private EnableNotifications =
     | Yes of fcmToken : string
     | No
 
-let rec private requestNotificationsPermissions (uid : uid) : JS.Promise<EnableNotifications> =
+let rec private requestNotificationsPermissions
+    (addLog : LogEntry -> unit)
+    (uid : uid)
+    : JS.Promise<EnableNotifications>
+    =
     promise {
         let! permission = emitJsExpr<JS.Promise<string>> () "Notification.requestPermission()"
 
         if permission = "granted" then
-            return! saveMessageDeviceToken uid
+            addLog (LogEntry.Info "Notification.requestPermission granted")
+            return! saveMessageDeviceToken addLog uid
         else
-            console.log $"Unable to get permission to notify, got %s{permission}"
+            addLog (LogEntry.Error $"Unable to get permission to notify, got %s{permission}")
             return EnableNotifications.No
     }
 
-and private saveMessageDeviceToken (uid : uid) : JS.Promise<EnableNotifications> =
+and private saveMessageDeviceToken (addLog : LogEntry -> unit) (uid : uid) : JS.Promise<EnableNotifications> =
     try
         promise {
             let! fcmToken = getFcmToken ()
 
             match fcmToken with
-            | None -> return! requestNotificationsPermissions uid
+            | None -> return! requestNotificationsPermissions addLog uid
             | Some fcmToken ->
-                console.log ("Got FCM device token:", fcmToken)
+                addLog (LogEntry.Info $"Got FCM device token: %s{fcmToken}")
                 let! docSnapshot = getTokenSnapshot uid
                 let tokenRef = docSnapshot.ref
 
                 if docSnapshot.exists () then
+                    addLog (LogEntry.Info $"getTokenSnapshot for %s{uid} exists")
+
                     let tokens =
                         let data = docSnapshot.data ()
                         [| yield fcmToken ; yield! data.tokens |] |> Array.distinct
 
                     do! updateDoc (tokenRef, {| tokens = tokens |})
+                    addLog (LogEntry.Info "tokenSnapshot updated")
                     return EnableNotifications.Yes fcmToken
                 else
                     do! setDoc (tokenRef, {| tokens = [| fcmToken |] |})
+                    addLog (LogEntry.Info "tokenSnapshot created")
                     return EnableNotifications.Yes fcmToken
 
         }
@@ -95,6 +108,10 @@ code {
     display: block;
     word-break: break-all;
 }
+
+ul li.error {
+    color: firebrick;
+}
 """
 
 [<ExportDefault>]
@@ -105,13 +122,23 @@ let SettingsPage () =
     let value, setValue =
         React.useState<EnableNotifications> EnableNotifications.Unknown
 
+    let logs, setLogs = React.useStateByFunction (Array.empty)
+
+    let addLog entry =
+        setLogs (fun logs ->
+            if Array.isEmpty logs then
+                Array.singleton entry
+            else
+                Array.insertAt (logs.Length) entry logs
+        )
+
     let onChange (v : bool) =
         match user with
         | None -> ()
         | Some user ->
 
         if v then
-            requestNotificationsPermissions user.uid |> Promise.iter setValue
+            requestNotificationsPermissions addLog user.uid |> Promise.iter setValue
         else
         // Remove the current token from the user
         promise {
@@ -143,14 +170,19 @@ let SettingsPage () =
                         let! tokenSnapshot = getTokenSnapshot user.uid
 
                         if not (tokenSnapshot.exists ()) then
-                            let! v = requestNotificationsPermissions user.uid
+                            let! v = requestNotificationsPermissions addLog user.uid
                             setValue v
                         else
+                            addLog (LogEntry.Info $"tokenSnapshot exists for %s{user.uid}")
                             let! fcmToken = getFcmToken ()
 
                             match fcmToken with
-                            | None -> ()
+                            | None ->
+                                addLog (LogEntry.Info $"fcmToken does not exist")
+                                ()
                             | Some fcmToken ->
+
+                            addLog (LogEntry.Info $"fcmToken does exist %s{fcmToken}")
 
                             let tokenData = tokenSnapshot.data ()
                             let hasToken = Array.contains fcmToken tokenData.tokens
@@ -160,6 +192,10 @@ let SettingsPage () =
                             else
                                 setValue EnableNotifications.No
                     }
+                    |> Promise.catch (fun err ->
+                        addLog (LogEntry.Error $"Error in on-mount token, %A{err}")
+                        ()
+                    )
                     |> Promise.start
 
                 else
@@ -184,6 +220,13 @@ let SettingsPage () =
                 | EnableNotifications.Yes fcmToken ->
                     code [ Key "fcmToken" ] [ str "Current fcmToken: " ; br [] ; str fcmToken ]
                 | _ -> null
+                h3 [ Key "log-header" ] [ str "Logs" ]
+                ul [ Key "logs" ] [
+                    for (idx, log) in Array.indexed logs do
+                        match log with
+                        | LogEntry.Info info -> yield li [ Key $"log-%i{idx}" ] [ str info ]
+                        | LogEntry.Error error -> yield li [ Key $"log-%i{idx}" ; ClassName "error" ] [ str error ]
+                ]
             ]
         | _ -> null
 
