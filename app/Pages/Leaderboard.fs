@@ -1,17 +1,13 @@
 module Leaderboard
 
-open Fable.Core.JsInterop
 open Fable.Core
-open Browser
-open Browser.Types
-open Feliz
 open React
-open React.Props
+open type React.DSL.DOMProps
 open Iconify
 open Firebase
 open type Firebase.Auth.Exports
-open ReactRouterDom
-open Components
+open StyledComponents
+open ComponentsDSL
 
 type HighScore =
     {|
@@ -20,25 +16,67 @@ type HighScore =
         score : int
     |}
 
-[<ReactComponent>]
+let StyledMain : JSX.ElementType =
+    mkStyleComponent
+        "main"
+        """
+table {
+    margin-top: var(--spacing-400);
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th {
+    text-align: left;
+}
+
+table th:last-of-type, table tr td:last-of-type {
+    text-align: center;
+}
+
+table th, table td {
+    display: table-cell;
+    border-top: 1px solid var(--grey);
+    box-sizing: border-box;
+    border-collapse: collapse;
+}
+
+table th {
+    color: var(--ronny-600);
+    cursor: pointer;
+}
+
+table th, table td {
+    padding: var(--spacing-400);
+}
+
+table tbody tr:nth-child(2n) {
+    background-color:var(--ronny-50);
+}
+
+.highscore {
+    display: flex;
+    align-items: center;
+}
+
+.highscore svg {
+    margin-right: var(--spacing-100);
+    color: #F6CF57;
+}
+"""
+
+[<ExportDefault>]
 let LeaderboardPage () =
     let querySnapshot, snapShotIsLoading, _ = Hooks.Exports.useQuery allRonniesQuery
-    let user, isUserLoading, _ = Hooks.Exports.useAuthState auth
-    let scores, setScores = React.useState<HighScore array> (Array.empty)
+    let scores, setScores = React.useState<HighScore array> Array.empty
 
     React.useEffect (
         fun () ->
-            match querySnapshot, user with
-            | Some querySnapshot, Some user ->
-                API.getUsers ()
+            match querySnapshot with
+            | Some querySnapshot ->
+                API.getUsers {| includeCurrentUser = true |}
                 |> Promise.map (fun users ->
-                    let userMap =
-                        [|
-                            yield (user.uid, user.displayName)
-                            for otherUser in users do
-                                yield (otherUser.uid, otherUser.displayName)
-                        |]
-                        |> Map.ofArray
+                    let userMap = users |> Array.map (fun u -> u.uid, u.displayName) |> Map.ofArray
 
                     querySnapshot.docs
                     |> Array.collect (fun snapshot ->
@@ -46,19 +84,22 @@ let LeaderboardPage () =
                         [| yield ronnyLocation.userId ; yield! ronnyLocation.otherUserIds |]
                     )
                     |> Array.groupBy id
-                    |> Array.map (fun (uid, locations) ->
-                        {|
-                            uid = uid
-                            displayName = Map.find uid userMap
-                            score = locations.Length
-                        |}
+                    |> Array.choose (fun (uid, locations) ->
+                        Map.tryFind uid userMap
+                        |> Option.map (fun userName ->
+                            {|
+                                uid = uid
+                                displayName = userName
+                                score = locations.Length
+                            |}
+                        )
                     )
                     |> Array.sortByDescending (fun score -> score.score)
 
                 )
                 |> Promise.iter setScores
             | _ -> ()
-        , [| box querySnapshot ; box user |]
+        , [| snapShotIsLoading |]
     )
 
     let rows =
@@ -68,23 +109,33 @@ let LeaderboardPage () =
         |> Array.map (fun highScore ->
             let hasHighestScore = highScore.score = highestScore
 
+            let highestScoreIcon =
+                if not hasHighestScore then
+                    null
+                else
+                    icon [
+                        Key "crown"
+                        IconProp.Icon "mdi:crown"
+                        IconProp.Height 24
+                        IconProp.Width 24
+                    ]
+
             tr [ Key highScore.uid ] [
                 td [ ClassName (if hasHighestScore then "highscore" else "") ] [
-                    if hasHighestScore then
-                        Icon [ IconProp.Icon "mdi:crown" ; IconProp.Height 24 ; IconProp.Width 24 ]
+                    highestScoreIcon
                     str highScore.displayName
                 ]
                 td [] [ ofInt highScore.score ]
             ]
         )
 
-    main [] [
-        h1 [] [ str "Klassement" ]
-        if snapShotIsLoading || isUserLoading then
-            Loader ()
+    let content =
+        if snapShotIsLoading then
+            loader [ Key "loader" ]
         else
-            table [] [
+            table [ Key "table" ] [
                 thead [] [ tr [] [ th [] [ str "Naam" ] ; th [] [ str "Score" ] ] ]
-                tbody [] [ ofArray rows ]
+                tbody [] rows
             ]
-    ]
+
+    styledComponent StyledMain [ h1 [ Key "title" ] [ str "Klassement" ] ; content ]

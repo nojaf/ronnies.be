@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- firebase SDK
+- firebase cli (https://firebase.google.com/docs/cli)
 - bun.sh (`curl -fsSL https://bun.sh/install | bash`)
 - `sudo apt install parallel`
 
@@ -29,13 +29,13 @@ dotnet fsi seed.fsx
 ## Run application
 
 ```bash
-dotnet fable watch ./App.fsproj -e .js -o ./out --fableLib fable-library --noReflection --run bun run dev
+dotnet fable watch --cwd ./app ./App.fsproj -e .js -o ./out --fableLib fable-library --noReflection --run bun run dev
 ```
 
 ## Build application
 
 ```bash
-dotnet fable ./App.fsproj --cwd ./app -e .js -o ./out --fableLib fable-library --noReflection --run bun run build
+dotnet fable ./App.fsproj --cwd ./app -e .js -o ./out --fableLib fable-library --noReflection --exclude "Nojaf.Fable.React.Plugin" --run bun run build
 ```
 
 ## Deploy frontend

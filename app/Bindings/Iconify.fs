@@ -1,16 +1,20 @@
 ﻿module Iconify
 
-open React
+open Fable.Core
+open React.Plugin
 
 #nowarn "1182"
 
 [<RequireQualifiedAccess>]
 type IconProp =
-    | Icon of string
-    | Width of int
-    | Height of int
+    [<Emit "icon">]
+    static member Icon (value : string) : JSX.Prop = "icon", box value
 
-    interface IProp
+    [<Emit "width">]
+    static member Width (value : int) : JSX.Prop = "width", box value
 
-let inline Icon (props : IProp seq) =
-    ofImportWithoutChildren "Icon" "@iconify/react" props
+    [<Emit "height">]
+    static member Height (value : int) : JSX.Prop = "height", box value
+
+[<JSX("Icon", "@iconify/react")>]
+let icon (props : JSX.Prop seq) : JSX.Element = null

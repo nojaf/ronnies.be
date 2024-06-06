@@ -9,4 +9,4 @@ val sudo : Https.HttpsFunction
 val users : Https.CallableFunction
 val cleanUpUsers : Https.HttpsFunction
 val locationCreated : FireStore.CloudFunction
-val testNotification : Https.HttpsFunction
+val testNotification : Https.CallableFunction

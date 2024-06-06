@@ -70,6 +70,10 @@ module Auth =
         static member getAuth (app : App.App) : Auth = jsNative
 
 module rec FireStore =
+    /// https://googleapis.dev/nodejs/firestore/latest/WriteResult.html
+    type WriteResult =
+        abstract member writeTime : obj
+
     /// https://googleapis.dev/nodejs/firestore/latest/DocumentReference.html
     type DocumentReference<'T> =
         abstract member id : string
@@ -77,6 +81,8 @@ module rec FireStore =
         abstract member path : string
         /// https://googleapis.dev/nodejs/firestore/latest/DocumentReference.html#get
         abstract member get : unit -> JS.Promise<DocumentSnapshot<'T>>
+        /// https://googleapis.dev/nodejs/firestore/latest/DocumentReference.html#update
+        abstract member update : field : string * value : obj -> JS.Promise<WriteResult>
 
     /// https://googleapis.dev/nodejs/firestore/latest/DocumentSnapshot.html
     type DocumentSnapshot<'T> =

@@ -6,6 +6,8 @@ open Fable.Core.JsInterop
 open Firebase.Admin
 open Firebase.Functions
 open Firebase.Functions.V2
+open Firebase.Functions.V2.Https
+open Ronnies.Shared
 
 let isEmulator : bool = emitJsExpr () "process.env.FUNCTIONS_EMULATOR === \"true\""
 
@@ -56,8 +58,6 @@ let secretRequest
 type User =
     abstract displayName : string
     abstract email : string
-
-type CustomClaims = {| ``member`` : bool ; admin : bool |}
 
 let isAdmin (auth : Https.RequestAuth<CustomClaims> option) =
     match auth with
@@ -146,7 +146,6 @@ let sudo =
                             return response.sendStatus (500)
                     }
                 )
-
     )
 
 let (|HasMemberClaim|_|) (requestAuth : Https.RequestAuth<CustomClaims> option) =
@@ -163,7 +162,7 @@ let users =
             region = "europe-west1"
             allowedCors = Some allowedCors
         |},
-        fun request ->
+        fun (request : CallableRequest<UsersData, CustomClaims>) ->
             promise {
                 match request.auth with
                 | HasMemberClaim currentId ->
@@ -172,8 +171,14 @@ let users =
                     let users =
                         listUsersResult.users
                         |> Array.choose (fun userRecord ->
-                            if userRecord.uid = currentId then
+                            if userRecord.uid = currentId && not request.data.includeCurrentUser then
                                 None
+                            elif userRecord.uid = currentId then
+                                Some
+                                    {|
+                                        displayName = userRecord.displayName
+                                        uid = userRecord.uid
+                                    |}
                             else
                                 userRecord.customClaims
                                 |> Option.bind (fun customClaims ->
@@ -186,7 +191,6 @@ let users =
                                                 uid = userRecord.uid
                                             |}
                                 )
-
                         )
 
                     return users
@@ -224,7 +228,27 @@ let cleanUpUsers =
                 )
     )
 
-type FCMTokenData = {| tokens : string array |}
+/// Try and send the data to all tokens in the document.
+/// Remove the tokens if they are no longer valid.
+let sendMessageToFcmToken (data : obj) (fcmDocumentSnapshot : FireStore.DocumentSnapshot<FCMTokenData>) =
+    promise {
+        let tokenData = fcmDocumentSnapshot.data ()
+        let staleTokens = ResizeArray<string> ()
+
+        for token in tokenData.tokens do
+            try
+                do! messaging.send {| token = token ; data = data |}
+            with ex ->
+                if ex?code = "messaging/registration-token-not-registered" then
+                    staleTokens.Add token
+                else
+                    Firebase.Functions.Logger.logger.error ex
+
+        if not (Seq.isEmpty staleTokens) then
+            let nextTokens = tokenData.tokens |> Array.except staleTokens
+            let! _ = fcmDocumentSnapshot.ref.update (nameof (tokenData.tokens), nextTokens)
+            ()
+    }
 
 let broadCastNotification data =
     promise {
@@ -232,13 +256,7 @@ let broadCastNotification data =
         let! tokenSnapshots = fcmCollection.get ()
 
         for tokenSnapshot in tokenSnapshots.docs do
-            let tokenData = tokenSnapshot.data ()
-
-            for token in tokenData.tokens do
-                try
-                    do! messaging.send {| token = token ; data = data |}
-                with ex ->
-                    Firebase.Functions.Logger.logger.error ex
+            do! sendMessageToFcmToken data tokenSnapshot
     }
 
 // There are more properties present here, I'm only using the data I'm interested in
@@ -280,58 +298,65 @@ if (process.env.FUNCTIONS_EMULATOR === "true") {
       .createUser({
         displayName: "nojaf",
         email: "florian.verdonck@outlook.com",
-        password: "ronalds",
+        password: "ronalds"
       })
       .then((user) => {
         console.log("admin seeded");
         auth.setCustomUserClaims(user.uid, {
           admin: true,
-          member: true,
+          member: true
         });
       });
   });
+  
+    auth.getUserByEmail("bp@gmail.com").catch((err) => {
+        auth
+          .createUser({
+            displayName: "Gilles",
+            email: "bp@gmail.com",
+            password: "ronalds"
+          })
+          .then((user) => {
+            console.log("BP seeded");
+            auth.setCustomUserClaims(user.uid, {
+              admin: false,
+              member: true
+            });
+          });
+      });
 }
 """
 
 let testNotification =
-    Https.Exports.onRequest (
+    Https.Exports.onCall<User, CustomClaims, unit> (
         {|
             region = "europe-west1"
             allowedCors = None
         |},
-        fun request response ->
-            secretRequest
-                "POST"
-                request
-                response
-                (fun request response ->
-                    promise {
-                        try
-                            let! user = auth.getUserByEmail "florian.verdonck@outlook.com"
+        fun request ->
+            promise {
+                try
+                    if not (isAdmin request.auth) then
+                        return raise (new Https.HttpsError ("Invalid permissions"))
+                    else
 
-                            let data =
-                                {|
-                                    locationId = "Emwzg2aIXFjESlL0RB66"
-                                    userName = "Sie Nojaf"
-                                    locationName = "Test notification"
-                                |}
+                    let! user = auth.getUserByEmail "florian.verdonck@outlook.com"
 
-                            let fcmCollection = firestore.collection<FCMTokenData> ("fcmTokens")
-                            let fcmDocumentReference = fcmCollection.doc user.uid
-                            let! fcmDocumentSnapshot = fcmDocumentReference.get ()
-                            let tokenData = fcmDocumentSnapshot.data ()
+                    let data =
+                        {|
+                            locationId = "Emwzg2aIXFjESlL0RB66"
+                            userName = "Sie Nojaf"
+                            locationName = "Test notification"
+                        |}
 
-                            for token in tokenData.tokens do
-                                try
-                                    do! messaging.send {| token = token ; data = data |}
-                                with ex ->
-                                    Firebase.Functions.Logger.logger.error ex
+                    let fcmCollection = firestore.collection<FCMTokenData> ("fcmTokens")
+                    let fcmDocumentReference = fcmCollection.doc user.uid
+                    let! fcmDocumentSnapshot = fcmDocumentReference.get ()
+                    do! sendMessageToFcmToken data fcmDocumentSnapshot
 
-                            return response.status(200).send (tokenData)
-                        with ex ->
-                            Logger.logger.error ("Error while elevating user", ex, {| structuredData = true |})
-                            return response.sendStatus (500)
-                    }
-                )
-
+                    return ()
+                with ex ->
+                    Logger.logger.error ("Error sending testNotification", ex, {| structuredData = true |})
+                    return raise (new Https.HttpsError (ex.Message))
+            }
     )

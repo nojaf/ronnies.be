@@ -1,46 +1,63 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <LangVersion>Preview</LangVersion>
+    <TargetFramework>net8.0</TargetFramework>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <DefineConstants>$(DefineConstants);FABLE_COMPILER</DefineConstants>
-    <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Bindings\Firebase.fs" />
-    <Compile Include="Bindings\UseHooksTs.fs" />
-    <Compile Include="Bindings\React.fs" />
-    <Compile Include="Bindings\Iconify.fs" />
-    <Compile Include="Bindings\ReactRouterDom.fs" />
-    <Compile Include="Bindings\ReactMapGL.fs" />
-    <Compile Include="Bindings\UseFilePicker.fs" />
-    <Compile Include="Types.fs" />
-    <Compile Include="API.fs" />
-    <Compile Include="Components.fs" />
-    <Compile Include="Pages\Login.fs" />
-    <Compile Include="Pages\Overview.fs" />
-    <Compile Include="Pages\Home.fs" />
-    <Compile Include="Pages\AddLocation.fsi" />
-    <Compile Include="Pages\AddLocation.fs" />
-    <Compile Include="Pages\Leaderboard.fs" />
-    <Compile Include="Pages\Rules.fs" />
-    <Compile Include="Pages\Settings.fsi" />
-    <Compile Include="Pages\Settings.fs" />
-    <Compile Include="Pages\Legacy.fs" />
-    <Compile Include="Pages\Admin.fs" />
-    <Compile Include="App.fs" />
+    <Compile Include="Bindings\Firebase.fs"/>
+    <Compile Include="Bindings\UseHooksTs.fs"/>
+    <Compile Include="Bindings\Iconify.fs"/>
+    <Compile Include="Bindings\ReactRouterDom.fs"/>
+    <Compile Include="Bindings\ReactMapGL.fs"/>
+    <Compile Include="Bindings\UseFilePicker.fs"/>
+    <Compile Include="Bindings\StyledComponents.fs" />
+    <Compile Include="Bindings\ReactLazyLoad.fs" />
+    <Compile Include="../Shared.fs" />
+    <Compile Include="Types.fs"/>
+    <Compile Include="API.fs"/>
+    <Compile Include="Components\Toggle.fs" />
+    <Compile Include="Components\Loader.fs" />
+    <Compile Include="Components\LocationPicker.fs" />
+    <Compile Include="Components\Navigation.fsi" />
+    <Compile Include="Components\Navigation.fs" />
+    <Compile Include="Components\OverviewItem.fsi" />
+    <Compile Include="Components\OverviewItem.fs" />
+    <Compile Include="Components\Toast.fsi" />
+    <Compile Include="Components\Toast.fs" />
+    <Compile Include="ComponentsDSL.fs"/>
+    <Compile Include="Pages\Login.fsi"/>
+    <Compile Include="Pages\Login.fs"/>
+    <Compile Include="Pages\Overview.fsi"/>
+    <Compile Include="Pages\Overview.fs"/>
+    <Compile Include="Pages\Home.fsi"/>
+    <Compile Include="Pages\Home.fs"/>
+    <Compile Include="Pages\AddLocation.fsi"/>
+    <Compile Include="Pages\AddLocation.fs"/>
+    <Compile Include="Pages\Leaderboard.fsi"/>
+    <Compile Include="Pages\Leaderboard.fs"/>
+    <Compile Include="Pages\Rules.fsi"/> 
+    <Compile Include="Pages\Rules.fs"/>
+    <Compile Include="Pages\Settings.fsi"/>
+    <Compile Include="Pages\Settings.fs"/>
+    <Compile Include="Pages\Legacy.fsi"/>
+    <Compile Include="Pages\Legacy.fs"/>
+    <Compile Include="Pages\Admin.fsi"/>
+    <Compile Include="Pages\Admin.fs"/>
+    <Compile Include="App.fs"/>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="FSharp.Core" Version="7.0.300" />
-    <PackageReference Include="Fable.Browser.Dom" Version="2.14.0" />
-    <PackageReference Include="Fable.Browser.WebStorage" Version="1.2.0" />
-    <PackageReference Include="Fable.Core" Version="4.0.0" />
-    <PackageReference Include="Fable.Fetch" Version="2.6.0" />
-    <PackageReference Include="Fable.Promise" Version="3.2.0" />
-    <PackageReference Include="Feliz.CompilerPlugins" Version="2.2.0" />
-    <PackageReference Include="Fable.Browser.WebSocket" Version="1.3.0" />
-    <PackageReference Include="Fable.Browser.Url" Version="1.3.2" />
-    <PackageReference Include="Fable.Browser.Navigator" Version="2.4.0" />
-    <PackageReference Include="Feliz.UseElmish" Version="2.4.0" />
+    <PackageReference Update="FSharp.Core" Version="8.0.200" />
+    <PackageReference Include="Fable.Core" Version="4.3.0"/>
+    <PackageReference Include="Fable.AST" Version="4.4.0"/>
+    <PackageReference Include="Fable.Browser.Dom" Version="2.16.0"/>
+    <PackageReference Include="Fable.Browser.WebStorage" Version="1.2.0"/>
+    <PackageReference Include="Fable.Fetch" Version="2.6.0"/>
+    <PackageReference Include="Fable.Promise" Version="3.2.0"/>
+    <PackageReference Include="Fable.Browser.WebSocket" Version="1.3.0"/>
+    <PackageReference Include="Fable.Browser.Url" Version="1.3.2"/>
+    <PackageReference Include="Fable.Browser.Navigator" Version="2.4.0"/>
+    <PackageReference Include="Feliz.UseElmish" Version="2.4.0"/>
+    <PackageReference Include="Nojaf.Fable.React" Version="0.0.1" />
   </ItemGroup>
 </Project>

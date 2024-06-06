@@ -21,3 +21,6 @@ fsharp_keep_max_number_of_blank_lines = 1
 
 [build.fsx]
 fsharp_blank_lines_around_nested_multiline_expressions = false
+
+[*.{fsproj,props}]
+indent_size = 2

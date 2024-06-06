@@ -1,10 +1,11 @@
 module Legacy
 
 open System
-open Feliz
+open Fable.Core
 open React
-open React.Props
+open type React.DSL.DOMProps
 open ReactMapGL
+open StyledComponents
 
 type LegacyLocation =
     {|
@@ -20,7 +21,19 @@ type LegacyLocation =
         creator : string
     |}
 
-[<ReactComponent>]
+let StyledMain : JSX.ElementType =
+    mkStyleComponent
+        "main"
+        """
+& {
+    margin: 0;
+    padding: 0;
+    max-width: initial;
+    height: 100%;
+}
+"""
+
+[<ExportDefault>]
 let LegacyPage () =
     let viewport, setViewport =
         React.useState<Viewport>
@@ -30,7 +43,7 @@ let LegacyPage () =
                 zoom = 6
             |}
 
-    let data, setData = React.useState<LegacyLocation array> (Array.empty)
+    let data, setData = React.useState<LegacyLocation array> Array.empty
 
     React.useEffect (
         fun () ->
@@ -44,25 +57,32 @@ let LegacyPage () =
     let icons =
         data
         |> Array.map (fun location ->
-            Marker [
+            marker [
                 Key location.id
-                MarkerLatitude location.latitude
-                MarkerLongitude location.longitude
-                OffsetLeft 0
-                OffsetTop 0
+                MarkerProp.MarkerLatitude location.latitude
+                MarkerProp.MarkerLongitude location.longitude
+                MarkerProp.OffsetLeft 0
+                MarkerProp.OffsetTop 0
             ] [
-                img [ Src "/images/ronny.png" ; HTMLAttr.Height "20" ; HTMLAttr.Width "20" ]
-
+                img [
+                    Key $"%s{location.id}-image"
+                    Src "/images/ronny.png"
+                    Height "20"
+                    Width "20"
+                ]
             ]
         )
 
-    main [ Id "world-map" ] [
-        ReactMapGL [
-            ReactMapGLProp.OnMove (fun ev -> setViewport ev.viewState) :> IProp
-            Style [ CSSProp.Height "100vh" ; CSSProp.Width "100vw" ] :> IProp
-            ReactMapGLProp.Latitude viewport.latitude
-            ReactMapGLProp.Longitude viewport.longitude
-            ReactMapGLProp.Zoom viewport.zoom
-            ReactMapGLProp.MapStyle "mapbox://styles/mapbox/light-v11"
-        ] [ ofArray icons ]
+    styledComponent StyledMain [
+        reactMapGL
+            [
+                ReactMapGLProp.MapboxAccessToken mapboxApiAccessToken
+                ReactMapGLProp.OnMove (fun ev -> setViewport ev.viewState)
+                Style {| height = "100vh" ; width = "100vw" |}
+                ReactMapGLProp.Latitude viewport.latitude
+                ReactMapGLProp.Longitude viewport.longitude
+                ReactMapGLProp.Zoom viewport.zoom
+                ReactMapGLProp.MapStyle "mapbox://styles/mapbox/light-v11"
+            ]
+            icons
     ]
